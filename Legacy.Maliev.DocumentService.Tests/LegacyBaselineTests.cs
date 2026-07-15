@@ -38,7 +38,10 @@ public sealed class LegacyBaselineTests
         var projects = Directory.Exists(repository)
             ? Directory.GetFiles(repository, "*.csproj", SearchOption.AllDirectories)
             : [];
-        var production = projects.Where(path => !path.Contains(".Tests", StringComparison.OrdinalIgnoreCase)).ToArray();
+        var production = projects.Where(path =>
+                !path.Contains(".Tests", StringComparison.OrdinalIgnoreCase)
+                && !path.Contains($"{Path.DirectorySeparatorChar}.dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
         var source = string.Join('\n', production.Select(File.ReadAllText));
 
         Assert.Contains("QuestPDF", source, StringComparison.Ordinal);

@@ -43,6 +43,7 @@ public sealed class ApiContractTests
                     || path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
                 && !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
                 && !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+                && !path.Contains($"{Path.DirectorySeparatorChar}.dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
                 && !path.Contains($"{Path.DirectorySeparatorChar}Legacy.Maliev.DocumentService.Tests{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase));
         var source = string.Join('\n', files.Select(File.ReadAllText));
 
