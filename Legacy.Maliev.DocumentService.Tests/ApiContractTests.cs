@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Reflection;
+using Maliev.Aspire.ServiceDefaults.Authorization;
 
 namespace Legacy.Maliev.DocumentService.Tests;
 
@@ -32,6 +33,8 @@ public sealed class ApiContractTests
         Assert.All(actions, action => Assert.Contains(
             action.Method.GetCustomAttributes(),
             attribute => attribute.GetType().Name == "RequirePermissionAttribute"));
+        Assert.All(actions, action => Assert.False(
+            Assert.Single(action.Method.GetCustomAttributes<RequirePermissionAttribute>()).RequireLiveCheck));
     }
 
     [Fact]
