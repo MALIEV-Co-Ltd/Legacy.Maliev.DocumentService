@@ -39,9 +39,11 @@ repository is MIT licensed and uses QuestPDF under its Community open-source eli
 Extraction does not deploy. The eventual workload must use the existing GKE cluster and
 `maliev-legacy` namespace, with existing Workload Identity and cluster resources only. It requires no
 new node pool, Cloud SQL instance, PostgreSQL database, Redis allocation, or paid GitHub feature.
-Deployment remains gated on full visual parity evidence, authenticated workflow tests, malware/tag
-remediation evidence for the web deployment, GitOps manifests, resource limits, rollback evidence,
-and the consolidated `maliev-legacy-secrets` integration where secrets are actually required.
+Visual parity and authenticated workflow evidence are validated in this repository. Production
+deployment remains intentionally deferred until the complete legacy migration plan is ready, with
+malware/tag remediation evidence for the web workload, GitOps manifests, resource limits, rollback
+evidence, and the consolidated `maliev-legacy-secrets` integration where secrets are actually
+required.
 
 ## Validate
 
