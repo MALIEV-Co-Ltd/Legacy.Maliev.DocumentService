@@ -84,6 +84,21 @@ public sealed class AnnotatedInvoiceLayoutTests
     }
 
     [Fact]
+    public void ItemTableStyle_DrawsEachSharedEdgeOnlyOnce()
+    {
+        var tableStyle = File.ReadAllText(Path.Combine(
+            Root(),
+            "Legacy.Maliev.DocumentService.Rendering",
+            "Components",
+            "ItemTableStyle.cs"));
+
+        Assert.DoesNotContain(".Border(", tableStyle, StringComparison.Ordinal);
+        Assert.Contains("BorderBottom", tableStyle, StringComparison.Ordinal);
+        Assert.Contains("BorderRight", tableStyle, StringComparison.Ordinal);
+        Assert.Contains("BorderLeft", tableStyle, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void InvoiceFooter_UsesVerifiedScbAccountWithoutRepeatingCompanyContactBlock()
     {
         using var document = PdfDocument.Open(new QuestDocumentRenderer().RenderInvoice(Invoice()));

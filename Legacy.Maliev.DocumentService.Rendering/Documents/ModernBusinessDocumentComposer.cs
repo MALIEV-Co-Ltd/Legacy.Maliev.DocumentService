@@ -98,15 +98,25 @@ internal static class ModernBusinessDocumentComposer
                     columns.RelativeColumn();
             });
 
-            foreach (var (key, _) in fields)
+            for (var index = 0; index < fields.Count; index++)
+            {
+                var (key, _) = fields[index];
                 BilingualText.ComposeCombined(
-                    ItemTableStyle.HeaderCell(table.Cell()),
+                    ItemTableStyle.HeaderCell(table.Cell(), firstColumn: index == 0),
                     key,
                     7,
                     6,
                     alignment: BilingualTextAlignment.Center);
-            foreach (var (_, value) in fields)
-                ItemTableStyle.Cell(table.Cell()).AlignCenter().Text(string.IsNullOrWhiteSpace(value) ? "-" : value).FontSize(7);
+            }
+
+            for (var index = 0; index < fields.Count; index++)
+            {
+                var (_, value) = fields[index];
+                ItemTableStyle.Cell(table.Cell(), firstColumn: index == 0)
+                    .AlignCenter()
+                    .Text(string.IsNullOrWhiteSpace(value) ? "-" : value)
+                    .FontSize(7);
+            }
         });
     }
 
@@ -125,17 +135,19 @@ internal static class ModernBusinessDocumentComposer
 
             table.Header(header =>
             {
-                foreach (var heading in new[]
+                var headings = new[]
                 {
                     "Item / รหัส",
                     "Description / รายละเอียด",
                     "Unit Price / หน่วยละ",
                     "Quantity / จำนวน",
                     "Amount / จำนวนเงิน",
-                })
+                };
+
+                for (var index = 0; index < headings.Length; index++)
                     BilingualText.ComposeCombined(
-                        ItemTableStyle.HeaderCell(header.Cell()),
-                        heading,
+                        ItemTableStyle.HeaderCell(header.Cell(), firstColumn: index == 0),
+                        headings[index],
                         7,
                         6,
                         alignment: BilingualTextAlignment.Center);
@@ -147,7 +159,7 @@ internal static class ModernBusinessDocumentComposer
 
             foreach (var item in rows)
             {
-                ItemTableStyle.Cell(table.Cell()).ShowEntire().AlignCenter().Text(item.Code);
+                ItemTableStyle.Cell(table.Cell(), firstColumn: true).ShowEntire().AlignCenter().Text(item.Code);
                 ItemTableStyle.Cell(table.Cell()).ShowEntire().Text(item.Description).LineHeight(1.25f);
                 ItemTableStyle.Cell(table.Cell()).ShowEntire().AlignRight().Text(item.UnitPrice);
                 ItemTableStyle.Cell(table.Cell()).ShowEntire().AlignCenter().Text(item.Quantity);
