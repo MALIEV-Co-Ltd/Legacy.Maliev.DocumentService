@@ -17,6 +17,10 @@ namespace Legacy.Maliev.DocumentService.Tests;
 [Collection("Renderer artifacts")]
 public sealed class QuestRendererContractTests
 {
+    private const double MaximumContentFontSizeInPixels = 13;
+    private const double MaximumContentFontSizeInPoints = MaximumContentFontSizeInPixels * 72 / 96;
+    private const double HeaderBandHeightRatio = 0.18;
+
     [Fact]
     public void FixedTimeProvider_ProducesDeterministicOrderLabelContent()
     {
@@ -78,6 +82,7 @@ public sealed class QuestRendererContractTests
         });
         Record("invoice", pdf);
 
+        AssertContentFontSize(pdf);
         AssertA4(pdf, "INVOICE", "ใบวางบิล", "ณัฐกานต์", "104.00", "MALIEV Co., Ltd.", "Shipping:", "SALESPERSON", "TERMS");
         Assert.DoesNotContain("PayPal", Text(pdf), StringComparison.OrdinalIgnoreCase);
     }
@@ -128,6 +133,7 @@ public sealed class QuestRendererContractTests
         });
         Record("quotation", pdf);
 
+        AssertContentFontSize(pdf);
         AssertA4(pdf, "QUOTATION", "ใบเสนอราคา", "วุฒิชัย", "104.00", "Prepared for:", "Prepared by:", "INVOICE NUMBER", "Errors & Omissions Excepted");
     }
 
@@ -168,6 +174,7 @@ public sealed class QuestRendererContractTests
         });
         Record("receipt", pdf);
 
+        AssertContentFontSize(pdf);
         using var document = PdfDocument.Open(pdf);
         Assert.Equal(2, document.NumberOfPages);
         AssertA4(pdf, "TAX INVOICE", "ใบเสร็จรับเงิน", "วุฒิชัย", "104.00", "ORIGINAL", "Customer:", "Errors & Omissions Excepted", "honored");
@@ -218,6 +225,7 @@ public sealed class QuestRendererContractTests
         });
         Record("purchase-order", pdf);
 
+        AssertContentFontSize(pdf);
         AssertA4(pdf, "PURCHASE ORDER", "ใบสั", "กฤช", "19,460,000.00", "Supplier:", "Billing:", "Shipping:", "FOB", "Grand Total");
         Assert.True(Text(pdf).Count(value => value == '\0') >= 2,
             "PdfPig should expose the shaped Thai combining-mark glyph clusters for visual parity validation.");
@@ -241,6 +249,7 @@ public sealed class QuestRendererContractTests
         });
         Record("order-label", pdf);
 
+        AssertContentFontSize(pdf);
         using var document = PdfDocument.Open(pdf);
         var page = document.GetPage(1);
         Assert.Equal(216, Math.Min(page.Width, page.Height), precision: 0);
@@ -264,6 +273,26 @@ public sealed class QuestRendererContractTests
         Assert.Equal(842, page.Height, precision: 0);
         var text = Text(pdf);
         Assert.All(expected, value => Assert.Contains(value, text, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static void AssertContentFontSize(byte[] pdf)
+    {
+        using var document = PdfDocument.Open(pdf);
+        foreach (var page in document.GetPages())
+        {
+            var headerBoundary = page.Height * (1 - HeaderBandHeightRatio);
+            var oversizedContent = page.Letters
+                .Where(letter => letter.FontSize > MaximumContentFontSizeInPoints)
+                .Where(letter => letter.BoundingBox.Top < headerBoundary)
+                .ToArray();
+
+            Assert.True(
+                oversizedContent.Length == 0,
+                $"Page {page.Number} contains non-header glyphs larger than {MaximumContentFontSizeInPixels}px " +
+                $"({MaximumContentFontSizeInPoints:F2}pt): " +
+                string.Join(", ", oversizedContent.Take(20).Select(letter =>
+                    $"'{letter.Value}'={letter.FontSize:F2}pt at y={letter.BoundingBox.Top:F2}")));
+        }
     }
 
     private static string Text(byte[] pdf)
