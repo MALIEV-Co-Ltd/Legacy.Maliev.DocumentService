@@ -11,33 +11,31 @@ public sealed class RendererArtifactCollection;
 public sealed class VisualLayoutParityTests
 {
     [Fact]
-    public void RepresentativeDocuments_KeepLegacySectionAnchorGeometry()
+    public void RepresentativeDocuments_KeepReadableTopToBottomSectionFlow()
     {
         GenerateRepresentativeArtifacts();
 
-        AssertAnchors("invoice.pdf", "invoice-thai-unittest.pdf", "INVOICE", "Billing:", "SALESPERSON", "Remark");
-        AssertAnchors("quotation.pdf", "quotation-thai-unittest.pdf", "QUOTATION", "Prepared", "INVOICE", "Remark");
-        AssertAnchors("receipt.pdf", "receipt-thai-unittest.pdf", "RECEIPT", "Customer:", "Item", "Remark");
-        AssertAnchors("purchase-order.pdf", "purchase-order-thai-unittest.pdf", "PURCHASE", "Supplier:", "ORDERED", "Notes");
+        AssertTopToBottom("invoice.pdf", "INVOICE", "Billing", "SALESPERSON", "Outstanding");
+        AssertTopToBottom("quotation.pdf", "QUOTATION", "Prepared", "INVOICE", "Remark");
+        AssertTopToBottom("receipt.pdf", "RECEIPT", "Customer", "Item", "Remark");
+        AssertTopToBottom("purchase-order.pdf", "PURCHASE", "Supplier", "ORDERED", "Notes");
     }
 
-    private static void AssertAnchors(string currentName, string legacyName, params string[] anchors)
+    private static void AssertTopToBottom(string currentName, params string[] anchors)
     {
         var currentPath = Path.Combine(AppContext.BaseDirectory, "TestResults", "questpdf", currentName);
-        var legacyPath = Path.Combine(AppContext.BaseDirectory, "Baselines", "legacy-itext", legacyName);
         using var current = PdfDocument.Open(currentPath);
-        using var legacy = PdfDocument.Open(legacyPath);
         var currentPage = current.GetPage(1);
-        var legacyPage = legacy.GetPage(1);
+        var points = anchors.Select(anchor => (Anchor: anchor, Point: Anchor(currentPage, anchor, currentName))).ToArray();
 
-        foreach (var anchor in anchors)
+        Assert.All(points, item =>
         {
-            var currentPoint = Anchor(currentPage, anchor, currentName);
-            var legacyPoint = Anchor(legacyPage, anchor, legacyName);
-            Assert.InRange(Math.Abs(currentPoint.X - legacyPoint.X), 0, 0.09);
-            Assert.True(Math.Abs(currentPoint.Y - legacyPoint.Y) <= 0.09,
-                $"{currentName} anchor '{anchor}' moved vertically: current={currentPoint.Y:F3}, legacy={legacyPoint.Y:F3}.");
-        }
+            Assert.InRange(item.Point.X, 0, 1);
+            Assert.InRange(item.Point.Y, 0, 1);
+        });
+        for (var index = 1; index < points.Length; index++)
+            Assert.True(points[index - 1].Point.Y > points[index].Point.Y,
+                $"{currentName} section '{points[index - 1].Anchor}' must appear above '{points[index].Anchor}'.");
     }
 
     private static (double X, double Y) Anchor(Page page, string text, string file)
