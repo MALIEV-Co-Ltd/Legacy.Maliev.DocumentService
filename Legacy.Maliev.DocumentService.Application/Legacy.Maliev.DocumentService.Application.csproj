@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
+  </ItemGroup>
+</Project>

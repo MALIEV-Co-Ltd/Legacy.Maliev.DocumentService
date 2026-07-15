@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Preserved legacy request DTOs predate nullable-reference metadata. -->
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+</Project>
