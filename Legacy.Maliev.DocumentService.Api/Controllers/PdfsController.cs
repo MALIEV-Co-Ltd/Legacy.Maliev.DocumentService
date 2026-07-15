@@ -15,27 +15,27 @@ namespace Legacy.Maliev.DocumentService.Api.Controllers;
 [ApiController, Route("[controller]"), Authorize]
 public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
 {
-    [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render, RequireLiveCheck = true)]
+    [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateInvoiceAsync([FromBody] Invoice? item) =>
         item is null ? BadRequest() : File(renderer.RenderInvoice(item), MediaTypeNames.Application.Pdf);
 
-    [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render, RequireLiveCheck = true)]
+    [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreatePurchaseOrderAsync([FromBody] PurchaseOrder? item) =>
         item is null ? BadRequest() : File(renderer.RenderPurchaseOrder(item), MediaTypeNames.Application.Pdf);
 
-    [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render, RequireLiveCheck = true)]
+    [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateQuotationAsync([FromBody] Quotation? item) =>
         item is null ? BadRequest() : File(renderer.RenderQuotation(item), MediaTypeNames.Application.Pdf);
 
-    [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render, RequireLiveCheck = true)]
+    [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateReceiptAsync([FromBody] Receipt? item) =>
         item is null ? BadRequest() : File(renderer.RenderReceipt(item), MediaTypeNames.Application.Pdf);
 
-    [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render, RequireLiveCheck = true)]
+    [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateOrderLabelAsync([FromBody] OrderLabel? item) =>
         item is null ? BadRequest() : File(renderer.RenderOrderLabel(item), MediaTypeNames.Application.Pdf);
