@@ -81,6 +81,20 @@ public sealed class ApiContractTests
         }
     }
 
+    [Fact]
+    public void ContainerRestore_CopiesSharedBuildPropertiesBeforeProjectEvaluation()
+    {
+        var dockerfile = File.ReadAllText(Path.Combine(
+            FindRepositoryRoot(),
+            "Legacy.Maliev.DocumentService.Api",
+            "Dockerfile"));
+        var propertiesCopy = dockerfile.IndexOf("COPY Directory.Build.props .", StringComparison.Ordinal);
+        var restore = dockerfile.IndexOf("RUN dotnet restore", StringComparison.Ordinal);
+
+        Assert.True(propertiesCopy >= 0, "The container build must copy Directory.Build.props before restore.");
+        Assert.True(propertiesCopy < restore, "Directory.Build.props must be available when MSBuild evaluates the API project.");
+    }
+
     private static string FindRepositoryRoot()
     {
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
