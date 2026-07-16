@@ -40,6 +40,7 @@ public sealed class LegacyBaselineTests
             : [];
         var production = projects.Where(path =>
                 !path.Contains(".Tests", StringComparison.OrdinalIgnoreCase)
+                && !path.Contains(".Companion", StringComparison.OrdinalIgnoreCase)
                 && !path.Contains($"{Path.DirectorySeparatorChar}.dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
             .ToArray();
         var source = string.Join('\n', production.Select(File.ReadAllText));
