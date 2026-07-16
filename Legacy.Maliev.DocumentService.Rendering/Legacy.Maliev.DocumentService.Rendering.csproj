@@ -4,7 +4,7 @@
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="QuestPDF" Version="2026.7.0" />
+    <PackageReference Include="QuestPDF" Version="2026.7.1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Fonts\NotoSans-Regular.ttf" />
