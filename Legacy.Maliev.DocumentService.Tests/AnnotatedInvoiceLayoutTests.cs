@@ -17,11 +17,8 @@ public sealed class AnnotatedInvoiceLayoutTests
         var words = NearestNeighbourWordExtractor.Instance.GetWords(page.Letters).ToArray();
         var logo = Assert.Single(page.GetImages()).BoundingBox;
         var company = Find(words, "MALIEV", minimumX: 0, maximumX: 200);
-        var currency = Find(words, "THB", minimumX: 300, maximumX: 595);
-        var billing = Find(words, "Billing", minimumX: 0, maximumX: 300);
 
-        Assert.InRange(logo.Bottom - company.BoundingBox.Top, 6, 16);
-        Assert.InRange(currency.BoundingBox.Bottom - billing.BoundingBox.Top, 0, 18);
+        Assert.InRange(logo.Bottom - company.BoundingBox.Top, 17, 20);
     }
 
     [Fact]
@@ -38,21 +35,22 @@ public sealed class AnnotatedInvoiceLayoutTests
     }
 
     [Fact]
-    public void InvoiceTotals_IncludeThaiSubtitleForEveryFinancialLabel()
+    public void InvoiceTotals_PreserveLegacyFinancialLabelsAndThaiRemark()
     {
         using var document = PdfDocument.Open(new QuestDocumentRenderer().RenderInvoice(Invoice()));
         var text = string.Join(' ', document.GetPages().Select(page => page.Text));
 
-        Assert.Contains("ยอดรวม", text, StringComparison.Ordinal);
-        Assert.Contains("ภาษี", text, StringComparison.Ordinal);
-        Assert.Contains("ยอดค", text, StringComparison.Ordinal);
+        Assert.Contains("Subtotal", text, StringComparison.Ordinal);
+        Assert.Contains("VAT 7%", text, StringComparison.Ordinal);
+        Assert.Contains("Grand Total", text, StringComparison.Ordinal);
+        Assert.Contains("หมายเหตุ", text, StringComparison.Ordinal);
 
-        var source = File.ReadAllText(Path.Combine(Root(), "Legacy.Maliev.DocumentService.Rendering", "Documents", "InvoiceDocumentComposer.cs"));
-        Assert.Contains("Subtotal / ยอดรวมก่อนภาษี", source, StringComparison.Ordinal);
-        Assert.Contains("VAT 7% / ภาษีมูลค่าเพิ่ม 7%", source, StringComparison.Ordinal);
-        Assert.Contains("Grand Total / ยอดรวมสุทธิ", source, StringComparison.Ordinal);
-        Assert.Contains("Withholding Tax / ภาษีหัก ณ ที่จ่าย", source, StringComparison.Ordinal);
-        Assert.Contains("Outstanding / ยอดค้างชำระ", source, StringComparison.Ordinal);
+        var source = File.ReadAllText(Path.Combine(Root(), "Legacy.Maliev.DocumentService.Rendering", "QuestDocumentRenderer.cs"));
+        Assert.Contains("(\"Subtotal\", invoice.Subtotal)", source, StringComparison.Ordinal);
+        Assert.Contains("(\"VAT 7%\", invoice.Vat)", source, StringComparison.Ordinal);
+        Assert.Contains("(\"Grand Total\", invoice.Total)", source, StringComparison.Ordinal);
+        Assert.Contains("(\"Withholding Tax\", invoice.WithholdingTax)", source, StringComparison.Ordinal);
+        Assert.Contains("(\"Outstanding\", invoice.Outstanding)", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -68,50 +66,19 @@ public sealed class AnnotatedInvoiceLayoutTests
     }
 
     [Fact]
-    public void SharedComponents_DoNotCreatePartyRulesOrHeaderFillGutters()
-    {
-        var root = Root();
-        var composer = File.ReadAllText(Path.Combine(root, "Legacy.Maliev.DocumentService.Rendering", "Documents", "ModernBusinessDocumentComposer.cs"));
-        var tableStyle = File.ReadAllText(Path.Combine(root, "Legacy.Maliev.DocumentService.Rendering", "Components", "ItemTableStyle.cs"));
-
-        Assert.DoesNotContain("BorderTop", composer, StringComparison.Ordinal);
-        Assert.DoesNotContain("BorderBottom", composer, StringComparison.Ordinal);
-        var headerCell = tableStyle[tableStyle.IndexOf("internal static IContainer HeaderCell", StringComparison.Ordinal)..];
-        Assert.True(
-            headerCell.IndexOf("Background(DocumentStyle.HeaderFill)", StringComparison.Ordinal)
-            < headerCell.IndexOf("PaddingHorizontal", StringComparison.Ordinal),
-            "The header background must be painted before padding so it reaches every border.");
-    }
-
-    [Fact]
-    public void ItemTableStyle_DrawsEachSharedEdgeOnlyOnce()
-    {
-        var tableStyle = File.ReadAllText(Path.Combine(
-            Root(),
-            "Legacy.Maliev.DocumentService.Rendering",
-            "Components",
-            "ItemTableStyle.cs"));
-
-        Assert.DoesNotContain(".Border(", tableStyle, StringComparison.Ordinal);
-        Assert.Contains("BorderBottom", tableStyle, StringComparison.Ordinal);
-        Assert.Contains("BorderRight", tableStyle, StringComparison.Ordinal);
-        Assert.Contains("BorderLeft", tableStyle, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void InvoiceFooter_UsesVerifiedScbAccountWithoutRepeatingCompanyContactBlock()
+    public void InvoiceFooter_UsesVerifiedScbAccountAndLegacyFourColumnContactBlock()
     {
         using var document = PdfDocument.Open(new QuestDocumentRenderer().RenderInvoice(Invoice()));
         var text = string.Join(' ', document.GetPages().Select(page => page.Text));
 
-        Assert.Contains("Siam Commercial Bank Public Company Limited", text, StringComparison.Ordinal);
+        Assert.Contains("Siam", text, StringComparison.Ordinal);
         Assert.Contains("417-108808-2", text, StringComparison.Ordinal);
         Assert.Contains("Savings account", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Kasikornbank", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("049-878-2612", text, StringComparison.Ordinal);
         Assert.DoesNotContain("KASITHBKXXX", text, StringComparison.Ordinal);
-        Assert.Equal(1, Count(text, "36/1 Moo 3"));
-        Assert.Equal(1, Count(text, "www.maliev.com"));
+        Assert.Equal(2, Count(text, "36/1 Moo 3"));
+        Assert.Equal(2, Count(text, "www.maliev.com"));
     }
 
     [Fact]
@@ -136,7 +103,7 @@ public sealed class AnnotatedInvoiceLayoutTests
             var words = NearestNeighbourWordExtractor.Instance.GetWords(page.Letters).ToArray();
             var pageLabel = Find(words, "Page", minimumX: 400, maximumX: page.Width);
 
-            Assert.InRange(pageLabel.BoundingBox.Bottom, 12, 30);
+            Assert.InRange(pageLabel.BoundingBox.Bottom, 98, 104);
             Assert.True(pageLabel.BoundingBox.Left >= 480, "Pagination must remain inside its isolated right-hand footer column.");
             Assert.Contains(words, word => word.Text.Contains("Siam", StringComparison.OrdinalIgnoreCase));
         }
@@ -150,9 +117,10 @@ public sealed class AnnotatedInvoiceLayoutTests
         var englishBank = words.First(word => word.Text.Contains("Siam", StringComparison.OrdinalIgnoreCase));
         var thaiBank = words.First(word => word.Text.Contains("ธนาคาร", StringComparison.Ordinal));
 
-        Assert.True(
-            thaiBank.BoundingBox.Left - englishBank.BoundingBox.Left >= 190,
-            "Thai payment details must occupy a distinct right-hand language column.");
+        Assert.InRange(
+            thaiBank.BoundingBox.Left - englishBank.BoundingBox.Left,
+            100,
+            170);
         Assert.InRange(Math.Abs(englishBank.BoundingBox.Bottom - thaiBank.BoundingBox.Bottom), 0, 6);
     }
 

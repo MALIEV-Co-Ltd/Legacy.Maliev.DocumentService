@@ -103,44 +103,52 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
         container
             .BorderTop(0.5f)
             .BorderColor(DocumentStyle.HeaderFill)
-            .PaddingTop(6)
-            .Row(row =>
+            .PaddingTop(4)
+            .Column(column =>
             {
-                row.RelativeItem().PaddingRight(12).Column(english =>
+                column.Item().Row(verification =>
                 {
-                    english.Item().Text("PAYMENT DETAILS").FontFamily(LatinBoldFont).FontSize(6.5f);
-                    english.Item().Height(13).Text("Please verify the invoice before payment").FontSize(5).FontColor(Grey);
-                    english.Item().Text("Siam Commercial Bank Public Company Limited").FontFamily(LatinBoldFont).FontSize(5.5f);
-                    english.Item().PaddingTop(1).Text("Account name: Maliev Co., Ltd.").FontSize(5.5f);
-                    english.Item().Text("Savings account: 417-108808-2").FontSize(5.5f);
+                    verification.RelativeItem().Text(
+                            "Please verify the content of this invoice before payment / กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนชำระเงิน")
+                        .FontFamily(LatinBoldFont, ThaiBoldFont)
+                        .FontSize(5.5f);
+                    verification.AutoItem().DefaultTextStyle(style => style.FontSize(5.5f)).Element(PageNumber.Compose);
                 });
 
-                row.ConstantItem(0.5f).Background(DocumentStyle.HeaderFill);
-
-                row.RelativeItem().PaddingHorizontal(12).Column(thai =>
+                column.Item().PaddingTop(7).Row(details =>
                 {
-                    thai.Item().Text("ข้อมูลการชำระเงิน").FontFamily(ThaiBoldFont).FontSize(6.5f);
-                    thai.Item().Height(13).Text("กรุณาตรวจสอบใบแจ้งหนี้ก่อนชำระเงิน").FontFamily(ThaiFont).FontSize(5).FontColor(Grey);
-                    thai.Item().Text("ธนาคารไทยพาณิชย์ จำกัด (มหาชน)").FontFamily(ThaiBoldFont).FontSize(5.5f);
-                    thai.Item().PaddingTop(1).Text("ชื่อบัญชี: บริษัท มาลีฟ จำกัด").FontFamily(ThaiFont).FontSize(5.5f);
-                    thai.Item().Text("บัญชีเงินฝากออมทรัพย์: 417-108808-2").FontFamily(ThaiFont).FontSize(5.5f);
-                });
-
-                row.ConstantItem(64)
-                    .BorderLeft(0.5f)
-                    .BorderColor(DocumentStyle.HeaderFill)
-                    .PaddingLeft(10)
-                    .AlignBottom()
-                    .Column(page =>
+                    details.RelativeItem().PaddingRight(8).Column(bank =>
                     {
-                        page.Item().AlignRight().DefaultTextStyle(style => style.FontSize(9).SemiBold()).Text(text =>
-                        {
-                            text.CurrentPageNumber();
-                            text.Span(" / ");
-                            text.TotalPages();
-                        });
-                        page.Item().PaddingTop(1).AlignRight().Text("PAGE | หน้า").FontSize(5).FontColor(Grey);
+                        bank.Item().Text("Siam Commercial Bank Public Company Limited").FontFamily(LatinBoldFont).FontSize(5.5f);
+                        bank.Item().Text("Recipient: Maliev Co., Ltd.").FontSize(5.5f);
+                        bank.Item().Text("Savings account: 417-108808-2").FontSize(5.5f);
+                        bank.Item().Text("SWIFT: SICOTHBK").FontSize(5.5f);
                     });
+
+                    details.RelativeItem().PaddingHorizontal(8).Column(thaiBank =>
+                    {
+                        thaiBank.Item().Text("ธนาคารไทยพาณิชย์ จำกัด (มหาชน)").FontFamily(ThaiBoldFont).FontSize(5.5f);
+                        thaiBank.Item().Text("ผู้รับ: บริษัท มาลีฟ จำกัด").FontFamily(ThaiFont).FontSize(5.5f);
+                        thaiBank.Item().Text("บัญชีออมทรัพย์: 417-108808-2").FontFamily(ThaiFont).FontSize(5.5f);
+                    });
+
+                    details.RelativeItem().PaddingHorizontal(8).Column(contact =>
+                    {
+                        contact.Item().Text("Tel.: +66(0)81-803-0404").FontSize(5.5f);
+                        contact.Item().Text("Tel.: +66(0)89-895-0690").FontSize(5.5f);
+                        contact.Item().Text("E-mail: info@maliev.com").FontSize(5.5f);
+                        contact.Item().Text("www.maliev.com").FontSize(5.5f);
+                    });
+
+                    details.RelativeItem().PaddingLeft(8).Column(company =>
+                    {
+                        company.Item().Text("Maliev Co., Ltd.").FontSize(5.5f);
+                        company.Item().Text("36/1 Moo 3").FontSize(5.5f);
+                        company.Item().Text("Khlong Khoi, Pak Kret").FontSize(5.5f);
+                        company.Item().Text("Nonthaburi 11120, Thailand").FontSize(5.5f);
+                        company.Item().Text("Registration number: 0125561001573").FontSize(5.5f);
+                    });
+                });
             });
     }
 
@@ -150,20 +158,15 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
             .BorderTop(0.5f)
             .BorderColor(DocumentStyle.HeaderFill)
             .PaddingTop(4)
-            .Row(row =>
-        {
-            row.RelativeItem().Column(left =>
+            .Column(column =>
             {
-                left.Item().Text($"Quoted on: {Date(date)}").FontSize(5).FontColor(Grey);
-                left.Item().PaddingTop(4).Text("The information in this document is confidential to the person to whom it is addressed and should not be disclosed to any other person. It may not be reproduced in whole, or in part, nor may any of the information contained therein be disclosed without the prior consent of the directors of MALIEV Co., Ltd. (the Company). A recipient may not solicit, directly or indirectly, any other through an agent or otherwise the participation of another institution or person without the prior approval of the directors of the Company.").FontSize(5);
+                column.Item().Row(metadata =>
+                {
+                    metadata.RelativeItem().Text($"Quoted on: {Date(date)}").FontSize(5).FontColor(Grey);
+                    metadata.AutoItem().DefaultTextStyle(style => style.FontSize(6).FontColor(Grey)).Element(PageNumber.Compose);
+                });
+                column.Item().PaddingTop(4).Text("The information in this document is confidential to the person to whom it is addressed and should not be disclosed to any other person. It may not be reproduced in whole, or in part, nor may any of the information contained therein be disclosed without the prior consent of the directors of MALIEV Co., Ltd. ('the Company'). A recipient may not solicit, directly or indirectly (whether through an agent or otherwise) the participation of another institution or person without the prior approval of the directors of the Company. The contents of this document have not been independently verified and they do not purport to be comprehensive, or to contain all the information that a prospective investor may need. No representation, warranty or undertaking, expressed or implied is or will be made or given and no responsibility or liability is or will be accepted by the Company or by any of its directors, employees or advisors in relation to the accuracy or completeness of this document or any other written or oral information made available in connection with the Company. Any form of reproduction, dissemination, copying, disclosure, modification, distribution and or publication of this material is strictly prohibited.").FontSize(5);
             });
-
-            row.ConstantItem(78)
-                .AlignBottom()
-                .AlignRight()
-                .DefaultTextStyle(style => style.FontSize(6).FontColor(Grey))
-                .Element(PageNumber.Compose);
-        });
     }
 
     internal static void ReceiptFooter(IContainer container, ReceiptDocument receipt, bool includeSignature)
@@ -380,7 +383,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
 
     internal static void PurchaseOrderContent(IContainer container, PurchaseOrderDocument order)
     {
-        container.PaddingTop(8).Column(column =>
+        container.PaddingTop(70).Column(column =>
         {
             column.Spacing(5);
             column.Item().Row(row =>

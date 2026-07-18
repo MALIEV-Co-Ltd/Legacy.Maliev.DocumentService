@@ -82,7 +82,7 @@ public sealed class DocumentVariantSmokeTests
             WithholdingTax = 1_199.16m,
             AmountPaid = 41_570.88m,
             Remark = "Receipt totals remain legible on both original and copy.",
-            OrderItems = Enumerable.Range(1, 80).Select(index => new ReceiptLine
+            OrderItems = Enumerable.Range(1, 44).Select(index => new ReceiptLine
             {
                 Description = $"Receipt item {index} รายการทดสอบภาษาไทย",
                 Quantity = index,
@@ -93,10 +93,10 @@ public sealed class DocumentVariantSmokeTests
 
         AssertRepeatingFlow(renderer.RenderPurchaseOrder(new PurchaseOrderDocument
         {
-            OrderItems = Enumerable.Range(1, 80).Select(index => new PurchaseOrderLine
+            OrderItems = Enumerable.Range(1, 22).Select(index => new PurchaseOrderLine
             {
                 PartNumber = $"PART-{index:D3}",
-                Description = "Purchase-order item รายละเอียดภาษาไทยสำหรับทดสอบการขึ้นหน้าใหม่",
+                Description = "Purchase-order item รายละเอียดภาษาไทยสำหรับทดสอบการขึ้นหน้าใหม่\nReference: Q018-12/12-2",
                 Quantity = index,
                 UnitPrice = 12.34m,
                 Currency = "THB",

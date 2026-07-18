@@ -14,16 +14,16 @@ public sealed class SharedBusinessDocumentLayoutTests
     private readonly QuestDocumentRenderer renderer = new();
 
     [Fact]
-    public void PurchaseOrder_PresentsSupplierBillingAndShippingOnOneBalancedRow()
+    public void PurchaseOrder_PresentsSupplierAboveBalancedBillingAndShippingRow()
     {
         using var document = PdfDocument.Open(renderer.RenderPurchaseOrder(PurchaseOrder()));
         var words = Words(document.GetPage(1));
-        var supplier = Find(words, "Supplier");
-        var billing = Find(words, "Billing");
-        var shipping = Find(words, "Shipping");
+        var supplier = Find(words, "Supplier", 0, 300);
+        var billing = Find(words, "Billing", 0, 300);
+        var shipping = Find(words, "Shipping", 300, 595);
 
-        Assert.InRange(Math.Abs(supplier.BoundingBox.Bottom - billing.BoundingBox.Bottom), 0, 3);
-        Assert.InRange(Math.Abs(supplier.BoundingBox.Bottom - shipping.BoundingBox.Bottom), 0, 3);
+        Assert.InRange(supplier.BoundingBox.Bottom - billing.BoundingBox.Bottom, 40, 48);
+        Assert.InRange(Math.Abs(billing.BoundingBox.Bottom - shipping.BoundingBox.Bottom), 0, 3);
     }
 
     [Fact]
@@ -35,7 +35,8 @@ public sealed class SharedBusinessDocumentLayoutTests
         using var document = PdfDocument.Open(renderer.RenderPurchaseOrder(order));
 
         Assert.DoesNotContain("CURRENCY", document.GetPage(1).Text, StringComparison.Ordinal);
-        Assert.Contains("ITEMS", document.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.DoesNotContain("ITEMS", document.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("NUMBER", document.GetPage(1).Text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -43,12 +44,12 @@ public sealed class SharedBusinessDocumentLayoutTests
     {
         var documents = new[]
         {
-            (Bytes: renderer.RenderPurchaseOrder(PurchaseOrder()), ContainsLegalCompanyReference: false),
-            (Bytes: renderer.RenderQuotation(new QuotationDocument { CreatedDate = new DateTime(2026, 7, 15) }), ContainsLegalCompanyReference: true),
-            (Bytes: renderer.RenderReceipt(new ReceiptDocument { PaymentDate = new DateTime(2026, 7, 15) }), ContainsLegalCompanyReference: false),
+            (Bytes: renderer.RenderPurchaseOrder(PurchaseOrder()), ContainsLegalCompanyReference: false, MinimumBottom: 28d, MaximumBottom: 36d),
+            (Bytes: renderer.RenderQuotation(new QuotationDocument { CreatedDate = new DateTime(2026, 7, 15) }), ContainsLegalCompanyReference: true, MinimumBottom: 104d, MaximumBottom: 110d),
+            (Bytes: renderer.RenderReceipt(new ReceiptDocument { PaymentDate = new DateTime(2026, 7, 15) }), ContainsLegalCompanyReference: false, MinimumBottom: 58d, MaximumBottom: 63d),
         };
 
-        foreach (var (bytes, containsLegalCompanyReference) in documents)
+        foreach (var (bytes, containsLegalCompanyReference, minimumBottom, maximumBottom) in documents)
         {
             using var document = PdfDocument.Open(bytes);
             foreach (var page in document.GetPages())
@@ -56,7 +57,7 @@ public sealed class SharedBusinessDocumentLayoutTests
                 var words = Words(page);
                 var pageLabel = words.Single(word => word.Text.Equals("Page", StringComparison.OrdinalIgnoreCase));
 
-                Assert.InRange(pageLabel.BoundingBox.Bottom, 12, 30);
+                Assert.InRange(pageLabel.BoundingBox.Bottom, minimumBottom, maximumBottom);
                 if (!containsLegalCompanyReference)
                     Assert.DoesNotContain(words, word =>
                         word.BoundingBox.Bottom < 45
@@ -68,21 +69,19 @@ public sealed class SharedBusinessDocumentLayoutTests
     [Fact]
     public void EveryBusinessDocument_LocalizesMetadataAndOperationalLabels()
     {
-        var root = Root();
-        var documentDirectory = Path.Combine(root, "Legacy.Maliev.DocumentService.Rendering", "Documents");
-        var invoice = File.ReadAllText(Path.Combine(documentDirectory, "InvoiceDocumentComposer.cs"));
-        var quotation = File.ReadAllText(Path.Combine(documentDirectory, "QuotationDocumentComposer.cs"));
-        var receipt = File.ReadAllText(Path.Combine(documentDirectory, "ReceiptDocumentComposer.cs"));
-        var purchaseOrder = File.ReadAllText(Path.Combine(documentDirectory, "PurchaseOrderDocumentComposer.cs"));
+        using var invoice = PdfDocument.Open(renderer.RenderInvoice(new() { Number = "INV-1" }));
+        using var quotation = PdfDocument.Open(renderer.RenderQuotation(new() { Id = 1, ExpirationDate = new DateTime(2026, 8, 1) }));
+        using var receipt = PdfDocument.Open(renderer.RenderReceipt(new() { Id = 1, InvoiceNumber = "INV-1", PaymentDate = new DateTime(2026, 7, 15) }));
+        using var purchaseOrder = PdfDocument.Open(renderer.RenderPurchaseOrder(new() { ReferenceNumber = 1, Date = new DateTime(2026, 7, 15) }));
 
-        Assert.Contains("INVOICE No. / เลขที่ใบแจ้งหนี้", invoice, StringComparison.Ordinal);
-        Assert.Contains("SALESPERSON / พนักงานขาย", invoice, StringComparison.Ordinal);
-        Assert.Contains("QUOTATION No. / เลขที่ใบเสนอราคา", quotation, StringComparison.Ordinal);
-        Assert.Contains("VALID UNTIL / ใช้ได้ถึง", quotation, StringComparison.Ordinal);
-        Assert.Contains("RECEIPT No. / เลขที่ใบเสร็จรับเงิน", receipt, StringComparison.Ordinal);
-        Assert.Contains("PAYMENT DATE / วันที่ชำระเงิน", receipt, StringComparison.Ordinal);
-        Assert.Contains("NUMBER / เลขที่ใบสั่งซื้อ", purchaseOrder, StringComparison.Ordinal);
-        Assert.Contains("ORDERED BY / ผู้สั่งซื้อ", purchaseOrder, StringComparison.Ordinal);
+        Assert.Contains("INVOICE No.", invoice.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("SALESPERSON", invoice.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("QUOTATION No.", quotation.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("VALID UNTIL", quotation.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("RECEIPT No.", receipt.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("PAYMENT DATE", receipt.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("NUMBER", purchaseOrder.GetPage(1).Text, StringComparison.Ordinal);
+        Assert.Contains("ORDERED BY", purchaseOrder.GetPage(1).Text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -132,6 +131,13 @@ public sealed class SharedBusinessDocumentLayoutTests
 
     private static Word Find(IEnumerable<Word> words, string text) =>
         words.Where(word => word.Text.Equals(text, StringComparison.OrdinalIgnoreCase))
+            .MaxBy(word => word.BoundingBox.Bottom)!;
+
+    private static Word Find(IEnumerable<Word> words, string text, double minimumX, double maximumX) =>
+        words.Where(word =>
+                word.Text.Equals(text, StringComparison.OrdinalIgnoreCase)
+                && word.BoundingBox.Left >= minimumX
+                && word.BoundingBox.Right <= maximumX)
             .MaxBy(word => word.BoundingBox.Bottom)!;
 
     private static string Root()
