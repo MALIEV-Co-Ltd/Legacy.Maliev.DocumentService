@@ -21,6 +21,11 @@ All routes require JWT authentication and the `legacy.documents.render` permissi
 the OpenAPI document through the shared MALIEV service defaults. JSON retains PascalCase property
 names and omits null response properties.
 
+The runtime consumes only the public `Legacy.Maliev.ServiceDefaults` and
+`Legacy.Maliev.CompatibilityContracts` foundation repositories during CI and image builds. Their
+legacy packages preserve the existing CLR namespaces, so dependency isolation does not alter API
+or PDF rendering contracts and requires no private package credentials.
+
 ## Parity and intentional changes
 
 The test project keeps 22 immutable iText baseline PDFs and a SHA-256/page/text manifest. Renderer
