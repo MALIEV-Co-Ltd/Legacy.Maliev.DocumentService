@@ -16,6 +16,42 @@ public sealed class WorkflowContractTests
     }
 
     [Fact]
+    public void DependabotConfiguration_GroupsOnlyCompatibleUpdatesWithinQueueLimits()
+    {
+        var source = File.ReadAllText(FindRepositoryFile(".github", "dependabot.yml"));
+        var yaml = new YamlStream();
+        yaml.Load(new StringReader(source));
+
+        var root = Assert.IsType<YamlMappingNode>(Assert.Single(yaml.Documents).RootNode);
+        var updates = Assert.IsType<YamlSequenceNode>(ReadNode(root, "updates"));
+        var expectedLimits = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["nuget"] = "10",
+            ["docker"] = "5",
+            ["github-actions"] = "5",
+        };
+
+        Assert.Equal(expectedLimits.Count, updates.Children.Count);
+        foreach (var updateNode in updates.Children)
+        {
+            var update = Assert.IsType<YamlMappingNode>(updateNode);
+            var ecosystem = ReadScalar(update, "package-ecosystem");
+            Assert.Equal(expectedLimits[ecosystem], ReadScalar(update, "open-pull-requests-limit"));
+
+            var groups = Assert.IsType<YamlMappingNode>(ReadNode(update, "groups"));
+            var compatible = Assert.IsType<YamlMappingNode>(Assert.Single(groups.Children).Value);
+            var patterns = Assert.IsType<YamlSequenceNode>(ReadNode(compatible, "patterns"));
+            Assert.Equal(["*"], patterns.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+
+            var updateTypes = Assert.IsType<YamlSequenceNode>(ReadNode(compatible, "update-types"));
+            Assert.Equal(
+                ["minor", "patch"],
+                updateTypes.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+            Assert.DoesNotContain(updateTypes.Children, node => Assert.IsType<YamlScalarNode>(node).Value == "major");
+        }
+    }
+
+    [Fact]
     public void BuildAndTest_RejectsSharedActionMainWithPinnedShaComment()
     {
         AssertMutationRejected(
@@ -106,6 +142,14 @@ public sealed class WorkflowContractTests
 
         throw new FileNotFoundException($"Could not find repository file '{Path.Combine(segments)}'.");
     }
+
+    private static YamlNode ReadNode(YamlMappingNode mapping, string key) => mapping.Children
+        .Single(pair => Assert.IsType<YamlScalarNode>(pair.Key).Value == key)
+        .Value;
+
+    private static string ReadScalar(YamlMappingNode mapping, string key) =>
+        Assert.IsType<YamlScalarNode>(ReadNode(mapping, key)).Value
+        ?? throw new InvalidDataException($"Expected a non-null scalar value for '{key}'.");
 }
 
 internal static partial class WorkflowContractValidator
