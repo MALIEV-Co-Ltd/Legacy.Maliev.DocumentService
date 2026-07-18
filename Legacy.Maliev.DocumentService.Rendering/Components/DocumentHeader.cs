@@ -5,37 +5,6 @@ namespace Legacy.Maliev.DocumentService.Rendering.Components;
 
 internal static class DocumentHeader
 {
-    internal static void ComposeMasthead(
-        IContainer container,
-        byte[] logo,
-        string title,
-        string thaiTitle,
-        string? reference,
-        string companyIdentity,
-        IReadOnlyList<(string Key, string? Value)> metadata)
-    {
-        var firstPageReference = metadata.Any(item =>
-            !string.IsNullOrWhiteSpace(reference)
-            && string.Equals(item.Value, reference, StringComparison.OrdinalIgnoreCase))
-                ? null
-                : reference;
-
-        container.Row(row =>
-        {
-            row.Spacing(18);
-            row.RelativeItem(60).Column(left =>
-            {
-                left.Item().Width(130).Height(30).Image(logo).FitArea();
-                left.Item().PaddingTop(8).Text(companyIdentity).FontSize(7).LineHeight(1.1f);
-            });
-            row.RelativeItem(40).Column(right =>
-            {
-                right.Item().Element(item => Title(item, title, thaiTitle, firstPageReference));
-                right.Item().PaddingTop(6).Element(item => MetadataTable.Compose(item, metadata.ToArray()));
-            });
-        });
-    }
-
     internal static void Compose(IContainer container, byte[] logo, string title, string thaiTitle, string? reference)
     {
         container.Row(row =>

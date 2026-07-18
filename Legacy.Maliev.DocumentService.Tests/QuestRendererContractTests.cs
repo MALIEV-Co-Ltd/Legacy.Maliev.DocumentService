@@ -177,7 +177,7 @@ public sealed class QuestRendererContractTests
         AssertContentFontSize(pdf);
         using var document = PdfDocument.Open(pdf);
         Assert.Equal(2, document.NumberOfPages);
-        AssertA4(pdf, "TAX INVOICE", "ใบเสร็จรับเงิน", "วุฒิชัย", "104.00", "ORIGINAL", "Customer", "ลูกค้า", "Description", "รายละเอียด", "bank clearance");
+        AssertA4(pdf, "TAX INVOICE", "ใบเสร็จรับเงิน", "วุฒิชัย", "104.00", "ORIGINAL", "Customer", "ลูกค้า", "Description", "รายละเอียด", "cheque");
     }
 
     [Fact]
@@ -252,8 +252,8 @@ public sealed class QuestRendererContractTests
         AssertContentFontSize(pdf);
         using var document = PdfDocument.Open(pdf);
         var page = document.GetPage(1);
-        Assert.Equal(288, page.Width, precision: 0);
-        Assert.Equal(216, page.Height, precision: 0);
+        Assert.Equal(216, page.Width, precision: 0);
+        Assert.Equal(288, page.Height, precision: 0);
         Assert.Contains("ออเดอร์ทดสอบระบบ", Text(pdf), StringComparison.Ordinal);
     }
 

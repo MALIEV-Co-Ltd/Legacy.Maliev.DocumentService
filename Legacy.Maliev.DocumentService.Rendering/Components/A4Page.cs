@@ -10,7 +10,7 @@ internal static class A4Page
     internal const float PrintableLeftEdge = 14 * PointsPerMillimetre;
     internal const float ContentLeftMargin = 18 * PointsPerMillimetre;
     internal const float ContentRightMargin = 14 * PointsPerMillimetre;
-    internal const float TopMargin = 10 * PointsPerMillimetre;
+    internal const float TopMargin = 4 * PointsPerMillimetre;
     internal const float FoldIndicatorLeft = 14 * PointsPerMillimetre;
     internal const float FoldIndicatorWidth = 3 * PointsPerMillimetre;
     internal static float FirstFoldFromTop => PageSizes.A4.Height / 3f;

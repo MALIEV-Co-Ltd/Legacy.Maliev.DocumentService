@@ -10,13 +10,14 @@ internal static class OrderLabelDocumentComposer
     internal static byte[] Render(LabelDocument label, byte[] logo, DateTime packedAt) => Document.Create(document =>
         document.Page(page =>
         {
-            page.Size(new PageSize(288, 216));
+            // The immutable legacy label opens as a portrait page with clockwise-rotated content.
+            page.Size(new PageSize(216.03f, 288.04f));
             page.Margin(0);
             page.DefaultTextStyle(style => style
                 .FontFamily(DocumentStyle.Latin, DocumentStyle.Thai)
                 .FontSize(9)
                 .FontColor(DocumentStyle.Ink));
-            page.Content().Layers(layers =>
+            page.Content().RotateRight().Layers(layers =>
             {
                 layers.PrimaryLayer().PaddingTop(30).PaddingHorizontal(10).Table(table =>
                 {

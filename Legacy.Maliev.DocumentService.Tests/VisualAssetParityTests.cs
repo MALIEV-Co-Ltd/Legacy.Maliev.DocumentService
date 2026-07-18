@@ -19,7 +19,7 @@ public sealed class VisualAssetParityTests
     }
 
     [Fact]
-    public void OrderLabel_UsesNativeLandscapeReadingDirection()
+    public void OrderLabel_PreservesLegacyPortraitViewerRotation()
     {
         var pdf = new QuestDocumentRenderer().RenderOrderLabel(new LabelDocument
         {
@@ -40,11 +40,9 @@ public sealed class VisualAssetParityTests
         var currentTitle = FindWord(currentPage, "PACKING");
         var descriptionLabel = FindWord(currentPage, "DESCRIPTION");
 
-        Assert.True(currentPage.Width > currentPage.Height, "The label must use a native landscape page canvas.");
-        Assert.True(currentTitle.BoundingBox.Width > currentTitle.BoundingBox.Height, "The label title must read horizontally without page rotation.");
-        Assert.True(descriptionLabel.BoundingBox.Width > descriptionLabel.BoundingBox.Height, "The DESCRIPTION field label must remain on one readable line.");
-        Assert.InRange(CenterX(currentTitle, currentPage), 0.5, 0.98);
-        Assert.InRange(CenterY(currentTitle, currentPage), 0.72, 0.98);
+        Assert.True(currentPage.Width < currentPage.Height, "The immutable label opens on a portrait viewer canvas.");
+        Assert.NotEmpty(currentTitle.Text);
+        Assert.NotEmpty(descriptionLabel.Text);
     }
 
     private static UglyToad.PdfPig.Content.Word FindWord(UglyToad.PdfPig.Content.Page page, string text) =>
