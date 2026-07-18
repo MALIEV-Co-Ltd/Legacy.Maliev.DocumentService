@@ -8,6 +8,8 @@ namespace Legacy.Maliev.DocumentService.Tests.Workflows;
 public sealed class WorkflowContractTests
 {
     private static readonly string Workflow = File.ReadAllText(FindRepositoryFile(".github", "workflows", "_build-and-test.yml"));
+    private static readonly string ApiProject = File.ReadAllText(
+        FindRepositoryFile("Legacy.Maliev.DocumentService.Api", "Legacy.Maliev.DocumentService.Api.csproj"));
 
     [Fact]
     public void BuildAndTest_SatisfiesStructuralContract()
@@ -63,8 +65,16 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_RejectsCommentedDependencySha()
     {
         AssertMutationRejected(
-            "ref: 085f24b8b6b19c5a8e932b229d93421b03bcd032",
-            "ref: main # 085f24b8b6b19c5a8e932b229d93421b03bcd032");
+            "ref: bcab875a7f703d1d9c2d535479e93653720eb62d",
+            "ref: main # bcab875a7f703d1d9c2d535479e93653720eb62d");
+    }
+
+    [Fact]
+    public void ApiProject_UsesOnlyLegacyServiceDefaults()
+    {
+        Assert.Contains("Legacy.Maliev.ServiceDefaults", ApiProject, StringComparison.Ordinal);
+        Assert.DoesNotContain("Maliev.Aspire\\Maliev.Aspire.ServiceDefaults", ApiProject, StringComparison.Ordinal);
+        Assert.DoesNotContain("Include=\"Maliev.Aspire.ServiceDefaults\"", ApiProject, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -217,9 +227,9 @@ internal static partial class WorkflowContractValidator
             CheckoutAction,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                ["repository"] = "MALIEV-Co-Ltd/Maliev.Aspire",
-                ["ref"] = "085f24b8b6b19c5a8e932b229d93421b03bcd032",
-                ["path"] = ".dependencies/Maliev.Aspire",
+                ["repository"] = "MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults",
+                ["ref"] = "bcab875a7f703d1d9c2d535479e93653720eb62d",
+                ["path"] = ".dependencies/Legacy.Maliev.ServiceDefaults",
                 ["persist-credentials"] = "false",
             });
         ValidateStep(
@@ -227,9 +237,9 @@ internal static partial class WorkflowContractValidator
             CheckoutAction,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                ["repository"] = "MALIEV-Co-Ltd/Maliev.MessagingContracts",
-                ["ref"] = "c533c12a8154f5cf7c4fbc9734e82a62705ac60f",
-                ["path"] = ".dependencies/Maliev.MessagingContracts",
+                ["repository"] = "MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts",
+                ["ref"] = "95c62eb6209411f5aada443b315447a2f76ca0cd",
+                ["path"] = ".dependencies/Legacy.Maliev.CompatibilityContracts",
                 ["persist-credentials"] = "false",
             });
         ValidateStep(
