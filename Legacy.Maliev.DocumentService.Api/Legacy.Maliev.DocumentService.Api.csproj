@@ -4,7 +4,7 @@
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Rendering\Legacy.Maliev.DocumentService.Rendering.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(MalievWorkspaceRoot)\Maliev.Aspire\Maliev.Aspire.ServiceDefaults\Maliev.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="$(MalievWorkspaceRoot)\Legacy.Maliev.ServiceDefaults\src\Legacy.Maliev.ServiceDefaults\Legacy.Maliev.ServiceDefaults.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <MalievWorkspaceRoot Condition="'$(MalievWorkspaceRoot)' == '' and '$(GITHUB_ACTIONS)' != 'true'">$(MSBuildThisFileDirectory)..\..</MalievWorkspaceRoot>
