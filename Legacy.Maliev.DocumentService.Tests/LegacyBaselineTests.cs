@@ -44,6 +44,7 @@ public sealed class LegacyBaselineTests
                 && !path.Contains($"{Path.DirectorySeparatorChar}.dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
                 && !path.Contains($"{Path.DirectorySeparatorChar}.worktrees{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
             .ToArray();
+        Assert.Equal(4, production.Length);
         var source = string.Join('\n', production.Select(File.ReadAllText));
 
         Assert.Contains("QuestPDF", source, StringComparison.Ordinal);
@@ -60,6 +61,16 @@ public sealed class LegacyBaselineTests
 
     private static string FindRepositoryRoot()
     {
+        var workspaceRoot = Environment.GetEnvironmentVariable("MalievWorkspaceRoot");
+        if (!string.IsNullOrWhiteSpace(workspaceRoot))
+        {
+            var configuredRepository = Path.Combine(workspaceRoot, "Legacy.Maliev.DocumentService");
+            if (File.Exists(Path.Combine(configuredRepository, "Legacy.Maliev.DocumentService.slnx")))
+            {
+                return configuredRepository;
+            }
+        }
+
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
         while (directory is not null)
         {
