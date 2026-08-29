@@ -42,9 +42,9 @@ public sealed class VisualLayoutParityTests
     {
         var words = NearestNeighbourWordExtractor.Instance.GetWords(page.Letters).ToArray();
         var expected = Normalize(text);
+        // PDF text extractors may keep the adjacent Thai line in the same token.
+        // Match the stable English anchor without depending on that tokenization detail.
         var matches = words
-            // PDF text extractors may keep the adjacent Thai line in the same token.
-            // Match the stable English anchor without depending on that tokenization detail.
             .Where(word => Normalize(word.Text).Contains(expected, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(word => word.BoundingBox.Height)
             .ThenBy(word => word.BoundingBox.Left)
