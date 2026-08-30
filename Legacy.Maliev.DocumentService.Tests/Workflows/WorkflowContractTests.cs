@@ -54,7 +54,7 @@ public sealed class WorkflowContractTests
     }
 
     [Fact]
-    public void DependabotConfiguration_ExcludesStandaloneManifestsThatRequireUnpublishedSharedPackages()
+    public void DependabotConfiguration_ScansOnlyIndependentlyResolvableProjectDirectories()
     {
         var source = File.ReadAllText(FindRepositoryFile(".github", "dependabot.yml"));
         var yaml = new YamlStream();
@@ -65,11 +65,17 @@ public sealed class WorkflowContractTests
         var nuget = updates.Children
             .Select(Assert.IsType<YamlMappingNode>)
             .Single(update => ReadScalar(update, "package-ecosystem") == "nuget");
-        var exclusions = Assert.IsType<YamlSequenceNode>(ReadNode(nuget, "exclude-paths"));
+        var directories = Assert.IsType<YamlSequenceNode>(ReadNode(nuget, "directories"));
 
         Assert.Equal(
-            ["Legacy.Maliev.DocumentService.slnx", "Legacy.Maliev.DocumentService.Api/**"],
-            exclusions.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+            [
+                "/Legacy.Maliev.DocumentService.Application",
+                "/Legacy.Maliev.DocumentService.Domain",
+                "/Legacy.Maliev.DocumentService.Rendering",
+            ],
+            directories.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+        Assert.False(nuget.Children.ContainsKey(new YamlScalarNode("directory")));
+        Assert.False(nuget.Children.ContainsKey(new YamlScalarNode("exclude-paths")));
     }
 
     [Fact]
