@@ -1,12 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: nuget
-    directory: /
-    # The API and solution require the unpublished shared ServiceDefaults package.
-    # CI validates them from pinned source; Dependabot scans the remaining manifests.
-    exclude-paths:
-      - Legacy.Maliev.DocumentService.slnx
-      - Legacy.Maliev.DocumentService.Api/**
+    # Scan only project graphs that resolve without the unpublished shared package.
+    directories:
+      - /Legacy.Maliev.DocumentService.Application
+      - /Legacy.Maliev.DocumentService.Domain
+      - /Legacy.Maliev.DocumentService.Rendering
     open-pull-requests-limit: 10
     schedule:
       interval: weekly
