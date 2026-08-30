@@ -39,10 +39,13 @@ public sealed class LegacyBaselineTests
             ? Directory.GetFiles(repository, "*.csproj", SearchOption.AllDirectories)
             : [];
         var production = projects.Where(path =>
-                !path.Contains(".Tests", StringComparison.OrdinalIgnoreCase)
-                && !path.Contains(".Companion", StringComparison.OrdinalIgnoreCase)
-                && !path.Contains($"{Path.DirectorySeparatorChar}.dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
-                && !path.Contains($"{Path.DirectorySeparatorChar}.worktrees{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            {
+                var relativePath = Path.GetRelativePath(repository, path);
+                return !relativePath.Contains(".Tests", StringComparison.OrdinalIgnoreCase)
+                       && !relativePath.Contains(".Companion", StringComparison.OrdinalIgnoreCase)
+                       && !relativePath.StartsWith($".dependencies{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+                       && !relativePath.StartsWith($".worktrees{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
+            })
             .ToArray();
         Assert.Equal(4, production.Length);
         var source = string.Join('\n', production.Select(File.ReadAllText));
