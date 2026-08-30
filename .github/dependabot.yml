@@ -12,6 +12,9 @@ updates:
     ignore:
       - dependency-name: Legacy.Maliev.ServiceDefaults
       - dependency-name: Legacy.Maliev.CompatibilityContracts
+      # QuestPDF 2026.8.0 breaks the validated Thai combining-mark PDF contract.
+      - dependency-name: QuestPDF
+        versions: ["2026.8.0"]
     groups:
       compatible-updates:
         patterns: ["*"]
