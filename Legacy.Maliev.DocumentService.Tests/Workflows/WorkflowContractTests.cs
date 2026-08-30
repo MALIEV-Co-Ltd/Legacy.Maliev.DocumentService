@@ -54,6 +54,25 @@ public sealed class WorkflowContractTests
     }
 
     [Fact]
+    public void DependabotConfiguration_ExcludesStandaloneManifestsThatRequireUnpublishedSharedPackages()
+    {
+        var source = File.ReadAllText(FindRepositoryFile(".github", "dependabot.yml"));
+        var yaml = new YamlStream();
+        yaml.Load(new StringReader(source));
+
+        var root = Assert.IsType<YamlMappingNode>(Assert.Single(yaml.Documents).RootNode);
+        var updates = Assert.IsType<YamlSequenceNode>(ReadNode(root, "updates"));
+        var nuget = updates.Children
+            .Select(Assert.IsType<YamlMappingNode>)
+            .Single(update => ReadScalar(update, "package-ecosystem") == "nuget");
+        var exclusions = Assert.IsType<YamlSequenceNode>(ReadNode(nuget, "exclude-paths"));
+
+        Assert.Equal(
+            ["Legacy.Maliev.DocumentService.slnx", "Legacy.Maliev.DocumentService.Api/**"],
+            exclusions.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+    }
+
+    [Fact]
     public void BuildAndTest_RejectsSharedActionMainWithPinnedShaComment()
     {
         AssertMutationRejected(
