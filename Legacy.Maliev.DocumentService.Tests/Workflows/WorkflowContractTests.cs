@@ -79,7 +79,7 @@ public sealed class WorkflowContractTests
     }
 
     [Fact]
-    public void DependabotConfiguration_RejectsKnownIncompatibleQuestPdfRelease()
+    public void DependabotConfiguration_RejectsKnownIncompatibleQuestPdfReleases()
     {
         var source = File.ReadAllText(FindRepositoryFile(".github", "dependabot.yml"));
         var yaml = new YamlStream();
@@ -98,7 +98,9 @@ public sealed class WorkflowContractTests
             rules.Select(rule => ReadScalar(rule, "dependency-name")));
         var questPdf = rules.Single(rule => ReadScalar(rule, "dependency-name") == "QuestPDF");
         var versions = Assert.IsType<YamlSequenceNode>(ReadNode(questPdf, "versions"));
-        Assert.Equal(["2026.8.0"], versions.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
+        Assert.Equal(
+            ["2026.7.2", "2026.7.3", "2026.8.0"],
+            versions.Children.Select(Assert.IsType<YamlScalarNode>).Select(node => node.Value));
     }
 
     [Fact]
