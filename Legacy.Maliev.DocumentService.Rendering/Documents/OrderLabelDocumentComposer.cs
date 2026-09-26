@@ -17,7 +17,7 @@ internal static class OrderLabelDocumentComposer
                 .FontFamily(DocumentStyle.Latin, DocumentStyle.Thai)
                 .FontSize(9)
                 .FontColor(DocumentStyle.Ink));
-            page.Content().RotateRight().Layers(layers =>
+            page.Content().RotateLayoutClockwise().Layers(layers =>
             {
                 layers.PrimaryLayer().PaddingTop(30).PaddingHorizontal(10).Table(table =>
                 {
@@ -30,7 +30,7 @@ internal static class OrderLabelDocumentComposer
                     foreach (var (key, value) in Rows(label))
                     {
                         table.Cell().Border(0.75f).BorderColor(DocumentStyle.Rule).PaddingLeft(2).Text(key)
-                            .FontFamily(DocumentStyle.LatinBold, DocumentStyle.ThaiBold).FontSize(9);
+                            .FontFamily(DocumentStyle.Latin, DocumentStyle.Thai).Bold().FontSize(9);
                         table.Cell().Border(0.75f).BorderColor(DocumentStyle.Rule).PaddingHorizontal(2).Text(value).FontSize(9);
                     }
                 });
@@ -39,7 +39,7 @@ internal static class OrderLabelDocumentComposer
                 {
                     row.ConstantItem(70).Height(25).Image(logo).FitArea();
                     row.RelativeItem().AlignRight().Text("PACKING SLIP")
-                        .FontFamily(DocumentStyle.LatinBold, DocumentStyle.ThaiBold).FontSize(20);
+                        .FontFamily(DocumentStyle.Latin, DocumentStyle.Thai).Bold().FontSize(20);
                 });
 
                 layers.Layer().PaddingHorizontal(10).PaddingBottom(8).AlignBottom().Row(row =>

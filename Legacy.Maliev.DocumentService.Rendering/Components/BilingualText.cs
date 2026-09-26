@@ -66,14 +66,14 @@ internal static class BilingualText
             BilingualTextAlignment.Right => container.AlignRight(),
             _ => container.AlignLeft(),
         };
-        var family = (bold, thai) switch
+        var family = thai switch
         {
-            (true, true) => new[] { DocumentStyle.ThaiBold, DocumentStyle.LatinBold },
-            (true, false) => new[] { DocumentStyle.LatinBold, DocumentStyle.ThaiBold },
-            (false, true) => new[] { DocumentStyle.Thai, DocumentStyle.Latin },
+            true => new[] { DocumentStyle.Thai, DocumentStyle.Latin },
             _ => new[] { DocumentStyle.Latin, DocumentStyle.Thai },
         };
         var text = aligned.Text(value).FontFamily(family).FontSize(fontSize);
+        if (bold)
+            text.Bold();
         if (thai)
             text.FontColor(DocumentStyle.MutedInk);
     }

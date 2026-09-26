@@ -36,7 +36,7 @@ internal static class TotalsBlock
                     alignment: BilingualTextAlignment.Right);
                 if (strong)
                 {
-                    valueText.FontFamily(DocumentStyle.LatinBold, DocumentStyle.ThaiBold);
+                    valueText.FontFamily(DocumentStyle.Latin, DocumentStyle.Thai).Bold();
                 }
             }
         });
