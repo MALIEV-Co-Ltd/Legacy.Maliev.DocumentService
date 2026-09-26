@@ -70,7 +70,9 @@ public sealed class ApiContractTests
         Assert.Contains("Noto Sans", source, StringComparison.Ordinal);
         Assert.Contains("Noto Sans Thai", source, StringComparison.Ordinal);
         Assert.Contains("FontFamily(DocumentStyle.Latin, DocumentStyle.Thai)", source, StringComparison.Ordinal);
-        Assert.Contains("FontFamily(DocumentStyle.LatinBold, DocumentStyle.ThaiBold)", source, StringComparison.Ordinal);
+        Assert.Contains("FontFamily(DocumentStyle.Latin, DocumentStyle.Thai).Bold()", source, StringComparison.Ordinal);
+        Assert.Contains("QuestPDF.Settings.UseSystemFonts = false", source, StringComparison.Ordinal);
+        Assert.Contains("QuestPDF.Settings.ThrowOnMissingTextGlyphs = true", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Sarabun", source, StringComparison.OrdinalIgnoreCase);
 
         foreach (var font in new[]

@@ -18,9 +18,7 @@ namespace Legacy.Maliev.DocumentService.Rendering;
 public sealed class QuestDocumentRenderer : IDocumentRenderer
 {
     private const string LatinFont = DocumentStyle.Latin;
-    private const string LatinBoldFont = DocumentStyle.LatinBold;
     private const string ThaiFont = DocumentStyle.Thai;
-    private const string ThaiBoldFont = DocumentStyle.ThaiBold;
     private const string Dark = DocumentStyle.Ink;
     private const string Grey = DocumentStyle.MutedInk;
     private const string Light = DocumentStyle.HeaderFill;
@@ -30,12 +28,12 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
     static QuestDocumentRenderer()
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        QuestPDF.Settings.UseEnvironmentFonts = false;
-        QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = true;
-        FontManager.RegisterFontWithCustomName(LatinFont, Resource("Fonts.NotoSans-Regular.ttf"));
-        FontManager.RegisterFontWithCustomName(LatinBoldFont, Resource("Fonts.NotoSans-Bold.ttf"));
-        FontManager.RegisterFontWithCustomName(ThaiFont, Resource("Fonts.NotoSansThai-Regular.ttf"));
-        FontManager.RegisterFontWithCustomName(ThaiBoldFont, Resource("Fonts.NotoSansThai-Bold.ttf"));
+        QuestPDF.Settings.UseSystemFonts = false;
+        QuestPDF.Settings.ThrowOnMissingTextGlyphs = true;
+        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSans-Regular.ttf"));
+        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSans-Bold.ttf"));
+        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSansThai-Regular.ttf"));
+        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSansThai-Bold.ttf"));
         using var logo = Resource("logo.png");
         using var memory = new MemoryStream();
         logo.CopyTo(memory);
@@ -76,8 +74,8 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
     {
         container.AlignRight().Column(column =>
         {
-            column.Item().AlignRight().Text(title).FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(18);
-            column.Item().AlignRight().Text(thaiTitle).FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(9);
+            column.Item().AlignRight().Text(title).FontFamily(LatinFont, ThaiFont).Bold().FontSize(18);
+            column.Item().AlignRight().Text(thaiTitle).FontFamily(LatinFont, ThaiFont).Bold().FontSize(9);
         });
     }
 
@@ -110,7 +108,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 {
                     verification.RelativeItem().Text(
                             "Please verify the content of this invoice before payment / กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนชำระเงิน")
-                        .FontFamily(LatinBoldFont, ThaiBoldFont)
+                        .FontFamily(LatinFont, ThaiFont).Bold()
                         .FontSize(5.5f);
                     verification.AutoItem().DefaultTextStyle(style => style.FontSize(5.5f)).Element(PageNumber.Compose);
                 });
@@ -119,7 +117,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 {
                     details.RelativeItem().PaddingRight(8).Column(bank =>
                     {
-                        bank.Item().Text("Siam Commercial Bank Public Company Limited").FontFamily(LatinBoldFont).FontSize(5.5f);
+                        bank.Item().Text("Siam Commercial Bank Public Company Limited").FontFamily(LatinFont).Bold().FontSize(5.5f);
                         bank.Item().Text("Recipient: Maliev Co., Ltd.").FontSize(5.5f);
                         bank.Item().Text("Savings account: 417-108808-2").FontSize(5.5f);
                         bank.Item().Text("SWIFT: SICOTHBK").FontSize(5.5f);
@@ -127,7 +125,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
 
                     details.RelativeItem().PaddingHorizontal(8).Column(thaiBank =>
                     {
-                        thaiBank.Item().Text("ธนาคารไทยพาณิชย์ จำกัด (มหาชน)").FontFamily(ThaiBoldFont).FontSize(5.5f);
+                        thaiBank.Item().Text("ธนาคารไทยพาณิชย์ จำกัด (มหาชน)").FontFamily(ThaiFont).Bold().FontSize(5.5f);
                         thaiBank.Item().Text("ผู้รับ: บริษัท มาลีฟ จำกัด").FontFamily(ThaiFont).FontSize(5.5f);
                         thaiBank.Item().Text("บัญชีออมทรัพย์: 417-108808-2").FontFamily(ThaiFont).FontSize(5.5f);
                     });
@@ -248,9 +246,9 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
 
             column.Item().PaddingTop(5).Row(row =>
             {
-                row.ConstantItem(42).Text("Billing:\nวางบิล").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(1.35f);
+                row.ConstantItem(42).Text("Billing:\nวางบิล").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(1.35f);
                 row.RelativeItem().Text(InvoiceBilling(invoice)).LineHeight(1.35f);
-                row.ConstantItem(42).Text("Shipping:\nจัดส่ง").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(1.35f);
+                row.ConstantItem(42).Text("Shipping:\nจัดส่ง").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(1.35f);
                 row.RelativeItem().Text(InvoiceShipping(invoice)).LineHeight(1.35f);
             });
 
@@ -267,7 +265,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                     ("Subtotal", invoice.Subtotal), ("VAT 7%", invoice.Vat), ("Grand Total", invoice.Total),
                     ("Withholding Tax", invoice.WithholdingTax), ("Outstanding", invoice.Outstanding)));
             });
-            column.Item().PaddingTop(16).Text("Remark / หมายเหตุ:").FontFamily(LatinBoldFont, ThaiBoldFont);
+            column.Item().PaddingTop(16).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
             column.Item().Text(Safe(invoice.Remark));
         });
     }
@@ -294,9 +292,9 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
 
             column.Item().PaddingTop(15).Row(row =>
             {
-                row.ConstantItem(70).Text("Prepared for:\nจัดทำให้").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(1.35f);
+                row.ConstantItem(70).Text("Prepared for:\nจัดทำให้").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(1.35f);
                 row.RelativeItem().Text(QuotationCustomer(quotation)).LineHeight(1.35f);
-                row.ConstantItem(70).Text("Prepared by:\nจัดทำโดย").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(1.35f);
+                row.ConstantItem(70).Text("Prepared by:\nจัดทำโดย").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(1.35f);
                 row.RelativeItem().Text(Lines(
                     quotation.Employee?.FullName,
                     quotation.Employee?.Email,
@@ -316,7 +314,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                     ("Subtotal", quotation.Subtotal), ("VAT 7%", quotation.Vat), ("Grand Total", quotation.Total),
                     ("Withholding Tax", quotation.WithholdingTax is null ? null : -quotation.WithholdingTax), ("Quoted Amount", quotation.QuotedAmount)));
             });
-            column.Item().PaddingTop(15).Text("Remark / หมายเหตุ:").FontFamily(LatinBoldFont, ThaiBoldFont);
+            column.Item().PaddingTop(15).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
             column.Item().Text(Safe(quotation.Comment));
         });
     }
@@ -331,12 +329,12 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 row.ConstantItem(130).Height(38).Image(logo).FitArea();
                 row.RelativeItem().AlignCenter().Column(center =>
                 {
-                    center.Item().AlignCenter().Text(copy).FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(9);
+                    center.Item().AlignCenter().Text(copy).FontFamily(LatinFont, ThaiFont).Bold().FontSize(9);
                     center.Item().AlignCenter().Text(thaiCopy).FontSize(8);
                 });
                 row.RelativeItem().AlignRight().Column(right =>
                 {
-                    right.Item().AlignRight().Text("TAX INVOICE | RECEIPT").FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(14);
+                    right.Item().AlignRight().Text("TAX INVOICE | RECEIPT").FontFamily(LatinFont, ThaiFont).Bold().FontSize(14);
                     right.Item().AlignRight().Text("ใบกำกับภาษี | ใบเสร็จรับเงิน").FontSize(8);
                 });
             });
@@ -359,7 +357,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 });
                 column.Item().PaddingTop(5).Row(row =>
                 {
-                    row.ConstantItem(42).Text("Customer:\nลูกค้า").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(1.35f);
+                    row.ConstantItem(42).Text("Customer:\nลูกค้า").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(1.35f);
                     row.RelativeItem().Text(ReceiptCustomer(receipt)).LineHeight(1.35f);
                 });
                 column.Item().PaddingTop(19).Element(box => ReceiptTable(box, receipt));
@@ -374,7 +372,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                         ("Subtotal", receipt.Subtotal), ("VAT 7%", receipt.Vat), ("Grand Total", receipt.Total),
                         ("Withholding Tax", receipt.WithholdingTax is null ? null : -receipt.WithholdingTax), ("Amount Received", receipt.AmountPaid)));
                 });
-                column.Item().PaddingTop(6).Text("Remark / หมายเหตุ:").FontFamily(LatinBoldFont, ThaiBoldFont);
+                column.Item().PaddingTop(6).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
                 column.Item().Text(Safe(receipt.Remark));
             });
             page.Footer().Element(container => ReceiptFooter(container, receipt, includeSignature));
@@ -406,21 +404,21 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
 
             column.Item().PaddingTop(8).Row(row =>
             {
-                row.ConstantItem(42).Text("Supplier:").FontFamily(LatinBoldFont, ThaiBoldFont);
+                row.ConstantItem(42).Text("Supplier:").FontFamily(LatinFont, ThaiFont).Bold();
                 row.RelativeItem().Text(Company(order.Supplier)).LineHeight(1.5f);
             });
 
             column.Item().PaddingTop(3).Row(row =>
             {
-                row.ConstantItem(42).Text("Billing:\nวางบิล").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(0.9f);
+                row.ConstantItem(42).Text("Billing:\nวางบิล").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(0.9f);
                 row.RelativeItem().Text(Company(order.Billing)).LineHeight(1.5f);
-                row.ConstantItem(42).Text("Shipping:\nจัดส่ง").FontFamily(LatinBoldFont, ThaiBoldFont).LineHeight(0.9f);
+                row.ConstantItem(42).Text("Shipping:\nจัดส่ง").FontFamily(LatinFont, ThaiFont).Bold().LineHeight(0.9f);
                 row.RelativeItem().Text(Company(order.Shipping)).LineHeight(1.5f);
             });
 
             column.Item().PaddingTop(5).Element(box => PurchaseOrderShippingTable(box, order));
             column.Item().Element(box => PurchaseOrderTable(box, order));
-            column.Item().PaddingTop(8).Text("Notes").FontFamily(LatinBoldFont, ThaiBoldFont);
+            column.Item().PaddingTop(8).Text("Notes").FontFamily(LatinFont, ThaiFont).Bold();
             column.Item().Text(Safe(order.Notes)).LineHeight(0.9f);
         });
     }
@@ -429,7 +427,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
     {
         container.Column(column =>
         {
-            column.Item().Text(heading).FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(9);
+            column.Item().Text(heading).FontFamily(LatinFont, ThaiFont).Bold().FontSize(9);
             foreach (var line in lines.Where(value => !string.IsNullOrWhiteSpace(value))) column.Item().Text(line!);
         });
     }
@@ -611,7 +609,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
     private static void TableHeader(TableDescriptor table, params string[] values)
     {
         foreach (var value in values)
-            table.Cell().Background(Dark).Padding(4).Text(value).FontFamily(LatinBoldFont, ThaiBoldFont).FontColor(Colors.White).FontSize(7);
+            table.Cell().Background(Dark).Padding(4).Text(value).FontFamily(LatinFont, ThaiFont).Bold().FontColor(Colors.White).FontSize(7);
     }
 
     private static void TableRow(TableDescriptor table, string? description, int quantity, decimal unitPrice, decimal amount)
@@ -632,7 +630,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
             foreach (var (label, value) in values)
             {
                 if (value is null) continue;
-                table.Cell().Padding(2).Text(label).FontFamily(LatinBoldFont, ThaiBoldFont).FontSize(7);
+                table.Cell().Padding(2).Text(label).FontFamily(LatinFont, ThaiFont).Bold().FontSize(7);
                 table.Cell().Padding(2).AlignRight().Text(Money(value.Value));
             }
         });

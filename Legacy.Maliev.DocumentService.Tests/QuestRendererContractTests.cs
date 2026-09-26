@@ -226,9 +226,21 @@ public sealed class QuestRendererContractTests
         Record("purchase-order", pdf);
 
         AssertContentFontSize(pdf);
-        AssertA4(pdf, "PURCHASE ORDER", "ใบสั", "กฤช", "19,460,000.00", "Supplier", "ผู้ขาย", "Billing", "วางบิล", "Shipping", "จัดส่ง", "FOB", "Grand Total");
-        Assert.True(Text(pdf).Count(value => value == '\0') >= 2,
-            "PdfPig should expose the shaped Thai combining-mark glyph clusters for visual parity validation.");
+        AssertA4(
+            pdf,
+            "PURCHASE ORDER",
+            "ใบสั",
+            "กฤช",
+            "ณัฐพล",
+            "19,460,000.00",
+            "Supplier",
+            "ผู้ขาย",
+            "Billing",
+            "วางบิล",
+            "Shipping",
+            "จัดส่ง",
+            "FOB",
+            "Grand Total");
     }
 
     [Fact]
