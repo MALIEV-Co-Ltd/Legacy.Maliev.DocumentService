@@ -37,6 +37,9 @@ public sealed class WorkflowContractTests
         var publicationRoot = Assert.IsType<YamlMappingNode>(Assert.Single(publication.Documents).RootNode);
         var publicationJobs = Assert.IsType<YamlMappingNode>(ReadNode(publicationRoot, "jobs"));
         var publish = Assert.IsType<YamlMappingNode>(ReadNode(publicationJobs, "publish"));
+        Assert.Equal(
+            "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/.github/workflows/publish-image.yml@28d3458675cfd743a0f1bc758ff8f79d757e0868",
+            ReadScalar(publish, "uses"));
         var inputs = Assert.IsType<YamlMappingNode>(ReadNode(publish, "with"));
 
         Assert.Matches("^[0-9a-f]{40}$", serviceDefaultsRef);
