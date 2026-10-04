@@ -1,5 +1,6 @@
 """Fail closed on missing/empty production coverage; retain generated lines."""
 import json
+import hashlib
 import pathlib
 import sys
 import xml.etree.ElementTree as ET
@@ -12,8 +13,9 @@ expected = {
 }
 root = pathlib.Path(sys.argv[1])
 reports = sorted(root.rglob("coverage.cobertura.xml"))
-if len(reports) != 1:
-    raise SystemExit(f"Expected one full-suite raw report, found {len(reports)}")
+digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}
+if len(digests) != 1:
+    raise SystemExit(f"Expected one unique full-suite raw report, found {len(digests)}")
 lines = {name: {} for name in expected}
 for package in ET.parse(reports[0]).findall("./packages/package"):
     name = package.get("name", "")
@@ -35,7 +37,8 @@ for name, inventory in sorted(lines.items()):
     summary.append({"assembly": name, "covered": covered, "valid": valid,
                     "percent": covered * 100 / valid if valid else None,
                     "threshold": 80, "passed": passed})
-output = {"raw_report": str(reports[0]), "exclusions": [], "assemblies": summary,
+output = {"raw_report": str(reports[0]), "raw_sha256": next(iter(digests)),
+          "identical_raw_copies": len(reports), "exclusions": [], "assemblies": summary,
           "note": "Empty applicability requires separate reviewed evidence; it is not 100%."}
 (root / "coverage-gate.json").write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(output, indent=2))
