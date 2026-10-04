@@ -35,7 +35,7 @@ jobs:
         uses: MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8
         env:
           VSTestCollect: XPlat Code Coverage
-          VSTestLogger: trx;LogFileName=document-full.trx
+          VSTestLogger: trx
           VSTestResultsDirectory: ${{ github.workspace }}/runner-results
         with:
           solution: Legacy.Maliev.DocumentService.slnx
