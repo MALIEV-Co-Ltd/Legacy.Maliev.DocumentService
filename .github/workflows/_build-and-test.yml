@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
+      VSTestCollect: XPlat Code Coverage
+      VSTestLogger: trx
+      VSTestResultsDirectory: ${{ github.workspace }}/runner-results
     steps:
       - name: Check out DocumentService
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -33,10 +36,6 @@ jobs:
           persist-credentials: false
       - name: Validate .NET solution
         uses: MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8
-        env:
-          VSTestCollect: XPlat Code Coverage
-          VSTestLogger: trx
-          VSTestResultsDirectory: ${{ github.workspace }}/runner-results
         with:
           solution: Legacy.Maliev.DocumentService.slnx
           use-local-maliev-dependencies: 'true'
