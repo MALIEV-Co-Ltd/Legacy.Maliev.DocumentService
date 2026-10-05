@@ -47,6 +47,9 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
     [InlineData("wrong-return", "signature-profile")]
     [InlineData("wrong-parameter", "signature-profile")]
     [InlineData("wrong-assembly", "signature-profile")]
+    [InlineData("wrong-assembly-version", "signature-profile")]
+    [InlineData("wrong-assembly-culture", "signature-profile")]
+    [InlineData("wrong-assembly-token", "signature-profile")]
     public void CompiledProfile_ReportsIntendedReasonWithoutAcceptingIncompleteEvidence(string fixture, string expectedReason)
     {
         var actualProfile = typeof(IDocumentRenderer).GetMethods();
@@ -95,6 +98,29 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
         }
     }
 
+    [Fact]
+    public void CompiledRuntimeNativeHeader_IsRejectedWithoutInvokingTargetCode()
+    {
+        // Hosted runtime CoreLib is a genuine compiled ReadyToRun artifact, not a forged PE header.
+        var path = typeof(object).Assembly.Location;
+        using var stream = File.OpenRead(path);
+        Assert.InRange(stream.Length, 1, 64 * 1024 * 1024);
+        using var pe = new PEReader(stream);
+        var directory = pe.PEHeaders.CorHeader!.ManagedNativeHeaderDirectory;
+        Assert.True(directory.Size >= 16, "Hosted runtime must provide a valid ReadyToRun native-header control; absence is a fixture setup failure.");
+        var nativeHeader = pe.GetSectionData(directory.RelativeVirtualAddress).GetReader(0, directory.Size);
+        Assert.Equal(0x00525452u, nativeHeader.ReadUInt32());
+        var result = Evaluate(pe, pe.GetMetadataReader());
+        Assert.Equal("native-header", result.Reason);
+        Assert.False(result.ShapeVerified);
+        Assert.False(result.EvidenceComplete);
+        Assert.False(result.PolicyActive);
+        Assert.False(result.RuntimeAccepted);
+        Assert.False(result.RawNumericalPassed);
+        stream.Position = 0;
+        output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { fixture = "compiled-runtime-native-header", sha256 = Convert.ToHexString(SHA256.HashData(stream)), nativeHeaderSize = directory.Size, reason = result.Reason, shapeVerified = result.ShapeVerified, evidenceComplete = result.EvidenceComplete, structuralDispositionProposed = result.StructuralDispositionProposed, policyActive = result.PolicyActive, runtimeAccepted = result.RuntimeAccepted, rawNumericalPassed = result.RawNumericalPassed }));
+    }
+
     private static void AssertFixtureFault(string fixture, PEReader pe, MetadataReader reader)
     {
         var methods = reader.MethodDefinitions.Select(reader.GetMethodDefinition).ToArray();
@@ -108,7 +134,7 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
         if (fixture == "entrypoint") Assert.NotEqual(0, pe.PEHeaders.CorHeader!.EntryPointTokenOrRelativeVirtualAddress);
         if (fixture == "wrong-interface") Assert.Contains(reader.TypeDefinitions, handle => reader.GetString(reader.GetTypeDefinition(handle).Name) == "WrongInterface");
         if (fixture == "extra-type") Assert.Equal(3, reader.TypeDefinitions.Count);
-        if (fixture is "wrong-return" or "wrong-parameter" or "wrong-assembly")
+        if (fixture is "wrong-return" or "wrong-parameter" or "wrong-assembly" or "wrong-assembly-version" or "wrong-assembly-culture" or "wrong-assembly-token")
         {
             var method = Assert.Single(methods, item => reader.GetString(item.Name) == Profile[0].Name);
             var blob = reader.GetBlobReader(method.Signature);
@@ -125,7 +151,12 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
                     Assert.Equal(0x12, blob.ReadByte());
                     var type = reader.GetTypeReference((TypeReferenceHandle)blob.ReadTypeHandle());
                     Assert.Equal(Profile[0].ParameterType.FullName, reader.GetString(type.Namespace) + "." + reader.GetString(type.Name));
-                    Assert.Equal("Untrusted.Domain", reader.GetString(reader.GetAssemblyReference((AssemblyReferenceHandle)type.ResolutionScope).Name));
+                    var reference = reader.GetAssemblyReference((AssemblyReferenceHandle)type.ResolutionScope);
+                    var expectedIdentity = Profile[0].ParameterType.Assembly.GetName();
+                    Assert.Equal(fixture == "wrong-assembly" ? "Untrusted.Domain" : expectedIdentity.Name, reader.GetString(reference.Name));
+                    Assert.Equal(fixture == "wrong-assembly-version" ? new Version(9, 8, 7, 6) : expectedIdentity.Version, reference.Version);
+                    Assert.Equal(fixture == "wrong-assembly-culture" ? "th-TH" : expectedIdentity.CultureName ?? "", reader.GetString(reference.Culture));
+                    Assert.Equal(fixture == "wrong-assembly-token" ? new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 } : expectedIdentity.GetPublicKeyToken() ?? [], reader.GetBlobBytes(reference.PublicKeyOrToken));
                 }
             }
         }
@@ -157,13 +188,14 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
 
     private static Proposal Evaluate(PEReader pe, MetadataReader reader)
     {
+
+        var header = pe.PEHeaders.CorHeader;
+        if (header is null || header.EntryPointTokenOrRelativeVirtualAddress != 0) return new(false, "entrypoint");
+        if ((header.Flags & CorFlags.ILOnly) == 0 || header.ManagedNativeHeaderDirectory.Size != 0) return new(false, "native-header");
         var identity = reader.GetAssemblyDefinition();
         if (reader.GetString(identity.Name) != "Document.StructuralProposalFixture"
             || identity.Version != new Version(1, 0, 0, 0) || reader.GetString(identity.Culture) != ""
             || reader.GetBlobBytes(identity.PublicKey).Length != 0) return new(false, "assembly-profile");
-        var header = pe.PEHeaders.CorHeader;
-        if (header is null || header.EntryPointTokenOrRelativeVirtualAddress != 0) return new(false, "entrypoint");
-        if ((header.Flags & CorFlags.ILOnly) == 0 || header.ManagedNativeHeaderDirectory.Size != 0) return new(false, "native-header");
         var methods = reader.MethodDefinitions.Select(reader.GetMethodDefinition).ToArray();
         if (methods.Any(IsExternal)) return new(false, "external-implementation");
         if (methods.Any(method => method.RelativeVirtualAddress != 0)) return new(false, "managed-body");
@@ -220,9 +252,14 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
             var expected = Profile[index];
             var parameter = expected.ParameterType;
             if (index == 0 && fixture == "wrong-parameter") parameter = typeof(string);
-            if (index == 0 && fixture == "wrong-assembly")
+            if (index == 0 && (fixture is "wrong-assembly" or "wrong-assembly-version" or "wrong-assembly-culture" or "wrong-assembly-token"))
             {
-                var spoof = new PersistedAssemblyBuilder(new AssemblyName("Untrusted.Domain"), typeof(object).Assembly);
+                var spoofIdentity = new AssemblyName(parameter.Assembly.GetName().FullName);
+                if (fixture == "wrong-assembly") spoofIdentity.Name = "Untrusted.Domain";
+                if (fixture == "wrong-assembly-version") spoofIdentity.Version = new Version(9, 8, 7, 6);
+                if (fixture == "wrong-assembly-culture") spoofIdentity.CultureName = "th-TH";
+                if (fixture == "wrong-assembly-token") spoofIdentity.SetPublicKeyToken([1, 2, 3, 4, 5, 6, 7, 8]);
+                var spoof = new PersistedAssemblyBuilder(spoofIdentity, typeof(object).Assembly);
                 parameter = spoof.DefineDynamicModule("Spoof").DefineType(parameter.FullName!, TypeAttributes.Public).CreateType()!;
             }
             var attributes = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract | MethodAttributes.HideBySig;
