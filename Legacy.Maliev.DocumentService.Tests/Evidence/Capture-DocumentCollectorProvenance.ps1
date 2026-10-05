@@ -180,7 +180,25 @@ if ($Phase -eq 'PreTest') {
     $nupkg = Join-Path $phaseDirectory 'coverlet.collector.6.0.4.nupkg'
     $packageHash = [Convert]::ToBase64String([Convert]::FromHexString((Get-FileHash -LiteralPath $nupkg -Algorithm SHA512).Hash))
     $diskHash = (Get-Content -LiteralPath (Join-Path $phaseDirectory 'coverlet.collector.6.0.4.nupkg.sha512') -Raw).Trim()
-    if ($packageHash -ne $diskHash -or $library.sha512 -ne "sha512-$packageHash") { throw 'Collector package content hash mismatch.' }
+    if ($packageHash -ne $diskHash) { throw 'Collector package byte hash mismatch.' }
+    # NuGet assets uses the signature-excluding content hash, distinct from signed archive bytes.
+    $metadataPath = Join-Path $packageRoot '.nupkg.metadata'
+    Assert-Child $metadataPath $packageRoot
+    $metadataFile = Get-BoundedFile $metadataPath
+    if ($metadataFile.Length -gt 4096) { throw 'Oversized NuGet content hash metadata.' }
+    $totalBytes += $metadataFile.Length
+    if ($totalBytes -gt $maximumTotalBytes) { throw 'Evidence total byte limit exceeded.' }
+    $metadata = Get-Content -LiteralPath $metadataFile.FullName -Raw | ConvertFrom-Json
+    if ($library.sha512 -notmatch '^[A-Za-z0-9+/]{86}==$' -or $metadata.contentHash -notmatch '^[A-Za-z0-9+/]{86}==$') { throw 'Invalid NuGet content hash metadata.' }
+    try {
+        $assetsContentBytes = [Convert]::FromBase64String($library.sha512)
+        $metadataContentBytes = [Convert]::FromBase64String($metadata.contentHash)
+    } catch { throw 'Invalid NuGet content hash metadata.' }
+    if ($assetsContentBytes.Length -ne 64 -or $metadataContentBytes.Length -ne 64 -or $library.sha512 -ne $metadata.contentHash) { throw 'Collector NuGet content hash metadata mismatch.' }
+    $receipt.packageBytesSha512 = $packageHash
+    $receipt.assetsContentSha512 = $library.sha512
+    $receipt.nugetMetadataContentSha512 = $metadata.contentHash
+    $receipt.nugetContentHashMetadataJoinVerified = $true
     $receipt.packageSha512Verified = $true
     $receipt.resolvedCollectorPackage = 'coverlet.collector/6.0.4'
     if (Test-Path -LiteralPath $privateDirectory) { throw 'Private diagnostics path already exists.' }
