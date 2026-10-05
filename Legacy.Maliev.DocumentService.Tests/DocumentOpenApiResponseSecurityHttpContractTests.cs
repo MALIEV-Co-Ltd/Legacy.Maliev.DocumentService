@@ -33,13 +33,35 @@ public sealed class DocumentOpenApiResponseSecurityHttpContractTests
             Assert.StartsWith(prefix, target, StringComparison.Ordinal);
             schema = document.GetProperty("components").GetProperty("schemas").GetProperty(target[prefix.Length..]);
         }
-        var properties = schema.GetProperty("properties");
+        var candidates = ObjectProperties(schema, document, 0);
+        Assert.True(candidates.Length == 1, "Expected one actual document object schema: " + schema.GetRawText());
+        var properties = candidates[0];
         foreach (var (field, expectedType) in new[] { (firstField, firstType), (secondField, secondType) })
         {
             Assert.True(properties.TryGetProperty(field, out var property), route + "." + field);
             Assert.False(properties.TryGetProperty(char.ToLowerInvariant(field[0]) + field[1..], out _));
             Assert.Contains(expectedType, ScalarTypes(property, document, 0));
         }
+    }
+
+    private static JsonElement[] ObjectProperties(JsonElement schema, JsonElement document, int depth)
+    {
+        Assert.InRange(depth, 0, 8);
+        if (schema.TryGetProperty("$ref", out var reference))
+        {
+            const string prefix = "#/components/schemas/";
+            var target = reference.GetString()!;
+            Assert.StartsWith(prefix, target, StringComparison.Ordinal);
+            return ObjectProperties(document.GetProperty("components").GetProperty("schemas")
+                .GetProperty(target[prefix.Length..]), document, depth + 1);
+        }
+        if (schema.TryGetProperty("properties", out var properties)) return [properties];
+        foreach (var composition in new[] { "anyOf", "oneOf", "allOf" })
+        {
+            if (schema.TryGetProperty(composition, out var alternatives))
+                return alternatives.EnumerateArray().SelectMany(value => ObjectProperties(value, document, depth + 1)).ToArray();
+        }
+        return [];
     }
 
     private static string[] ScalarTypes(JsonElement schema, JsonElement document, int depth)
