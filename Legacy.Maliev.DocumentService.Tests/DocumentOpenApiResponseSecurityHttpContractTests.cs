@@ -38,11 +38,32 @@ public sealed class DocumentOpenApiResponseSecurityHttpContractTests
         {
             Assert.True(properties.TryGetProperty(field, out var property), route + "." + field);
             Assert.False(properties.TryGetProperty(char.ToLowerInvariant(field[0]) + field[1..], out _));
-            var type = property.GetProperty("type");
-            // OpenAPI 3.1 can represent nullable scalar properties as a type union.
-            Assert.True(type.ValueKind == JsonValueKind.String ? type.GetString() == expectedType
-                : type.EnumerateArray().Any(value => value.GetString() == expectedType), route + "." + field);
+            Assert.Contains(expectedType, ScalarTypes(property, document, 0));
         }
+    }
+
+    private static string[] ScalarTypes(JsonElement schema, JsonElement document, int depth)
+    {
+        Assert.InRange(depth, 0, 8);
+        if (schema.TryGetProperty("$ref", out var reference))
+        {
+            const string prefix = "#/components/schemas/";
+            var target = reference.GetString()!;
+            Assert.StartsWith(prefix, target, StringComparison.Ordinal);
+            return ScalarTypes(document.GetProperty("components").GetProperty("schemas")
+                .GetProperty(target[prefix.Length..]), document, depth + 1);
+        }
+        if (schema.TryGetProperty("type", out var type))
+            return type.ValueKind == JsonValueKind.String ? [type.GetString()!]
+                : type.EnumerateArray().Select(value => value.GetString()!).ToArray();
+        // Nullable scalars can use schema composition rather than a type union.
+        foreach (var composition in new[] { "anyOf", "oneOf", "allOf" })
+        {
+            if (schema.TryGetProperty(composition, out var alternatives))
+                return alternatives.EnumerateArray().SelectMany(value => ScalarTypes(value, document, depth + 1)).ToArray();
+        }
+        Assert.Fail("Existing scalar schema has no type, local reference or composition: " + schema.GetRawText());
+        return [];
     }
 
     [Theory]
