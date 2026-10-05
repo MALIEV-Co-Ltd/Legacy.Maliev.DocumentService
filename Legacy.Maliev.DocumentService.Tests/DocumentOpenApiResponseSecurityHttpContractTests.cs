@@ -5,11 +5,12 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit.Abstractions;
 
 namespace Legacy.Maliev.DocumentService.Tests;
 
 // Original controller response attributes and ConfigureSwagger security facts are retained inputs.
-public sealed class DocumentOpenApiResponseSecurityHttpContractTests
+public sealed class DocumentOpenApiResponseSecurityHttpContractTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData("invoice", "Number", "string", "Total", "number")]
@@ -36,6 +37,14 @@ public sealed class DocumentOpenApiResponseSecurityHttpContractTests
         var candidates = ObjectProperties(schema, document, 0);
         Assert.True(candidates.Length == 1, "Expected one actual document object schema: " + schema.GetRawText());
         var properties = candidates[0];
+        var publicFragment = JsonSerializer.Serialize(new
+        {
+            OperationPointer = "#/paths/~1Pdfs~1" + route + "/post/requestBody/content/application~1json/schema",
+            RequestSchema = schema,
+            ResolvedProperties = properties,
+        });
+        Assert.InRange(Encoding.UTF8.GetByteCount(publicFragment), 1, 32768);
+        output.WriteLine("DOCUMENT_PUBLIC_SCHEMA " + publicFragment);
         foreach (var (field, expectedType) in new[] { (firstField, firstType), (secondField, secondType) })
         {
             Assert.True(properties.TryGetProperty(field, out var property), route + "." + field);
