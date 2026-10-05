@@ -14,7 +14,7 @@ public sealed class DocumentOpenApiResponseSecurityHttpContractTests(ITestOutput
 {
     [Theory]
     [InlineData("invoice", "Number", "string", "Total", "number")]
-    [InlineData("quotation", "Number", "string", "Total", "number")]
+    [InlineData("quotation", "InvoiceNumber", "string", "Total", "number")]
     [InlineData("receipt", "InvoiceNumber", "string", "AmountPaid", "number")]
     [InlineData("purchaseorder", "ReferenceNumber", "integer", "Date", "string")]
     [InlineData("orderlabel", "Name", "string", "OrderQuantity", "integer")]

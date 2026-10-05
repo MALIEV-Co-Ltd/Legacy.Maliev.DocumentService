@@ -15,8 +15,6 @@ jobs:
       VSTestCollect: XPlat Code Coverage
       VSTestLogger: trx
       VSTestResultsDirectory: ${{ github.workspace }}/runner-results
-      # Temporary, explicitly scoped public schema diagnostic; not a full-suite receipt.
-      VSTestTestCaseFilter: FullyQualifiedName~DevelopmentOpenApi_DescribesExistingPascalCaseConsumerFieldTypes
     steps:
       - name: Check out DocumentService
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

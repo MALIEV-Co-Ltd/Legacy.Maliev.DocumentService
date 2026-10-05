@@ -48,6 +48,14 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
     options.JsonSerializerOptions.DictionaryKeyPolicy = null;
 });
+// OpenAPI schema generation uses Http.Json options rather than MVC JsonOptions.
+// Keep its public field names and null policy aligned with the legacy wire contract.
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.PropertyNamingPolicy = null;
+    options.SerializerOptions.DictionaryKeyPolicy = null;
+});
 builder.Services.AddSingleton<IDocumentRenderer, QuestDocumentRenderer>();
 builder.Services.AddSingleton(TimeProvider.System);
 
