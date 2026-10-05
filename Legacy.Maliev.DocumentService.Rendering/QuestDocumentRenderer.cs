@@ -372,6 +372,11 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                         ("Subtotal", receipt.Subtotal), ("VAT 7%", receipt.Vat), ("Grand Total", receipt.Total),
                         ("Withholding Tax", receipt.WithholdingTax is null ? null : -receipt.WithholdingTax), ("Amount Received", receipt.AmountPaid)));
                 });
+                if (string.Equals(receipt.Currency, "THB", StringComparison.Ordinal))
+                {
+                    column.Item().AlignCenter().Text($"( {ThaiBahtAmountWords.Format(receipt.AmountPaid)} )");
+                }
+
                 column.Item().PaddingTop(6).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
                 column.Item().Text(Safe(receipt.Remark));
             });

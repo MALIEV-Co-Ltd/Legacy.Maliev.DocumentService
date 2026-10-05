@@ -1,0 +1,75 @@
+name: Receipt amount evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  receipt-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
+      DOCUMENT_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Check out DocumentService
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned ServiceDefaults
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults
+          ref: 8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3
+          path: .dependencies/Legacy.Maliev.ServiceDefaults
+          persist-credentials: false
+      - name: Check out pinned CompatibilityContracts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts
+          ref: 78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7
+          path: .dependencies/Legacy.Maliev.CompatibilityContracts
+          persist-credentials: false
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: 10.0.x
+      - name: Verify candidate source identity
+        run: test "$(git rev-parse HEAD)" = "$DOCUMENT_SOURCE_SHA"
+      - name: Restore
+        run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true
+      - name: Build Release before tests
+        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -warnaserror
+      - name: Focused actual helper and PDF tests
+        run: >-
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true
+          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests'
+          --logger 'trx;LogFileName=receipt-focus.trx' --results-directory receipt-evidence/focus
+      - name: Full suite with raw coverage
+        run: >-
+          dotnet test Legacy.Maliev.DocumentService.slnx
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true
+          --logger 'trx;LogFileName=full-suite.trx' --results-directory receipt-evidence/full
+          --collect 'XPlat Code Coverage'
+      - name: Record observed coverage and sanitized cases
+        if: always()
+        run: |-
+          python3 -B -m unittest discover -s scripts -p test_receipt_evidence.py
+          python3 -B scripts/read-receipt-evidence.py receipt-evidence
+      - name: Preserve actual receipt evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
+          path: |-
+            receipt-evidence
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-thai-amount-v1
+          if-no-files-found: error
+          retention-days: 7
