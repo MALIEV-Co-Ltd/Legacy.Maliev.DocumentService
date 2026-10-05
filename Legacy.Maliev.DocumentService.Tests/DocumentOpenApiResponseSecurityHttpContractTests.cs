@@ -12,6 +12,40 @@ namespace Legacy.Maliev.DocumentService.Tests;
 public sealed class DocumentOpenApiResponseSecurityHttpContractTests
 {
     [Theory]
+    [InlineData("invoice", "Number", "string", "Total", "number")]
+    [InlineData("quotation", "Number", "string", "Total", "number")]
+    [InlineData("receipt", "InvoiceNumber", "string", "AmountPaid", "number")]
+    [InlineData("purchaseorder", "ReferenceNumber", "integer", "Date", "string")]
+    [InlineData("orderlabel", "Name", "string", "OrderQuantity", "integer")]
+    public async Task DevelopmentOpenApi_DescribesExistingPascalCaseConsumerFieldTypes(
+        string route, string firstField, string firstType, string secondField, string secondType)
+    {
+        await using var factory = new DocumentMetadataFactory();
+        using var response = await factory.CreateClient().GetAsync("/documents/openapi/v1.json");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var document = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var schema = document.GetProperty("paths").GetProperty("/Pdfs/" + route).GetProperty("post")
+            .GetProperty("requestBody").GetProperty("content").GetProperty("application/json").GetProperty("schema");
+        if (schema.TryGetProperty("$ref", out var reference))
+        {
+            const string prefix = "#/components/schemas/";
+            var target = reference.GetString()!;
+            Assert.StartsWith(prefix, target, StringComparison.Ordinal);
+            schema = document.GetProperty("components").GetProperty("schemas").GetProperty(target[prefix.Length..]);
+        }
+        var properties = schema.GetProperty("properties");
+        foreach (var (field, expectedType) in new[] { (firstField, firstType), (secondField, secondType) })
+        {
+            Assert.True(properties.TryGetProperty(field, out var property), route + "." + field);
+            Assert.False(properties.TryGetProperty(char.ToLowerInvariant(field[0]) + field[1..], out _));
+            var type = property.GetProperty("type");
+            // OpenAPI 3.1 can represent nullable scalar properties as a type union.
+            Assert.True(type.ValueKind == JsonValueKind.String ? type.GetString() == expectedType
+                : type.EnumerateArray().Any(value => value.GetString() == expectedType), route + "." + field);
+        }
+    }
+
+    [Theory]
     [InlineData("invoice")]
     [InlineData("purchaseorder")]
     [InlineData("quotation")]
