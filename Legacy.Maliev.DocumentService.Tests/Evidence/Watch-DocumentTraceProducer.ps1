@@ -24,6 +24,51 @@ function Read-DocumentProducerBytes([string]$Path,[string]$Root,[long]$Maximum=6
         return ,$bytes
     } finally {$stream.Dispose()}
 }
+function Read-DocumentProducerDiagnosticBytes([string]$Path,[string]$Root) {
+    # Read a bounded initial prefix of a live appendable trace. Empty/partial data provides
+    # no PID evidence. Binary snapshots keep the separate strict nongrowing reader above.
+    $full=Assert-DocumentProducerPath $Path $Root
+    $stream=[IO.FileStream]::new($full,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    try {
+        $bytes=Read-DocumentProducerDiagnosticPrefix $stream
+        [void](Assert-DocumentProducerPath $full $Root)
+        return ,$bytes
+    } finally {$stream.Dispose()}
+}
+function Read-DocumentProducerDiagnosticPrefix([IO.Stream]$Stream) {
+    $initialLength=$Stream.Length
+    if($initialLength -lt 0 -or $initialLength -gt 8MB){throw 'Producer diagnostic input exceeds byte bound.'}
+    $bytes=[byte[]]::new([int]$initialLength)
+    try {$Stream.ReadExactly($bytes)} catch {
+        if($_.Exception -is [IO.EndOfStreamException] -or $_.Exception.InnerException -is [IO.EndOfStreamException]){throw 'Producer diagnostic input truncated.'}
+        throw
+    }
+    if($Stream.Length -gt 8MB){throw 'Producer diagnostic input exceeds byte bound.'}
+    if($Stream.Length -lt $initialLength){throw 'Producer diagnostic input truncated.'}
+    return ,$bytes
+}
+function ConvertFrom-DocumentProducerDiagnosticLines([byte[]]$Bytes) {
+    if($Bytes.Length -gt 8MB){throw 'Producer diagnostic input exceeds byte bound.'}
+    $lastNewline=[Array]::LastIndexOf($Bytes,[byte]10)
+    if($lastNewline -lt 0){return @()}
+    $complete=[byte[]]::new($lastNewline+1);[Array]::Copy($Bytes,$complete,$complete.Length)
+    try {$text=[Text.UTF8Encoding]::new($false,$true).GetString($complete)} catch {throw 'Producer complete diagnostic UTF8 invalid.'}
+    if($text.StartsWith([string][char]0xfeff,[StringComparison]::Ordinal)){$text=$text.Substring(1)}
+    $lines=@($text.Split([char]10)|ForEach-Object {$_.TrimEnd([char]13)})
+    if($lines.Count -gt 131072){throw 'Producer diagnostic line budget exceeded.'}
+    foreach($line in $lines){if($line.Length -gt 32768){throw 'Producer diagnostic line bound exceeded.'}}
+    return $lines
+}
+function Get-DocumentProducerDiagnosticProcessIds([byte[]]$Bytes) {
+    foreach($line in @(ConvertFrom-DocumentProducerDiagnosticLines $Bytes)){
+        if($line -cmatch '^TpTrace (?:Information|Verbose): 0 : ([1-9][0-9]*), [0-9]+, [0-9]{4}/[0-9]{2}/[0-9]{2}, [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}, [0-9]+, datacollector\.dll, .*$'){$Matches[1]}
+        elseif($line.Contains(', datacollector.dll, ',[StringComparison]::Ordinal)){throw 'Producer complete collector envelope invalid.'}
+    }
+}
+function Test-DocumentProducerObservationWindow([DateTime]$Deadline,[string]$Root) {
+    $stop=Assert-DocumentProducerPath (Join-Path $Root 'observer.stop') $Root
+    return [DateTime]::UtcNow -lt $Deadline -and -not [IO.File]::Exists($stop)
+}
 function Write-DocumentProducerBytes([string]$Path,[string]$Root,[byte[]]$Bytes) {
     $full=Assert-DocumentProducerPath $Path $Root
     $stream=[IO.FileStream]::new($full,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
@@ -55,12 +100,17 @@ function Read-DocumentProducerKernelBytes([string]$Path,[int]$Maximum) {
     try {
         $buffer=[byte[]]::new(4096)
         while(($count=$stream.Read($buffer,0,[Math]::Min($buffer.Length,$Maximum+1-[int]$output.Length))) -gt 0){
+            $script:total=Add-DocumentProducerReadBudget $script:total $count
             $output.Write($buffer,0,$count)
             if($output.Length -gt $Maximum){throw 'Process surface byte bound exceeded.'}
         }
         if($output.Length -eq 0){throw 'Empty process surface.'}
         return ,$output.ToArray()
     } finally {$output.Dispose();$stream.Dispose()}
+}
+function Add-DocumentProducerReadBudget([long]$Total,[long]$Bytes) {
+    if($Total -lt 0 -or $Bytes -lt 0 -or $Total -gt 256MB -or $Bytes -gt 256MB-$Total){throw 'Producer total read budget exceeded.'}
+    return $Total+$Bytes
 }
 function Get-DocumentProducerUid([string]$ProcessId) {
     $text=[Text.Encoding]::UTF8.GetString((Read-DocumentProducerKernelBytes "/proc/$ProcessId/status" 64KB))
@@ -149,6 +199,10 @@ function Get-DocumentProducerRefusalCategory([string]$Message) {
         'Producer aggregate read budget exceeded.' {return 'read-budget'}
         'Producer input byte bound exceeded.' {return 'input-byte-bound'}
         'Producer input grew during read.' {return 'input-growth'}
+        'Producer diagnostic input exceeds byte bound.' {return 'diagnostic-overbound'}
+        'Producer diagnostic input truncated.' {return 'diagnostic-truncated'}
+        'Producer complete diagnostic UTF8 invalid.' {return 'diagnostic-utf8'}
+        'Producer complete collector envelope invalid.' {return 'diagnostic-envelope-grammar'}
         default {return 'operation-refused'}
     }
 }
@@ -235,23 +289,18 @@ try {
     if([IO.Directory]::Exists($outputRoot)){throw 'Producer capture already exists.'}
     [void][IO.Directory]::CreateDirectory($outputRoot)
     $deadline=[DateTime]::UtcNow.AddMinutes(5);$seen=@{}
-    while([DateTime]::UtcNow -lt $deadline -and -not [IO.File]::Exists((Join-Path $PrivateDirectory 'observer.stop'))){
+    while(Test-DocumentProducerObservationWindow $deadline $PrivateDirectory){
         $stage='diagnostic-envelope'
         Read-DocumentProducerOwner $PrivateDirectory
         $diagnostics=@(Get-ChildItem -LiteralPath $PrivateDirectory -File -Force|Where-Object Name -Like '*.log')
         if($diagnostics.Count -gt 16){throw 'Producer diagnostic file count exceeded.'}
         $diagnosticTotal=0L
         foreach($diagnostic in $diagnostics){
-            $bytes=Read-DocumentProducerBytes $diagnostic.FullName $PrivateDirectory 8MB;$diagnosticTotal+=$bytes.Length
-            $total+=$bytes.Length
-            if($total -gt 256MB){throw 'Producer total read budget exceeded.'}
+            $bytes=Read-DocumentProducerDiagnosticBytes $diagnostic.FullName $PrivateDirectory;$diagnosticTotal+=$bytes.Length
+            if($bytes.Length -eq 0 -and $seen.Count -eq 0){$refusalCategory='diagnostic-empty-pending'}
+            $total=Add-DocumentProducerReadBudget $total $bytes.Length
             if($diagnosticTotal -gt 32MB){throw 'Producer diagnostic aggregate exceeded.'}
-            $lines=[Text.Encoding]::UTF8.GetString($bytes).Split([char]10)
-            if($lines.Count -gt 131072){throw 'Producer diagnostic line budget exceeded.'}
-            foreach($line in $lines){
-                if($line.Length -gt 32768){throw 'Producer diagnostic line bound exceeded.'}
-                if($line -cmatch '^TpTrace (?:Information|Verbose): 0 : ([1-9][0-9]*), [0-9]+, [0-9]{4}/[0-9]{2}/[0-9]{2}, [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}, [0-9]+, datacollector\.dll, '){$seen[$Matches[1]]=$true}
-            }
+            foreach($claimedProcessId in @(Get-DocumentProducerDiagnosticProcessIds $bytes)){$seen[$claimedProcessId]=$true}
         }
         if($seen.Count -gt 1){throw 'Multiple collector processes; no unique producer binding.'}
         if($seen.Count -eq 1){
@@ -284,7 +333,7 @@ try {
                         $source=[IO.Path]::ChangeExtension($map.path,$extension)
                         [void](Assert-DocumentProducerPath $source $env:DOTNET_ROOT)
                         if($extension -eq 'pdb' -and -not [IO.File]::Exists($source)){continue}
-                        $bytes=Read-DocumentProducerBytes $source $env:DOTNET_ROOT;$total+=3*$bytes.Length
+                        $bytes=Read-DocumentProducerBytes $source $env:DOTNET_ROOT;$total=Add-DocumentProducerReadBudget $total (3*$bytes.Length)
                         if($total -gt 256MB){throw 'Producer aggregate read budget exceeded.'}
                         $hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));$name=[IO.Path]::GetFileName($source)
                         $copy=Join-Path $outputRoot $name;Write-DocumentProducerBytes $copy $outputRoot $bytes
@@ -308,7 +357,7 @@ try {
                 foreach($line in $afterMaps.Split([char]10)){$map=ConvertFrom-DocumentProducerMap $line $scope.sdkDirectory;if($null -ne $map){Add-DocumentProducerMap $afterMapped $map}}
                 foreach($module in $documentProducerNames){if(-not $afterMapped.ContainsKey($module) -or $afterMapped[$module].inode -cne $mapped[$module].inode -or $afterMapped[$module].deviceMajor -ne $mapped[$module].deviceMajor -or $afterMapped[$module].deviceMinor -ne $mapped[$module].deviceMinor){throw 'Producer mapping changed during capture.'}}
                 $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/10.0.401';launcherOptions=$scope.launcherOptions;sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
-                $status='mapped-snapshot';$stage='complete';break
+                $status='mapped-snapshot';$stage='complete';$refusalCategory='none';break
             }
         }
         Start-Sleep -Milliseconds 100
