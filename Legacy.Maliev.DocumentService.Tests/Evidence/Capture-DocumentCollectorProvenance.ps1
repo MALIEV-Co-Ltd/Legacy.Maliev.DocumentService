@@ -37,7 +37,7 @@ Assert-Child $privateDirectory $env:RUNNER_TEMP
 if ([IO.Path]::GetFileName($privateDirectory) -notmatch '^document-provenance-[A-Za-z0-9._-]+$') { throw 'Private diagnostic directory name is invalid.' }
 
 function Get-BoundedFile([string]$path) {
-    $file = Get-Item -LiteralPath $path -ErrorAction Stop
+    $file = Get-Item -LiteralPath $path -Force -ErrorAction Stop
     if ($file.PSIsContainer -or $file.Length -gt $maximumFileBytes -or $file.Length -le 0) { throw 'Evidence input is empty, oversized or not a file.' }
     return $file
 }
