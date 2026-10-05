@@ -347,6 +347,7 @@ internal static partial class WorkflowContractValidator
             + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll\n"
             + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb\n"
             + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb\n"
             + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
             + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll");
         RequireScalarValue(evidenceInputs, "if-no-files-found", "warn");

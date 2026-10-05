@@ -145,20 +145,51 @@ public sealed class DocumentHttpAcceptanceTests
         }
     }
 
+    [Theory]
+    [InlineData("invoice")]
+    [InlineData("purchaseorder")]
+    [InlineData("quotation")]
+    [InlineData("receipt")]
+    [InlineData("orderlabel")]
+    public async Task EveryRenderRoute_RejectsInvalidCredentialsBeforeProducingPdf(string route)
+    {
+        await using var factory = new DocumentFactory();
+        foreach (var fault in new[] { "signature", "issuer", "audience", "expired", "permission" })
+        {
+            using var client = factory.Client(includePermission: fault != "permission", tokenFault: fault);
+            using var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            using var response = await client.PostAsync("/Pdfs/" + route, content);
+
+            await AssertStatusAsync(response, fault == "permission" ? HttpStatusCode.Forbidden : HttpStatusCode.Unauthorized);
+            Assert.NotEqual("application/pdf", response.Content.Headers.ContentType?.MediaType);
+            Assert.False((await response.Content.ReadAsByteArrayAsync()).AsSpan().StartsWith("%PDF-"u8));
+            if (fault != "permission")
+            {
+                Assert.Contains("Bearer", response.Headers.WwwAuthenticate.Select(header => header.Scheme));
+            }
+        }
+    }
+
     internal sealed class DocumentFactory : WebApplicationFactory<Program>
     {
         private const string Issuer = "https://document-fixture.invalid";
         private const string Audience = "document-fixture";
         private readonly RSA signingKey = RSA.Create(2048);
 
-        public HttpClient Client(bool includePermission = true)
+        public HttpClient Client(bool includePermission = true, string? tokenFault = null)
         {
             var client = CreateClient();
             var now = DateTime.UtcNow;
             var claims = new List<Claim> { new("sub", "service:document-fixture"), new("identity_kind", "service") };
             if (includePermission) claims.Add(new("permissions", "legacy.documents.render"));
-            var token = new JwtSecurityToken(Issuer, Audience, claims, now.AddMinutes(-1), now.AddMinutes(5),
-                new SigningCredentials(new RsaSecurityKey(signingKey), SecurityAlgorithms.RsaSha256));
+            using var untrustedKey = tokenFault == "signature" ? RSA.Create(2048) : null;
+            var token = new JwtSecurityToken(
+                tokenFault == "issuer" ? "https://untrusted-document-fixture.invalid" : Issuer,
+                tokenFault == "audience" ? "untrusted-document-fixture" : Audience,
+                claims,
+                now.AddMinutes(tokenFault == "expired" ? -30 : -1),
+                now.AddMinutes(tokenFault == "expired" ? -20 : 5),
+                new SigningCredentials(new RsaSecurityKey(untrustedKey ?? signingKey), SecurityAlgorithms.RsaSha256));
             client.DefaultRequestHeaders.Authorization = new("Bearer", new JwtSecurityTokenHandler().WriteToken(token));
             return client;
         }

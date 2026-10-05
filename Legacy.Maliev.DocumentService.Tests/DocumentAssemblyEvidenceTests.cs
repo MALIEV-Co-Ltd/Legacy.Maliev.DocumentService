@@ -27,19 +27,26 @@ public sealed class DocumentAssemblyEvidenceTests
             evidenceRoot = Path.Combine(AppContext.BaseDirectory, "structural-evidence");
         }
         Directory.CreateDirectory(evidenceRoot);
+        // Coverlet can instrument files during this observation and restore them afterwards.
+        // Preserve observed bytes separately; never assume these hashes equal pristine build output.
+        var applicationBytes = File.ReadAllBytes(application.Location);
+        var apiBytes = File.ReadAllBytes(api.Location);
+        File.WriteAllBytes(Path.Combine(evidenceRoot, "document-runtime-application.dll"), applicationBytes);
+        File.WriteAllBytes(Path.Combine(evidenceRoot, "document-runtime-api.dll"), apiBytes);
         var evidence = new
         {
             CoveragePolicyActive = false,
+            Observation = "During test execution; potentially collector-instrumented bytes",
             Application = new
             {
                 application.Location,
-                Sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(application.Location))),
+                Sha256 = Convert.ToHexString(SHA256.HashData(applicationBytes)),
                 Mvid = application.ManifestModule.ModuleVersionId,
             },
             Api = new
             {
                 api.Location,
-                Sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(api.Location))),
+                Sha256 = Convert.ToHexString(SHA256.HashData(apiBytes)),
                 Mvid = api.ManifestModule.ModuleVersionId,
             },
             PublicMethods = methods.Select(method => method.Name).OrderBy(name => name, StringComparer.Ordinal).ToArray(),
