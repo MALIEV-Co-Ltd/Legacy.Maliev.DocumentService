@@ -220,6 +220,24 @@ public sealed class WorkflowContractTests
             "          use-local-maliev-dependencies: 'true'\n        env:\n          GITHUB_ACTIONS: 'false'\n");
     }
 
+    [Fact]
+    public void BuildAndTest_RejectsPrivateCleanupOnSuccessOnly()
+    {
+        AssertMutationRejected("always() && github.event_name", "success() && github.event_name");
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsPrivateCleanupAgainstAnotherRepository()
+    {
+        AssertMutationRejected("github.repository == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'", "github.repository == 'Untrusted/Other'");
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsUnreviewedPrivateCleanupCommand()
+    {
+        AssertMutationRejected("-Phase Cleanup -RepositoryRoot", "-Phase PreTest -RepositoryRoot");
+    }
+
     private static void AssertMutationRejected(string original, string replacement)
     {
         Assert.Contains(original, Workflow, StringComparison.Ordinal);
@@ -303,9 +321,9 @@ internal static partial class WorkflowContractValidator
         RejectDuplicatedValidationActionsAndCommands(jobs);
 
         var steps = RequireSequence(validateJob, "steps");
-        if (steps.Children.Count != 6)
+        if (steps.Children.Count != 7)
         {
-            throw new InvalidOperationException("Validate job must contain four validation and two evidence steps.");
+            throw new InvalidOperationException("Validate job must contain four validation, two evidence and one bounded cleanup step.");
         }
 
         var environment = RequireMapping(validateJob, "env");
@@ -327,7 +345,17 @@ internal static partial class WorkflowContractValidator
 
         RequireScalarValue(gate, "name", "Gate owned production coverage");
         RequireScalarValue(gate, "run", "python3 scripts/verify-runner-coverage.py runner-results");
-        var evidence = RequireMapping(steps.Children[5], "evidence upload");
+        var cleanup = RequireMapping(steps.Children[5], "private diagnostics cleanup");
+        if (cleanup.Children.Count != 4)
+        {
+            throw new InvalidOperationException("Cleanup must contain exactly name, if, shell and run.");
+        }
+        RequireScalarValue(cleanup, "name", "Clean owned private Document diagnostics");
+        RequireScalarValue(cleanup, "if", "always() && github.event_name == 'pull_request' && github.repository == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'");
+        RequireScalarValue(cleanup, "shell", "pwsh");
+        RequireScalarValue(cleanup, "run", "$privatePath = Join-Path $env:RUNNER_TEMP \"document-provenance-Legacy.Maliev.DocumentService.Tests-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT\"\n"
+            + "& ./Legacy.Maliev.DocumentService.Tests/Evidence/Capture-DocumentCollectorProvenance.ps1 -Phase Cleanup -RepositoryRoot $env:GITHUB_WORKSPACE -PrivateDiagnosticDirectory $privatePath");
+        var evidence = RequireMapping(steps.Children[6], "evidence upload");
         if (evidence.Children.Count != 4)
         {
             throw new InvalidOperationException("Evidence upload must contain exactly name, if, uses and with.");
