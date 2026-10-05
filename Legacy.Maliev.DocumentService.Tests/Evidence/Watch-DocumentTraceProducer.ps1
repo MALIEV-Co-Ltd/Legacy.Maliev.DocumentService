@@ -113,6 +113,30 @@ function Add-DocumentProducerMap([hashtable]$Maps,[hashtable]$Map) {
     if($Maps.ContainsKey($Map.module) -and ($Maps[$Map.module].inode -cne $Map.inode -or $Maps[$Map.module].deviceMajor -ne $Map.deviceMajor -or $Maps[$Map.module].deviceMinor -ne $Map.deviceMinor)){throw 'Ambiguous module inode/device.'}
     $Maps[$Map.module]=$Map
 }
+function Get-DocumentProducerRefusalCategory([string]$Message) {
+    # Whitelisted literal comparisons only; arbitrary exception messages are never exported.
+    switch -CaseSensitive ($Message) {
+        'Unexpected managed producer launcher.' {return 'managed-launcher'}
+        'Unexpected producer SDK entry point.' {return 'sdk-entry-point'}
+        'Producer executable launcher mismatch.' {return 'executable-launcher'}
+        'Collector process user mismatch.' {return 'process-user'}
+        'Producer path outside fixed root.' {return 'path-scope'}
+        'Linked producer path refused.' {return 'linked-path'}
+        'Producer private ownership mismatch.' {return 'private-owner'}
+        'Observer startup registration invalid.' {return 'startup-registration'}
+        'Mapped file inode/device mismatch.' {return 'mapped-inode-device'}
+        'Producer inode process timed out.' {return 'stat-timeout'}
+        'Producer metadata module mismatch.' {return 'module-identity'}
+        'Producer bytes changed during snapshot.' {return 'snapshot-byte-mismatch'}
+        'Producer mapping scope invalid.' {return 'mapped-path-scope'}
+        'Multiple collector processes; no unique producer binding.' {return 'multiple-processes'}
+        'Producer total read budget exceeded.' {return 'read-budget'}
+        'Producer aggregate read budget exceeded.' {return 'read-budget'}
+        'Producer input byte bound exceeded.' {return 'input-byte-bound'}
+        'Producer input grew during read.' {return 'input-growth'}
+        default {return 'operation-refused'}
+    }
+}
 function Get-DocumentProducerInode([string]$Path) {
     $start=[Diagnostics.ProcessStartInfo]::new('/usr/bin/stat');$start.UseShellExecute=$false;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
     foreach($argument in @('--dereference','--format=%d:%i:%s','--',$Path)){$start.ArgumentList.Add($argument)}
@@ -183,7 +207,7 @@ function Stop-DocumentProducerObserver([string]$Root) {
 if($Mode -eq 'Library'){return}
 $ErrorActionPreference='Stop'
 if(-not [OperatingSystem]::IsLinux()){throw 'Live producer observation requires hosted Linux.'}
-$status='incomplete';$snapshots=@();$processIdentity=$null;$outputRoot=$null;$total=0L
+$status='incomplete';$stage='startup';$refusalCategory='none';$snapshots=@();$processIdentity=$null;$outputRoot=$null;$total=0L
 try {
     Read-DocumentProducerOwner $PrivateDirectory
     if($env:GITHUB_EVENT_NAME -cne 'pull_request' -or $env:GITHUB_REPOSITORY -cne 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'){throw 'Producer requires owned hosted PR.'}
@@ -197,6 +221,7 @@ try {
     [void][IO.Directory]::CreateDirectory($outputRoot)
     $deadline=[DateTime]::UtcNow.AddMinutes(5);$seen=@{}
     while([DateTime]::UtcNow -lt $deadline -and -not [IO.File]::Exists((Join-Path $PrivateDirectory 'observer.stop'))){
+        $stage='diagnostic-envelope'
         Read-DocumentProducerOwner $PrivateDirectory
         $diagnostics=@(Get-ChildItem -LiteralPath $PrivateDirectory -File -Force|Where-Object Name -Like '*.log')
         if($diagnostics.Count -gt 16){throw 'Producer diagnostic file count exceeded.'}
@@ -217,23 +242,30 @@ try {
         if($seen.Count -eq 1){
             $collectorProcessId=[string]@($seen.Keys)[0]
             if(-not [IO.Directory]::Exists("/proc/$collectorProcessId")){break}
+            $stage='process-epoch'
             $epoch=Read-DocumentProducerEpoch $collectorProcessId
+            $stage='process-user'
             $userId=Get-DocumentProducerUid $collectorProcessId
             if($userId -cne (Get-DocumentProducerUid $PID.ToString())){throw 'Collector process user mismatch.'}
             $launcher=[IO.FileInfo]::new("/proc/$collectorProcessId/exe").LinkTarget
+            $stage='executable-launcher'
             if($launcher -cne ([IO.Path]::GetFullPath($env:DOTNET_ROOT).TrimEnd('/')+'/dotnet')){throw 'Producer executable launcher mismatch.'}
             $command=Read-DocumentProducerKernelBytes "/proc/$collectorProcessId/cmdline" 16384
+            $stage='managed-launcher'
             $scope=ConvertFrom-DocumentProducerCommand $command $env:DOTNET_ROOT
             [void](Assert-DocumentProducerPath $scope.entryPoint $env:DOTNET_ROOT)
+            $stage='mapped-modules'
             $maps=[Text.Encoding]::UTF8.GetString((Read-DocumentProducerKernelBytes "/proc/$collectorProcessId/maps" 4MB))
             $mapped=@{}
             foreach($line in $maps.Split([char]10)){$map=ConvertFrom-DocumentProducerMap $line $scope.sdkDirectory;if($null -ne $map){Add-DocumentProducerMap $mapped $map}}
             if($mapped.Count -eq $documentProducerNames.Count){
                 foreach($module in $documentProducerNames){
+                    $stage='mapped-file-identity'
                     $map=$mapped[$module];[void](Assert-DocumentProducerPath $map.path $env:DOTNET_ROOT)
                     $before=Get-DocumentProducerInode $map.path
                     if($before.inode -cne $map.inode -or $before.major -ne $map.deviceMajor -or $before.minor -ne $map.deviceMinor){throw 'Mapped file inode/device mismatch.'}
                     foreach($extension in @('dll','pdb')){
+                        $stage='snapshot-bytes'
                         $source=[IO.Path]::ChangeExtension($map.path,$extension)
                         [void](Assert-DocumentProducerPath $source $env:DOTNET_ROOT)
                         if($extension -eq 'pdb' -and -not [IO.File]::Exists($source)){continue}
@@ -244,12 +276,13 @@ try {
                         $copied=Read-DocumentProducerBytes $copy $outputRoot;$afterBytes=Read-DocumentProducerBytes $source $env:DOTNET_ROOT
                         if($hash -cne [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($copied)) -or $hash -cne [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($afterBytes))){throw 'Producer bytes changed during snapshot.'}
                         $snapshot=@{module=$module;extension=$extension;artifact=$name;sha256=$hash;bytes=$bytes.Length;mapped=$extension -eq 'dll';executionAttributed=$false}
-                        if($extension -eq 'dll'){$snapshot.metadata=Get-DocumentProducerMetadata $bytes $module}
+                        if($extension -eq 'dll'){$stage='module-metadata';$snapshot.metadata=Get-DocumentProducerMetadata $bytes $module}
                         $snapshots+=$snapshot
                     }
                     $after=Get-DocumentProducerInode $map.path
                     if($before.inode -cne $after.inode -or $before.bytes -ne $after.bytes -or $before.major -ne $after.major -or $before.minor -ne $after.minor){throw 'Producer file epoch changed.'}
                 }
+                $stage='process-after-snapshot'
                 if((Read-DocumentProducerEpoch $collectorProcessId) -cne $epoch){throw 'Producer PID epoch changed.'}
                 if((Get-DocumentProducerUid $collectorProcessId) -cne $userId){throw 'Producer user changed.'}
                 $afterCommand=ConvertFrom-DocumentProducerCommand (Read-DocumentProducerKernelBytes "/proc/$collectorProcessId/cmdline" 16384) $env:DOTNET_ROOT
@@ -260,17 +293,17 @@ try {
                 foreach($line in $afterMaps.Split([char]10)){$map=ConvertFrom-DocumentProducerMap $line $scope.sdkDirectory;if($null -ne $map){Add-DocumentProducerMap $afterMapped $map}}
                 foreach($module in $documentProducerNames){if(-not $afterMapped.ContainsKey($module) -or $afterMapped[$module].inode -cne $mapped[$module].inode -or $afterMapped[$module].deviceMajor -ne $mapped[$module].deviceMajor -or $afterMapped[$module].deviceMinor -ne $mapped[$module].deviceMinor){throw 'Producer mapping changed during capture.'}}
                 $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/version/Extensions';sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
-                $status='mapped-snapshot';break
+                $status='mapped-snapshot';$stage='complete';break
             }
         }
         Start-Sleep -Milliseconds 100
     }
-} catch {$status='capture-refused';$snapshots=@();$processIdentity=$null}
+} catch {$status='capture-refused';$refusalCategory=Get-DocumentProducerRefusalCategory $_.Exception.Message;$snapshots=@();$processIdentity=$null}
 finally {
     if($null -ne $outputRoot){
         try {
             Read-DocumentProducerOwner $PrivateDirectory
-            $receipt=@{schemaVersion=1;status=$status;run=$env:GITHUB_RUN_ID;attempt=$env:GITHUB_RUN_ATTEMPT;process=$processIdentity;snapshots=$snapshots;readBytes=$total;producerSourceVerified=$false;producerExecutionVerified=$false;effectiveSettingsVerified=$false;transformationVerified=$false;evidenceComplete=$false;policyActive=$false;runtimeAccepted=$false;rawNumericalPassed=$false}
+            $receipt=@{schemaVersion=1;status=$status;observationStage=$stage;refusalCategory=$refusalCategory;run=$env:GITHUB_RUN_ID;attempt=$env:GITHUB_RUN_ATTEMPT;process=$processIdentity;snapshots=$snapshots;readBytes=$total;producerSourceVerified=$false;producerExecutionVerified=$false;effectiveSettingsVerified=$false;transformationVerified=$false;evidenceComplete=$false;policyActive=$false;runtimeAccepted=$false;rawNumericalPassed=$false}
             Write-DocumentProducerBytes (Join-Path $outputRoot 'receipt.json') $outputRoot ([Text.Encoding]::UTF8.GetBytes(($receipt|ConvertTo-Json -Depth 12)))
         } catch { }
     }
