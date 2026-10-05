@@ -343,7 +343,12 @@ internal static partial class WorkflowContractValidator
         }
 
         RequireScalarValue(evidenceInputs, "name", "document-validation-${{ github.sha }}");
-        RequireScalarValue(evidenceInputs, "path", "runner-results");
+        RequireScalarValue(evidenceInputs, "path", "runner-results\n"
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll\n"
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll");
         RequireScalarValue(evidenceInputs, "if-no-files-found", "warn");
         RequireScalarValue(evidenceInputs, "retention-days", "7");
 

@@ -46,6 +46,12 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: document-validation-${{ github.sha }}
-          path: runner-results
+          path: |-
+            runner-results
+            Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll
+            Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb
+            Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll
           if-no-files-found: warn
           retention-days: 7
