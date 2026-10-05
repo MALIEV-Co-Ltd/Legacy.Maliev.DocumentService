@@ -43,19 +43,19 @@ jobs:
       - name: Verify candidate source identity
         run: test "$(git rev-parse HEAD)" = "$DOCUMENT_SOURCE_SHA"
       - name: Restore
-        run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true
+        run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
       - name: Build Release before tests
-        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -warnaserror
+        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror
       - name: Focused actual helper and PDF tests
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
-          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
           --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests'
           --logger 'trx;LogFileName=receipt-focus.trx' --results-directory receipt-evidence/focus
       - name: Full suite with raw coverage
         run: >-
           dotnet test Legacy.Maliev.DocumentService.slnx
-          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
           --logger 'trx;LogFileName=full-suite.trx' --results-directory receipt-evidence/full
           --collect 'XPlat Code Coverage'
       - name: Record observed coverage and sanitized cases
