@@ -11,6 +11,7 @@ $ErrorActionPreference = 'Stop'
 $maximumFileBytes = 64MB
 $maximumTotalBytes = 256MB
 $repository = (Resolve-Path -LiteralPath $RepositoryRoot).Path
+. (Join-Path $PSScriptRoot 'Watch-DocumentTraceProducer.ps1')
 
 
 $privateDirectory = [IO.Path]::GetFullPath($PrivateDiagnosticDirectory)
@@ -102,6 +103,7 @@ function Remove-OwnedPrivateDiagnostics {
     if ($markerFile.Length -gt 4096) { throw 'Oversized private ownership marker.' }
     $marker = Get-Content -LiteralPath $markerFile.FullName -Raw | ConvertFrom-Json
     if ($marker.run -ne $env:GITHUB_RUN_ID -or $marker.attempt -ne $env:GITHUB_RUN_ATTEMPT) { throw 'Private diagnostic ownership mismatch.' }
+    Stop-DocumentProducerObserver $privateDirectory
     foreach ($entry in @(Get-ChildItem -LiteralPath $privateDirectory -Recurse -Force)) {
         if (($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Private diagnostics contain a symbolic link; cleanup refused.' }
     }
@@ -231,6 +233,25 @@ if ($Phase -eq 'PreTest') {
         if ([IO.File]::GetUnixFileMode($privateDirectory) -ne ([IO.UnixFileMode]::UserRead -bor [IO.UnixFileMode]::UserWrite -bor [IO.UnixFileMode]::UserExecute)) { throw 'Private diagnostic mode must be owner-only.' }
     }
     @{ run = $env:GITHUB_RUN_ID; attempt = $env:GITHUB_RUN_ATTEMPT } | ConvertTo-Json | Set-Content -LiteralPath $ownerMarker -Encoding utf8
+    if ([OperatingSystem]::IsLinux()) {
+        $start = [Diagnostics.ProcessStartInfo]::new((Join-Path $PSHOME 'pwsh'))
+        $start.UseShellExecute = $false
+        foreach ($argument in @('-NoLogo','-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'Watch-DocumentTraceProducer.ps1'),'-Mode','Watch','-PrivateDirectory',$privateDirectory)) { $start.ArgumentList.Add($argument) }
+        try { $observer = [Diagnostics.Process]::Start($start) } catch { throw 'Producer observer could not start.' }
+        try {
+            $observerIdentity = @{ processId = $observer.Id.ToString(); startTicks = (Read-DocumentProducerEpoch $observer.Id.ToString()); run = $env:GITHUB_RUN_ID; attempt = $env:GITHUB_RUN_ATTEMPT }
+            Assert-DocumentObserverProcess $observerIdentity.processId $observerIdentity.startTicks $privateDirectory
+            Write-DocumentProducerBytes (Join-Path $privateDirectory 'observer.json') $privateDirectory ([Text.Encoding]::UTF8.GetBytes(($observerIdentity | ConvertTo-Json)))
+        } catch {
+            # The owned child remains bounded even if role identification fails. Never kill a
+            # process lacking its exact epoch/executable/UID/command identity.
+            if ($null -ne $observerIdentity -and -not $observer.HasExited) {
+                Assert-DocumentObserverProcess $observerIdentity.processId $observerIdentity.startTicks $privateDirectory
+                $observer.Kill(); [void]$observer.WaitForExit(1000)
+            }
+            throw 'Producer observer startup binding failed.'
+        } finally { $observer.Dispose() }
+    }
 } else {
     $pre = Get-Content -LiteralPath (Join-Path $workspaceOutput 'PreTest/receipt.json') -Raw | ConvertFrom-Json
     if ($pre.checkout.commit -ne $identity.commit -or $pre.candidate -ne $receipt.candidate -or $pre.run -ne $receipt.run -or $pre.attempt -ne $receipt.attempt) { throw 'Pre/post provenance mismatch.' }
@@ -241,6 +262,7 @@ if ($Phase -eq 'PreTest') {
     $receipt.restoredEqualsPreTest = $true
     # Diagnostic mentions alone are not proof that a module executed. Keep selection/settings incomplete.
     try {
+        Stop-DocumentProducerObserver $privateDirectory
         . (Join-Path $PSScriptRoot 'Read-DocumentCollectorTrace.ps1')
         $assetsFile = Get-BoundedFile $AssetsPath
         Assert-Child $assetsFile.FullName $repository
@@ -264,7 +286,7 @@ if ($Phase -eq 'PreTest') {
             $moduleBindings[$moduleFile.FullName] = @{ module = $module; sha256 = $moduleHash; identity = (Get-ModuleReportedIdentity $moduleFile.FullName) }
         }
         $typedLines = @()
-        $diagnostics = @(Get-ChildItem -LiteralPath $privateDirectory -File | Where-Object Name -ne 'owner.json')
+        $diagnostics = @(Get-ChildItem -LiteralPath $privateDirectory -File | Where-Object Name -Like '*.log')
         if ($diagnostics.Count -gt 16) { throw 'Diagnostic file count limit exceeded.' }
         $diagnosticTotalBytes = 0L
         foreach ($diagnostic in $diagnostics) {
@@ -284,6 +306,38 @@ if ($Phase -eq 'PreTest') {
             }
         }
         $receipt.collectorTypedTrace = Read-DocumentCollectorTrace -Lines $typedLines -ExpectedTestModule (Join-Path $testDirectory 'Legacy.Maliev.DocumentService.Tests.dll') -ExpectedApplicationModule (Join-Path $testDirectory 'Legacy.Maliev.DocumentService.Application.dll') -ModuleBindings $moduleBindings -CallerVerifiedModuleByteBindings $true
+        $producerRoot = Join-Path $privateDirectory 'producer'
+        $producer = [ordered]@{ status = 'not-observed'; process = $null; snapshots = @(); traceProcessJoinVerified = $false; producerSourceVerified = $false; producerExecutionVerified = $false; evidenceComplete = $false; policyActive = $false; runtimeAccepted = $false; rawNumericalPassed = $false }
+        if ([OperatingSystem]::IsLinux() -and [IO.Directory]::Exists($producerRoot)) {
+            $producerReceiptBytes = Read-DocumentProducerBytes (Join-Path $producerRoot 'receipt.json') $producerRoot 64KB
+            $totalBytes += $producerReceiptBytes.Length
+            $capturedProducer = [Text.Encoding]::UTF8.GetString($producerReceiptBytes) | ConvertFrom-Json
+            if ($capturedProducer.schemaVersion -ne 1 -or $capturedProducer.run -cne $receipt.run -or $capturedProducer.attempt -cne $receipt.attempt -or $capturedProducer.status -cnotin @('incomplete','capture-refused','mapped-snapshot')) { throw 'Producer receipt identity invalid.' }
+            $producer.status = $capturedProducer.status
+            if ($capturedProducer.status -ceq 'mapped-snapshot') {
+                $process = $capturedProducer.process
+                if ($process.processId -cnotmatch '^[1-9][0-9]*$' -or $process.startTicks -cnotmatch '^[0-9]+$' -or $process.sdkVersion -cnotmatch '^[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?$' -or $process.processRole -cne 'datacollector.dll' -or $process.sdkScope -cne 'DOTNET_ROOT/sdk/version/Extensions' -or $process.sameProcessEpochVerified -ne $true -or $process.sameUserIdVerified -ne $true -or $process.launcherExecutablePathVerified -ne $true -or $process.mappedInodeDeviceBindingVerified -ne $true) { throw 'Producer process receipt invalid.' }
+                $producer.process = @{ processId = $process.processId; processRole = 'datacollector.dll'; startTicks = $process.startTicks; sdkVersion = $process.sdkVersion; sdkScope = 'DOTNET_ROOT/sdk/version/Extensions'; sameProcessEpochVerified = $true; sameUserIdVerified = $true; launcherExecutablePathVerified = $true; mappedInodeDeviceBindingVerified = $true; executionAttributed = $false }
+                $seenProducerArtifacts = @{}
+                if (@($capturedProducer.snapshots).Count -lt 5 -or @($capturedProducer.snapshots).Count -gt 10) { throw 'Producer snapshot count invalid.' }
+                foreach ($snapshot in $capturedProducer.snapshots) {
+                    if ($snapshot.module -cnotin $documentProducerNames -or $snapshot.extension -cnotin @('dll','pdb') -or $snapshot.artifact -cne [IO.Path]::ChangeExtension($snapshot.module,$snapshot.extension) -or $snapshot.sha256 -cnotmatch '^[A-F0-9]{64}$' -or $seenProducerArtifacts.ContainsKey($snapshot.artifact)) { throw 'Producer snapshot contract invalid.' }
+                    $seenProducerArtifacts[$snapshot.artifact] = $true
+                    $bytes = Read-DocumentProducerBytes (Join-Path $producerRoot $snapshot.artifact) $producerRoot
+                    $totalBytes += $bytes.Length
+                    if ($totalBytes -gt $maximumTotalBytes -or $bytes.Length -ne $snapshot.bytes -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)) -cne $snapshot.sha256) { throw 'Producer physical byte join failed.' }
+                    $copyPath = Join-Path $phaseDirectory $snapshot.artifact
+                    Write-DocumentProducerBytes $copyPath $phaseDirectory $bytes
+                    $row = @{ module = $snapshot.module; extension = $snapshot.extension; artifact = "PostTest/$($snapshot.artifact)"; sha256 = $snapshot.sha256; bytes = $bytes.Length; mapped = $snapshot.extension -ceq 'dll'; executionAttributed = $false }
+                    if ($snapshot.extension -ceq 'dll') { $row.metadata = Get-DocumentProducerMetadata $bytes $snapshot.module }
+                    $producer.snapshots += $row
+                }
+                foreach ($module in $documentProducerNames) { if (-not $seenProducerArtifacts.ContainsKey($module)) { throw 'Required mapped producer module absent.' } }
+                $eventProcesses = @($receipt.collectorTypedTrace.events | ForEach-Object processId | Select-Object -Unique)
+                $producer.traceProcessJoinVerified = $eventProcesses.Count -eq 1 -and $eventProcesses[0] -ceq $process.processId
+            }
+        }
+        $receipt.traceProducer = $producer
         $observedPath = Join-Path (Split-Path $workspaceOutput -Parent) 'document-runtime-application.dll'
         Assert-Child $observedPath (Join-Path $repository 'runner-results')
         $observed = Get-BoundedFile $observedPath
