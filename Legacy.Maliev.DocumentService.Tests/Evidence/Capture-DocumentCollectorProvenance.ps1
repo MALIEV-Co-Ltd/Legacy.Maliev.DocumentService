@@ -72,6 +72,27 @@ function Get-ApplicationMetadata([string]$path) {
         } finally { $pe.Dispose() }
     } finally { $stream.Dispose() }
 }
+function Get-ModuleReportedIdentity([string]$path) {
+    $stream = [IO.File]::OpenRead($path)
+    try {
+        $pe = [System.Reflection.PortableExecutable.PEReader]::new($stream)
+        try {
+            $reader = [System.Reflection.Metadata.PEReaderExtensions]::GetMetadataReader($pe)
+            $definition = $reader.GetAssemblyDefinition()
+            $culture = $reader.GetString($definition.Culture)
+            if ($culture -eq '') { $culture = 'neutral' }
+            $key = $reader.GetBlobBytes($definition.PublicKey)
+            $token = 'null'
+            if ($key.Length -gt 0) {
+                $hash = [Security.Cryptography.SHA1]::HashData($key)
+                $tokenBytes = [byte[]]$hash[($hash.Length - 8)..($hash.Length - 1)]
+                [Array]::Reverse($tokenBytes)
+                $token = [Convert]::ToHexString($tokenBytes).ToLowerInvariant()
+            }
+            return $reader.GetString($definition.Name) + ', Version=' + $definition.Version + ', Culture=' + $culture + ', PublicKeyToken=' + $token
+        } finally { $pe.Dispose() }
+    } finally { $stream.Dispose() }
+}
 function Remove-OwnedPrivateDiagnostics {
     Assert-Child $privateDirectory $env:RUNNER_TEMP
     if (-not (Test-Path -LiteralPath $privateDirectory)) { return }
@@ -220,6 +241,29 @@ if ($Phase -eq 'PreTest') {
     $receipt.restoredEqualsPreTest = $true
     # Diagnostic mentions alone are not proof that a module executed. Keep selection/settings incomplete.
     try {
+        . (Join-Path $PSScriptRoot 'Read-DocumentCollectorTrace.ps1')
+        $assetsFile = Get-BoundedFile $AssetsPath
+        Assert-Child $assetsFile.FullName $repository
+        $assets = Get-Content -LiteralPath $assetsFile.FullName -Raw | ConvertFrom-Json
+        $library = $assets.libraries.'coverlet.collector/6.0.4'
+        $packageRoots = @($assets.packageFolders.PSObject.Properties.Name)
+        if ($null -eq $library -or $library.type -ne 'package' -or $packageRoots.Count -ne 1) { throw 'Pinned collector package resolution absent or ambiguous.' }
+        $packageRoot = Join-Path $packageRoots[0] $library.path
+        Assert-Child $packageRoot $packageRoots[0]
+        $moduleBindings = @{}
+        foreach ($module in @('coverlet.collector.dll','coverlet.core.dll','Mono.Cecil.dll')) {
+            $relative = 'build/netstandard2.0/' + $module
+            $modulePath = Join-Path $packageRoot $relative
+            Assert-Child $modulePath $packageRoot
+            $moduleFile = Get-BoundedFile $modulePath
+            $totalBytes += $moduleFile.Length
+            if ($totalBytes -gt $maximumTotalBytes) { throw 'Evidence total byte limit exceeded.' }
+            $captured = @($pre.collectorFiles | Where-Object packageRelativePath -CEQ $relative)
+            $moduleHash = (Get-FileHash -LiteralPath $moduleFile.FullName -Algorithm SHA256).Hash
+            if ($captured.Count -ne 1 -or $captured[0].sha256 -cne $moduleHash) { throw 'Collector pre/post module byte mismatch.' }
+            $moduleBindings[$moduleFile.FullName] = @{ module = $module; sha256 = $moduleHash; identity = (Get-ModuleReportedIdentity $moduleFile.FullName) }
+        }
+        $typedLines = @()
         $diagnostics = @(Get-ChildItem -LiteralPath $privateDirectory -File | Where-Object Name -ne 'owner.json')
         if ($diagnostics.Count -gt 16) { throw 'Diagnostic file count limit exceeded.' }
         $diagnosticTotalBytes = 0L
@@ -230,12 +274,16 @@ if ($Phase -eq 'PreTest') {
             $totalBytes += $file.Length
             if ($totalBytes -gt $maximumTotalBytes) { throw 'Evidence total byte limit exceeded.' }
             if ($file.Length -gt 8MB -or $diagnosticTotalBytes -gt 32MB) { throw 'Diagnostic byte limit exceeded.' }
-            $mentions = @(Get-Content -LiteralPath $file.FullName | Where-Object { $_ -match 'coverlet\.(collector|core)\.dll|Mono\.Cecil\.dll' })
+            $lines = @(Get-Content -LiteralPath $file.FullName)
+            $typedLines += $lines
+            if ($typedLines.Count -gt 131072) { throw 'Trace line budget exceeded.' }
+            $mentions = @($lines | Where-Object { $_ -match 'coverlet\.(collector|core)\.dll|Mono\.Cecil\.dll' })
             foreach ($module in @('coverlet.collector.dll','coverlet.core.dll','Mono.Cecil.dll')) {
                 $count = @($mentions | Where-Object { $_.Contains($module, [StringComparison]::OrdinalIgnoreCase) }).Count
                 if ($count -gt 0) { $receipt.collectorLoadEvidence += @{ module = $module; diagnosticMentionCount = $count; executionAttributed = $false } }
             }
         }
+        $receipt.collectorTypedTrace = Read-DocumentCollectorTrace -Lines $typedLines -ExpectedTestModule (Join-Path $testDirectory 'Legacy.Maliev.DocumentService.Tests.dll') -ExpectedApplicationModule (Join-Path $testDirectory 'Legacy.Maliev.DocumentService.Application.dll') -ModuleBindings $moduleBindings -CallerVerifiedModuleByteBindings $true
         $observedPath = Join-Path (Split-Path $workspaceOutput -Parent) 'document-runtime-application.dll'
         Assert-Child $observedPath (Join-Path $repository 'runner-results')
         $observed = Get-BoundedFile $observedPath
