@@ -1,7 +1,7 @@
 param([ValidateSet('Library','Watch')][string]$Mode='Library',[string]$PrivateDirectory)
 # Passive Linux process observation only. Mapped bytes are not proof that a method executed.
 # No raw diagnostics, command line, maps, unknown paths or exception text leave the private root.
-$documentProducerNames=@('datacollector.dll','Microsoft.TestPlatform.Common.dll','Microsoft.TestPlatform.CoreUtilities.dll','Microsoft.TestPlatform.PlatformAbstractions.dll','Microsoft.VisualStudio.TestPlatform.ObjectModel.dll')
+$documentProducerNames=@('datacollector.dll','Microsoft.VisualStudio.TestPlatform.Common.dll','Microsoft.TestPlatform.CoreUtilities.dll','Microsoft.TestPlatform.PlatformAbstractions.dll','Microsoft.VisualStudio.TestPlatform.ObjectModel.dll')
 function Assert-DocumentProducerPath([string]$Path,[string]$Root) {
     $full=[IO.Path]::GetFullPath($Path);$parent=[IO.Path]::GetFullPath($Root)
     if(-not $full.StartsWith($parent.TrimEnd([IO.Path]::DirectorySeparatorChar)+[IO.Path]::DirectorySeparatorChar,[StringComparison]::Ordinal)){throw 'Producer path outside fixed root.'}
@@ -95,10 +95,24 @@ function ConvertFrom-DocumentProducerCommand([byte[]]$Bytes,[string]$DotnetRoot)
     if($DotnetRoot -cnotmatch '^/(?:[^/\\]+/)*[^/\\]+/?$' -or @($DotnetRoot.Split('/')|Where-Object {$_ -cin @('.','..')}).Count){throw 'Invalid producer SDK root.'}
     $root=$DotnetRoot.TrimEnd('/')
     if($arguments.Count -lt 2 -or $arguments.Count -gt 64 -or $arguments[0] -cne "$root/dotnet"){throw 'Unexpected managed producer launcher.'}
-    $index=if($arguments[1] -ceq 'exec'){2}else{1}
-    if($arguments.Count -le $index -or -not ($arguments[$index] -cmatch ('^'+[regex]::Escape($root)+'/sdk/([0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?)/Extensions/datacollector\.dll$'))){throw 'Unexpected producer SDK entry point.'}
-    $sdk=$Matches[1]
-    return @{sdkVersion=$sdk;entryPoint=$arguments[$index];sdkDirectory="$root/sdk/$sdk"}
+    # SDK 10.0.401 Version.Details pins CLI 18.7.0-release-26374-102 / VMR
+    # 981be135426277fabd550b94fa14cdaf7271b9c2. Its launcher permits these two
+    # optional, ordered dotnet-exec options; CLI packaging/layout puts all files at SDK root.
+    # This contract is intentionally frozen. A different SDK requires source review.
+    if($arguments[1] -cne 'exec'){throw 'Unexpected producer launcher options.'}
+    $sdk='10.0.401';$sdkDirectory="$root/sdk/$sdk";$index=2;$rank=0
+    $options=@{exec=$true;runtimeConfig=$false;depsFile=$false}
+    while($index -lt $arguments.Count -and $arguments[$index].StartsWith('--',[StringComparison]::Ordinal)){
+        $option=$arguments[$index]
+        $nextRank=switch -CaseSensitive ($option){'--runtimeconfig'{1};'--depsfile'{2};default{throw 'Unexpected producer launcher options.'}}
+        if($nextRank -le $rank -or $index+1 -ge $arguments.Count){throw 'Unexpected producer launcher options.'}
+        $filename=if($nextRank -eq 1){'datacollector.runtimeconfig.json'}else{'datacollector.deps.json'}
+        if($arguments[$index+1] -cne "$sdkDirectory/$filename"){throw 'Unexpected producer launcher options.'}
+        if($nextRank -eq 1){$options.runtimeConfig=$true}else{$options.depsFile=$true}
+        $rank=$nextRank;$index+=2
+    }
+    if($arguments.Count -le $index -or $arguments[$index] -cne "$sdkDirectory/datacollector.dll"){throw 'Unexpected producer SDK entry point.'}
+    return @{sdkVersion=$sdk;entryPoint=$arguments[$index];sdkDirectory=$sdkDirectory;launcherOptions=$options}
 }
 function ConvertFrom-DocumentProducerMap([string]$Line,[string]$SdkDirectory) {
     if($Line.Length -gt 32768){throw 'Producer map line bound exceeded.'}
@@ -106,7 +120,7 @@ function ConvertFrom-DocumentProducerMap([string]$Line,[string]$SdkDirectory) {
     $map=@{}+$Matches;$path=$map[8]
     $name=[IO.Path]::GetFileName($path)
     if($name -cnotin $documentProducerNames){return $null}
-    if($path -cne "$SdkDirectory/Extensions/$name" -or $map[7] -eq '0' -or -not $map[3].StartsWith('r',[StringComparison]::Ordinal)){throw 'Producer mapping scope invalid.'}
+    if($path -cne "$SdkDirectory/$name" -or $map[7] -eq '0' -or -not $map[3].StartsWith('r',[StringComparison]::Ordinal)){throw 'Producer mapping scope invalid.'}
     return @{module=$name;path=$path;inode=$map[7];deviceMajor=[Convert]::ToUInt64($map[5],16);deviceMinor=[Convert]::ToUInt64($map[6],16)}
 }
 function Add-DocumentProducerMap([hashtable]$Maps,[hashtable]$Map) {
@@ -118,6 +132,7 @@ function Get-DocumentProducerRefusalCategory([string]$Message) {
     switch -CaseSensitive ($Message) {
         'Unexpected managed producer launcher.' {return 'managed-launcher'}
         'Unexpected producer SDK entry point.' {return 'sdk-entry-point'}
+        'Unexpected producer launcher options.' {return 'launcher-options'}
         'Producer executable launcher mismatch.' {return 'executable-launcher'}
         'Collector process user mismatch.' {return 'process-user'}
         'Producer path outside fixed root.' {return 'path-scope'}
@@ -286,13 +301,13 @@ try {
                 if((Read-DocumentProducerEpoch $collectorProcessId) -cne $epoch){throw 'Producer PID epoch changed.'}
                 if((Get-DocumentProducerUid $collectorProcessId) -cne $userId){throw 'Producer user changed.'}
                 $afterCommand=ConvertFrom-DocumentProducerCommand (Read-DocumentProducerKernelBytes "/proc/$collectorProcessId/cmdline" 16384) $env:DOTNET_ROOT
-                if($scope.entryPoint -cne $afterCommand.entryPoint){throw 'Producer launcher changed.'}
+                if($scope.entryPoint -cne $afterCommand.entryPoint -or $scope.launcherOptions.runtimeConfig -ne $afterCommand.launcherOptions.runtimeConfig -or $scope.launcherOptions.depsFile -ne $afterCommand.launcherOptions.depsFile){throw 'Producer launcher changed.'}
                 if([IO.FileInfo]::new("/proc/$collectorProcessId/exe").LinkTarget -cne $launcher){throw 'Producer executable changed.'}
                 $afterMaps=[Text.Encoding]::UTF8.GetString((Read-DocumentProducerKernelBytes "/proc/$collectorProcessId/maps" 4MB))
                 $afterMapped=@{}
                 foreach($line in $afterMaps.Split([char]10)){$map=ConvertFrom-DocumentProducerMap $line $scope.sdkDirectory;if($null -ne $map){Add-DocumentProducerMap $afterMapped $map}}
                 foreach($module in $documentProducerNames){if(-not $afterMapped.ContainsKey($module) -or $afterMapped[$module].inode -cne $mapped[$module].inode -or $afterMapped[$module].deviceMajor -ne $mapped[$module].deviceMajor -or $afterMapped[$module].deviceMinor -ne $mapped[$module].deviceMinor){throw 'Producer mapping changed during capture.'}}
-                $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/version/Extensions';sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
+                $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/10.0.401';launcherOptions=$scope.launcherOptions;sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
                 $status='mapped-snapshot';$stage='complete';break
             }
         }
