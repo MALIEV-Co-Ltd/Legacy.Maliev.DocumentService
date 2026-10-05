@@ -13,10 +13,20 @@ namespace Legacy.Maliev.DocumentService.Tests;
 // Inactive shape proposal only: synthetic targets are never loaded or invoked.
 public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper output)
 {
-    private static readonly MethodInfo[] Profile = typeof(IDocumentRenderer).GetMethods();
+    private sealed record ContractMethod(string Name, Type ParameterType);
+    private static readonly ContractMethod[] Profile =
+    [
+        new("RenderInvoice", typeof(Legacy.Maliev.DocumentService.Domain.Invoice.Invoice)),
+        new("RenderPurchaseOrder", typeof(Legacy.Maliev.DocumentService.Domain.PurchaseOrder.PurchaseOrder)),
+        new("RenderQuotation", typeof(Legacy.Maliev.DocumentService.Domain.Quotations.Quotation)),
+        new("RenderReceipt", typeof(Legacy.Maliev.DocumentService.Domain.Receipt.Receipt)),
+        new("RenderOrderLabel", typeof(Legacy.Maliev.DocumentService.Domain.OrderLabel.OrderLabel))
+    ];
 
     [Theory]
     [InlineData("interface", "exact-profile")]
+    [InlineData("wrong-definition-identity", "assembly-profile")]
+    [InlineData("extra-member", "member-profile")]
     [InlineData("default-body", "managed-body")]
     [InlineData("hidden-helper", "managed-body")]
     [InlineData("generated-accessor", "managed-body")]
@@ -39,12 +49,21 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
     [InlineData("wrong-assembly", "signature-profile")]
     public void CompiledProfile_ReportsIntendedReasonWithoutAcceptingIncompleteEvidence(string fixture, string expectedReason)
     {
+        var actualProfile = typeof(IDocumentRenderer).GetMethods();
+        Assert.Equal(5, actualProfile.Length);
+        foreach (var expected in Profile)
+        {
+            var actual = Assert.Single(actualProfile, item => item.Name == expected.Name);
+            Assert.Equal(typeof(byte[]), actual.ReturnType);
+            Assert.Equal(expected.ParameterType, Assert.Single(actual.GetParameters()).ParameterType);
+        }
         using var image = EmitFixture(fixture);
         Assert.InRange(image.Length, 1, 1024 * 1024);
         using var pe = new PEReader(image);
         var reader = pe.GetMetadataReader();
         Assert.InRange(reader.MethodDefinitions.Count, 4, 6);
         Assert.InRange(reader.TypeDefinitions.Count, 2, 4);
+        AssertFixtureFault(fixture, pe, reader);
         var result = Evaluate(pe, reader);
         output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { fixture, sha256 = Convert.ToHexString(SHA256.HashData(image.ToArray())), methods = reader.MethodDefinitions.Count, fields = reader.FieldDefinitions.Count, shapeVerified = result.ShapeVerified, evidenceComplete = result.EvidenceComplete, structuralDispositionProposed = result.StructuralDispositionProposed, policyActive = result.PolicyActive, runtimeAccepted = result.RuntimeAccepted, rawNumericalPassed = result.RawNumericalPassed, reason = result.Reason }));
         Assert.Equal(expectedReason, result.Reason);
@@ -76,6 +95,57 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
         }
     }
 
+    private static void AssertFixtureFault(string fixture, PEReader pe, MetadataReader reader)
+    {
+        var methods = reader.MethodDefinitions.Select(reader.GetMethodDefinition).ToArray();
+        var names = methods.Select(method => reader.GetString(method.Name)).ToArray();
+        if (fixture == "wrong-definition-identity") Assert.Equal("Untrusted.Product", reader.GetString(reader.GetAssemblyDefinition().Name));
+        if (fixture == "missing-member") { Assert.Equal(4, methods.Length); Assert.DoesNotContain(Profile[0].Name, names); }
+        if (fixture == "extra-member") { Assert.Equal(6, methods.Length); Assert.Contains("Extra", names); }
+        if (fixture == "wrong-name") { Assert.Contains("WrongName", names); Assert.DoesNotContain(Profile[0].Name, names); }
+        if (fixture == "field") Assert.Single(reader.FieldDefinitions);
+        if (fixture == "initialized-field") Assert.Contains(reader.FieldDefinitions, handle => reader.GetFieldDefinition(handle).GetRelativeVirtualAddress() != 0);
+        if (fixture == "entrypoint") Assert.NotEqual(0, pe.PEHeaders.CorHeader!.EntryPointTokenOrRelativeVirtualAddress);
+        if (fixture == "wrong-interface") Assert.Contains(reader.TypeDefinitions, handle => reader.GetString(reader.GetTypeDefinition(handle).Name) == "WrongInterface");
+        if (fixture == "extra-type") Assert.Equal(3, reader.TypeDefinitions.Count);
+        if (fixture is "wrong-return" or "wrong-parameter" or "wrong-assembly")
+        {
+            var method = Assert.Single(methods, item => reader.GetString(item.Name) == Profile[0].Name);
+            var blob = reader.GetBlobReader(method.Signature);
+            Assert.True(blob.ReadSignatureHeader().IsInstance);
+            Assert.Equal(1, blob.ReadCompressedInteger());
+            if (fixture == "wrong-return") Assert.Equal(SignatureTypeCode.Void, blob.ReadSignatureTypeCode());
+            else
+            {
+                Assert.Equal(SignatureTypeCode.SZArray, blob.ReadSignatureTypeCode());
+                Assert.Equal(SignatureTypeCode.Byte, blob.ReadSignatureTypeCode());
+                if (fixture == "wrong-parameter") Assert.Equal(SignatureTypeCode.String, blob.ReadSignatureTypeCode());
+                else
+                {
+                    Assert.Equal(0x12, blob.ReadByte());
+                    var type = reader.GetTypeReference((TypeReferenceHandle)blob.ReadTypeHandle());
+                    Assert.Equal(Profile[0].ParameterType.FullName, reader.GetString(type.Namespace) + "." + reader.GetString(type.Name));
+                    Assert.Equal("Untrusted.Domain", reader.GetString(reader.GetAssemblyReference((AssemblyReferenceHandle)type.ResolutionScope).Name));
+                }
+            }
+        }
+        if (fixture is "default-body" or "hidden-helper" or "generated-accessor" or "collector-named-helper")
+        {
+            var expectedName = fixture == "default-body" ? Profile[0].Name : fixture == "generated-accessor" ? "get_Value" : "Execute";
+            Assert.Contains(methods, method => reader.GetString(method.Name) == expectedName && method.RelativeVirtualAddress > 0);
+            if (fixture == "collector-named-helper") Assert.Contains(reader.TypeDefinitions, handle => reader.GetString(reader.GetTypeDefinition(handle).Namespace) == "Coverlet.Core.Instrumentation.Tracker");
+        }
+        var expectedFlag = fixture switch
+        {
+            "runtime-zero-rva" => MethodImplAttributes.Runtime,
+            "native-zero-rva" => MethodImplAttributes.Native,
+            "internal-call-zero-rva" => MethodImplAttributes.InternalCall,
+            "forward-ref-zero-rva" => MethodImplAttributes.ForwardRef,
+            _ => (MethodImplAttributes)0
+        };
+        if (expectedFlag != 0) Assert.Contains(methods, method => method.RelativeVirtualAddress == 0 && (method.ImplAttributes & expectedFlag) == expectedFlag);
+    }
+
     private sealed record Proposal(bool ShapeVerified, string Reason)
     {
         public bool EvidenceComplete => false;
@@ -87,6 +157,10 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
 
     private static Proposal Evaluate(PEReader pe, MetadataReader reader)
     {
+        var identity = reader.GetAssemblyDefinition();
+        if (reader.GetString(identity.Name) != "Document.StructuralProposalFixture"
+            || identity.Version != new Version(1, 0, 0, 0) || reader.GetString(identity.Culture) != ""
+            || reader.GetBlobBytes(identity.PublicKey).Length != 0) return new(false, "assembly-profile");
         var header = pe.PEHeaders.CorHeader;
         if (header is null || header.EntryPointTokenOrRelativeVirtualAddress != 0) return new(false, "entrypoint");
         if ((header.Flags & CorFlags.ILOnly) == 0 || header.ManagedNativeHeaderDirectory.Size != 0) return new(false, "native-header");
@@ -103,7 +177,7 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
         foreach (var method in methods)
         {
             var expected = Profile.Single(item => item.Name == reader.GetString(method.Name));
-            if (method.Attributes != (MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract)
+            if (method.Attributes != (MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract | MethodAttributes.HideBySig)
                 || method.GetGenericParameters().Count != 0 || !SignatureMatches(reader, method, expected)) return new(false, "signature-profile");
         }
         return new(true, "exact-profile");
@@ -113,18 +187,18 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
         || (method.ImplAttributes & MethodImplAttributes.CodeTypeMask) != MethodImplAttributes.IL
         || (method.ImplAttributes & (MethodImplAttributes.InternalCall | MethodImplAttributes.Unmanaged | MethodImplAttributes.ForwardRef)) != 0;
 
-    private static bool SignatureMatches(MetadataReader reader, MethodDefinition method, MethodInfo expected)
+    private static bool SignatureMatches(MetadataReader reader, MethodDefinition method, ContractMethod expected)
     {
         var blob = reader.GetBlobReader(method.Signature);
         var header = blob.ReadSignatureHeader();
         if (header.Kind != SignatureKind.Method || header.CallingConvention != SignatureCallingConvention.Default
             || !header.IsInstance || header.IsGeneric || header.HasExplicitThis || blob.ReadCompressedInteger() != 1
             || blob.ReadSignatureTypeCode() != SignatureTypeCode.SZArray || blob.ReadSignatureTypeCode() != SignatureTypeCode.Byte
-            || blob.ReadSignatureTypeCode() != SignatureTypeCode.TypeHandle) return false;
+            || blob.ReadByte() != 0x12) return false;
         var handle = blob.ReadTypeHandle();
         if (handle.Kind != HandleKind.TypeReference || blob.RemainingBytes != 0) return false;
         var type = reader.GetTypeReference((TypeReferenceHandle)handle);
-        var expectedType = expected.GetParameters()[0].ParameterType;
+        var expectedType = expected.ParameterType;
         if (reader.GetString(type.Name) != expectedType.Name || reader.GetString(type.Namespace) != expectedType.Namespace
             || type.ResolutionScope.Kind != HandleKind.AssemblyReference) return false;
         var reference = reader.GetAssemblyReference((AssemblyReferenceHandle)type.ResolutionScope);
@@ -137,21 +211,21 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
 
     private static MemoryStream EmitFixture(string fixture)
     {
-        var assembly = new PersistedAssemblyBuilder(new AssemblyName("Document.StructuralProposalFixture"), typeof(object).Assembly);
+        var assembly = new PersistedAssemblyBuilder(new AssemblyName(fixture == "wrong-definition-identity" ? "Untrusted.Product, Version=1.0.0.0" : "Document.StructuralProposalFixture, Version=1.0.0.0"), typeof(object).Assembly);
         var module = assembly.DefineDynamicModule("Fixture");
         var contract = module.DefineType(fixture == "wrong-interface" ? "Fixture.WrongInterface" : typeof(IDocumentRenderer).FullName!, TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract);
         for (var index = 0; index < Profile.Length; index++)
         {
             if (fixture == "missing-member" && index == 0) continue;
             var expected = Profile[index];
-            var parameter = expected.GetParameters()[0].ParameterType;
+            var parameter = expected.ParameterType;
             if (index == 0 && fixture == "wrong-parameter") parameter = typeof(string);
             if (index == 0 && fixture == "wrong-assembly")
             {
                 var spoof = new PersistedAssemblyBuilder(new AssemblyName("Untrusted.Domain"), typeof(object).Assembly);
                 parameter = spoof.DefineDynamicModule("Spoof").DefineType(parameter.FullName!, TypeAttributes.Public).CreateType()!;
             }
-            var attributes = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract;
+            var attributes = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract | MethodAttributes.HideBySig;
             if (index == 0 && fixture == "default-body") attributes &= ~MethodAttributes.Abstract;
             var method = contract.DefineMethod(index == 0 && fixture == "wrong-name" ? "WrongName" : expected.Name, attributes,
                 index == 0 && fixture == "wrong-return" ? typeof(void) : typeof(byte[]), [parameter]);
@@ -165,6 +239,7 @@ public sealed class DocumentStructuralProposalFixtureTests(ITestOutputHelper out
             }
         }
         if (fixture == "field") contract.DefineField("Untrusted", typeof(int), FieldAttributes.Public | FieldAttributes.Static);
+        if (fixture == "extra-member") contract.DefineMethod("Extra", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Abstract | MethodAttributes.HideBySig, typeof(byte[]), [Profile[0].ParameterType]);
         contract.CreateType();
         if (fixture == "initialized-field") module.DefineInitializedData("Data", [1, 2, 3, 4], FieldAttributes.Public | FieldAttributes.Static);
         if (fixture is "hidden-helper" or "generated-accessor" or "collector-named-helper" or "pinvoke-zero-rva" or "entrypoint" or "extra-type")
