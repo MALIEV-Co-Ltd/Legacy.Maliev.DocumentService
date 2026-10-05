@@ -37,6 +37,37 @@ public sealed class DocumentOpenApiResponseSecurityHttpContractTests
     }
 
     [Fact]
+    public async Task DevelopmentOpenApi_PreservesOriginalApiOnlyXmlDocumentationScope()
+    {
+        await using var factory = new DocumentMetadataFactory();
+        using var response = await factory.CreateClient().GetAsync("/documents/openapi/v1.json");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var document = await response.Content.ReadFromJsonAsync<JsonElement>();
+        foreach (var schema in document.GetProperty("components").GetProperty("schemas").EnumerateObject())
+        {
+            if (schema.Value.TryGetProperty("description", out var description))
+            {
+                Assert.DoesNotContain(description.GetString(), new[]
+                {
+                    "Invoice Model.", "Quotation.", "Receipt Model.", "Purchase Order.",
+                });
+            }
+            if (schema.Value.TryGetProperty("properties", out var properties))
+            {
+                foreach (var property in properties.EnumerateObject())
+                {
+                    if (property.Value.TryGetProperty("description", out var propertyDescription))
+                    {
+                        Assert.False(propertyDescription.GetString()?.StartsWith("Gets or sets ", StringComparison.Ordinal) == true,
+                            "Original API-only XML registration must not import Domain property comments: " + schema.Name + "." + property.Name);
+                    }
+                }
+            }
+        }
+    }
+
+    [Fact]
     public async Task DevelopmentOpenApi_PreservesBearerAuthorizationHeaderAndEffectiveSecurity()
     {
         await using var factory = new DocumentMetadataFactory();
