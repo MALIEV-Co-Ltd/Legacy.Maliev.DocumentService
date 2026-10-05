@@ -21,6 +21,9 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <param name="item">The item.</param>
     [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public ActionResult CreateInvoiceAsync([FromBody] Invoice? item) =>
         item is null ? BadRequest() : File(renderer.RenderInvoice(item), MediaTypeNames.Application.Pdf);
 
@@ -28,6 +31,9 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <param name="item">The item.</param>
     [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public ActionResult CreatePurchaseOrderAsync([FromBody] PurchaseOrder? item) =>
         item is null ? BadRequest() : File(renderer.RenderPurchaseOrder(item), MediaTypeNames.Application.Pdf);
 
@@ -35,6 +41,9 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <param name="item">The item.</param>
     [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public ActionResult CreateQuotationAsync([FromBody] Quotation? item) =>
         item is null ? BadRequest() : File(renderer.RenderQuotation(item), MediaTypeNames.Application.Pdf);
 
@@ -42,6 +51,9 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <param name="item">The item.</param>
     [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public ActionResult CreateReceiptAsync([FromBody] Receipt? item) =>
         item is null ? BadRequest() : File(renderer.RenderReceipt(item), MediaTypeNames.Application.Pdf);
 
@@ -49,6 +61,9 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <param name="item">The item.</param>
     [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render)]
     [Produces(MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public ActionResult CreateOrderLabelAsync([FromBody] OrderLabel? item) =>
         item is null ? BadRequest() : File(renderer.RenderOrderLabel(item), MediaTypeNames.Application.Pdf);
 }
