@@ -9,7 +9,8 @@ function Read-DocumentCollectorTrace {
         knownRoleCounts=[ordered]@{datacollector=0;testhost=0;vstestConsole=0;dotnet=0;other=0}
         messageFamilyCounts=[ordered]@{successfulResolution=0;initialize=0;sessionStart=0;sessionEnd=0;parsedSettings=0;instrumentedModule=0;otherCollector=0;otherRelevant=0}
         wrapperCounts=[ordered]@{exactCoverlet=0;missingOrUnknown=0}
-        bindingMismatchCounts=[ordered]@{pathNotBound=0;identityMismatch=0;grammarMismatch=0}
+        bindingMismatchCounts=[ordered]@{pathNotBound=0;identityMismatch=0;simpleNameMismatch=0;grammarMismatch=0}
+        resolutionRequestShapeCounts=[ordered]@{fullIdentity=0;simpleNameOnly=0;other=0}
     }
     foreach($key in $ModuleBindings.Keys){
         $binding=$ModuleBindings[$key]
@@ -40,6 +41,11 @@ function Read-DocumentCollectorTrace {
             elseif($message.StartsWith('Instrumented module: ',[StringComparison]::Ordinal)){'instrumentedModule'}
             elseif($message.StartsWith('CoverletCoverageDataCollector:',[StringComparison]::Ordinal)){'otherCollector'}else{'otherRelevant'}
         $structure.messageFamilyCounts[$family]++
+        if($family -eq 'successfulResolution'){
+            $requestShape=if($message -match '^AssemblyResolver\.OnResolve: Resolved assembly: (coverlet\.(collector|core)|Mono\.Cecil), Version='){'fullIdentity'}
+                elseif($message -match '^AssemblyResolver\.OnResolve: Resolved assembly: (coverlet\.(collector|core)|Mono\.Cecil), from path: '){'simpleNameOnly'}else{'other'}
+            $structure.resolutionRequestShapeCounts[$requestShape]++
+        }
         if($trace[7] -cne 'datacollector.dll'){$outsideCollector++;continue}
         if($family -eq 'successfulResolution' -and $wrapper){$structure.bindingMismatchCounts.grammarMismatch++;$unrecognizedRelevant++;continue}
         # Actual pinned TestPlatformEqtTrace prepends this exact wrapper. Do not accept a
@@ -55,19 +61,42 @@ function Read-DocumentCollectorTrace {
                 if(@($ModuleBindings.Keys|Where-Object {$_ -ceq $path}).Count -ne 1){$structure.bindingMismatchCounts.pathNotBound++}else{$structure.bindingMismatchCounts.identityMismatch++}
                 $unrecognizedRelevant++;continue
             }
+        }elseif($message -match '^AssemblyResolver\.OnResolve: Resolved assembly: (coverlet\.(?:collector|core)|Mono\.Cecil), from path: (.+)$'){
+            # The pinned resolver logs args.Name after successful LoadAssemblyFromPath.
+            # AssemblyName accepts simple-name requests; a null requested Version matches any.
+            # Preserve this weaker request identity explicitly, rather than inventing a full identity.
+            $simpleName=$Matches[1];$path=$Matches[2]
+            if(@($ModuleBindings.Keys|Where-Object {$_ -ceq $path}).Count -eq 1 -and $ModuleBindings[$path].module -ceq ($simpleName+'.dll')){
+                $entry.kind='successful-resolution-simple-name-request';$entry.module=$ModuleBindings[$path].module;$entry.sha256=$ModuleBindings[$path].sha256
+                $entry.requestedSimpleNameMatchesBinding=$true;$entry.reportedFullIdentityVerified=$false;$entry.capturedByteAssemblyIdentity=$ModuleBindings[$path].identity;$entry.callerVerifiedModuleByteBindings=$CallerVerifiedModuleByteBindings
+            }else{if(@($ModuleBindings.Keys|Where-Object {$_ -ceq $path}).Count -eq 1){$structure.bindingMismatchCounts.simpleNameMismatch++}else{$structure.bindingMismatchCounts.pathNotBound++};$unrecognizedRelevant++;continue}
         }elseif($message -match "^Initializing CoverletCoverageDataCollector with configuration: '(.*)'$"){
             $xml=$Matches[1];$known=$false;$format=$null
+            $configurationShape=[ordered]@{
+                parseStatus='too-large';rootCategory='unknown';namespaceCategory='unknown'
+                rootNamespaceDeclarationAttributes=0;rootOtherAttributes=0;unknownElements=0;otherNodes=0
+                knownElementCounts=[ordered]@{Format=0;Include=0;IncludeDirectory=0;Exclude=0;ExcludeByFile=0;ExcludeByAttribute=0;MergeWith=0;UseSourceLink=0;SingleHit=0;IncludeTestAssembly=0;SkipAutoProps=0;DoesNotReturnAttribute=0;DeterministicReport=0;ExcludeAssembliesWithoutSources=0;ResultsDirectory=0;TestSessionCorrelationId=0}
+                formatCoberturaValues=0;formatOtherValues=0
+            }
             if($xml.Length -le 16384){
                 $options=[Xml.XmlReaderSettings]::new();$options.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$options.XmlResolver=$null;$options.MaxCharactersInDocument=16384
                 try{
-                    if($xml -ceq ''){$known=$true;$format='cobertura'}
+                    if($xml -ceq ''){$known=$true;$format='cobertura';$configurationShape.parseStatus='empty'}
                     else{
                         $text=[IO.StringReader]::new($xml);$reader=[Xml.XmlReader]::Create($text,$options)
                         try{$doc=[Xml.XmlDocument]::new();$doc.XmlResolver=$null;$doc.Load($reader)}finally{$reader.Dispose();$text.Dispose()}
+                        $configurationShape.parseStatus='parsed'
+                        $configurationShape.rootCategory=if($doc.DocumentElement.LocalName -ceq 'Configuration'){'Configuration'}else{'other'}
+                        $configurationShape.namespaceCategory=if($doc.DocumentElement.NamespaceURI -ceq ''){'none'}elseif($doc.DocumentElement.NamespaceURI -ceq 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'){'testPlatform2010'}else{'other'}
+                        foreach($attribute in $doc.DocumentElement.Attributes){if($attribute.NamespaceURI -ceq 'http://www.w3.org/2000/xmlns/'){$configurationShape.rootNamespaceDeclarationAttributes++}else{$configurationShape.rootOtherAttributes++}}
                         $known=$doc.DocumentElement.Name -ceq 'Configuration' -and $doc.DocumentElement.Attributes.Count -eq 0
                         $seen=@{}
                         foreach($child in $doc.DocumentElement.ChildNodes){
                             if($child.NodeType -eq [Xml.XmlNodeType]::Whitespace){continue}
+                            if($child.NodeType -eq [Xml.XmlNodeType]::Element){
+                                if(@($configurationShape.knownElementCounts.Keys|Where-Object {$_ -ceq $child.LocalName}).Count -eq 1){$configurationShape.knownElementCounts[$child.LocalName]++}else{$configurationShape.unknownElements++}
+                                if($child.LocalName -ceq 'Format'){if($child.InnerText.Trim() -ceq 'cobertura'){$configurationShape.formatCoberturaValues++}else{$configurationShape.formatOtherValues++}}
+                            }else{$configurationShape.otherNodes++}
                             if($child.NodeType -ne [Xml.XmlNodeType]::Element -or $child.Attributes.Count -ne 0 -or $seen.ContainsKey($child.Name)){$known=$false;continue}
                             $seen[$child.Name]=$true
                             switch -CaseSensitive ($child.Name){
@@ -81,9 +110,9 @@ function Read-DocumentCollectorTrace {
                         }
                         if($null -eq $format){$format='cobertura'}
                     }
-                }catch{$known=$false}
+                }catch{$known=$false;$configurationShape.parseStatus='parse-rejected'}
             }
-            $entry.kind='collector-initialize';$entry.configurationKnownProfile=$known;$entry.reportFormat=if($known){$format}else{$null};$entry.configurationXmlExported=$false
+            $entry.kind='collector-initialize';$entry.configurationKnownProfile=$known;$entry.reportFormat=if($known){$format}else{$null};$entry.configurationXmlExported=$false;$entry.configurationShape=$configurationShape
         }elseif($message -ceq 'CoverletCoverageDataCollector: SessionStart received'){$entry.kind='collector-session-start'}
         elseif($message -ceq 'CoverletCoverageDataCollector: SessionEnd received'){$entry.kind='collector-session-end'}
         elseif($message.StartsWith('CoverletCoverageDataCollector: Initializing coverlet process with settings: ',[StringComparison]::Ordinal)){
@@ -98,5 +127,5 @@ function Read-DocumentCollectorTrace {
     }
     # This is observational evidence only. Do not infer execution from a mention/resolution,
     # nor claim effective completeness without the real producer and downstream settings join.
-    return [ordered]@{schemaVersion=2;events=$events;structuralClassification=$structure;unrecognizedRelevantLineCount=$unrecognizedRelevant;outsideCollectorProcessCount=$outsideCollector;rawDiagnosticsExported=$false;producerBinarySourceVerified=$false;executedCollectorSelectionVerified=$false;effectiveSettingsVerified=$false;transformationVerified=$false;evidenceComplete=$false;policyActive=$false;runtimeAccepted=$false;rawNumericalPassed=$false}
+    return [ordered]@{schemaVersion=3;events=$events;structuralClassification=$structure;unrecognizedRelevantLineCount=$unrecognizedRelevant;outsideCollectorProcessCount=$outsideCollector;rawDiagnosticsExported=$false;producerBinarySourceVerified=$false;executedCollectorSelectionVerified=$false;effectiveSettingsVerified=$false;transformationVerified=$false;evidenceComplete=$false;policyActive=$false;runtimeAccepted=$false;rawNumericalPassed=$false}
 }
