@@ -6,7 +6,6 @@ using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Xunit.Abstractions;
-using System.Security.Cryptography;
 using Legacy.Maliev.DocumentService.Application;
 
 namespace Legacy.Maliev.DocumentService.Tests;
