@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using UglyToad.PdfPig;
 
@@ -172,6 +173,7 @@ public sealed class DocumentHttpAcceptanceTests
 
     internal sealed class DocumentFactory : WebApplicationFactory<Program>
     {
+        public ILoggerProvider? AdditionalLoggerProvider { get; init; }
         private const string Issuer = "https://document-fixture.invalid";
         private const string Audience = "document-fixture";
         private readonly RSA signingKey = RSA.Create(2048);
@@ -196,6 +198,8 @@ public sealed class DocumentHttpAcceptanceTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            if (AdditionalLoggerProvider is not null)
+                builder.ConfigureLogging(logging => logging.AddProvider(AdditionalLoggerProvider));
             builder.UseEnvironment("Production");
             builder.UseSetting("CORS:AllowedOrigins:0", Issuer);
             builder.UseSetting("Jwt:PublicKey", Convert.ToBase64String(Encoding.UTF8.GetBytes(signingKey.ExportSubjectPublicKeyInfoPem())));
