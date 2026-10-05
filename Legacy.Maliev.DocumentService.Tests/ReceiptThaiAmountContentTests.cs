@@ -111,7 +111,9 @@ public sealed class ReceiptThaiAmountContentTests
         var received = Assert.Single(words.Where(word => Compact(word.Text) == "Received"));
         var remark = Assert.Single(words.Where(word => word.Text.StartsWith("Remark", StringComparison.Ordinal)));
         var bounds = amount.BoundingBox;
-        Assert.InRange((bounds.Left + bounds.Right) / 2, page.Width / 2 - 3, page.Width / 2 + 3);
+        // A4Page uses an 18 mm left and 14 mm right content margin.
+        var contentCenter = (18 * 72d / 25.4 + page.Width - 14 * 72d / 25.4) / 2;
+        Assert.InRange((bounds.Left + bounds.Right) / 2, contentCenter - 3, contentCenter + 3);
         Assert.True(bounds.Top < received.BoundingBox.Bottom, "Thai words must be below numeric Amount Received.");
         Assert.True(bounds.Bottom > remark.BoundingBox.Top, "Thai words must precede the remark without overlap.");
         Assert.InRange(bounds.Left, 20, page.Width - 20);
