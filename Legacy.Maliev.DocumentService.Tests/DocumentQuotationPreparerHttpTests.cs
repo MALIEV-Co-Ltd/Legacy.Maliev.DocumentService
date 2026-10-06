@@ -41,7 +41,7 @@ public sealed class DocumentQuotationPreparerHttpTests
             Assert.Equal(1, pdf.NumberOfPages);
             var page = pdf.GetPage(1);
             var words = page.GetWords().ToArray();
-            var marker = Assert.Single(words.Where(word => word.Text == "PREPARER"));
+            var marker = Assert.Single(words, word => word.Text == "PREPARER");
             // Customer telephone/fax remain visible in another column and cannot mask omissions.
             var preparerText = string.Concat(words.Where(word =>
                 word.BoundingBox.Left >= marker.BoundingBox.Left - 1
