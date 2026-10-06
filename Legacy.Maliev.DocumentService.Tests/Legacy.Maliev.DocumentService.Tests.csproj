@@ -3,6 +3,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.3" PrivateAssets="all" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     <PackageReference Include="PDFtoImage" Version="5.2.1" />

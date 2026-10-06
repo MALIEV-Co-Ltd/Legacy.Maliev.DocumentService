@@ -23,11 +23,22 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("ReceiptThaiAmountContentTests", "OtherCurrencies_OmitThaiAmountRow", 5),
             ("ReceiptThaiAmountContentTests", "LongReceipt_Preserves44ItemsAndOneAmountRowAtEndOfEachCopy", 1),
             ("ReceiptThaiAmountContentTests", "LegacyThbOracle_AndExplicitNewFixtureRetainFiveBahtNinetyNineSatang", 1),
+            ("DocumentRuntimeHttpTests", "ActualRoutes_BindPascalCaseJsonAndReturnRealPdfBytes", 5),
+            ("DocumentRuntimeHttpTests", "InvalidBodies_AreRejectedByActualAdmissionWithoutPdf", 15),
+            ("DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering", 6),
+            ("DocumentRuntimeHttpTests", "ReceiptQuantity_RejectsInvalidIntegerWireValue", 1),
+            ("DocumentRuntimeHttpTests", "DevelopmentMetadata_DescribesAllFiveActualPostRoutesAndPdfResponses", 1),
+            ("DocumentRuntimeHttpTests", "ProductionMetadata_IsNotPubliclyExposed", 1),
+            ("DocumentRuntimeHttpTests", "ReceiptGet_DoesNotInvokePostRenderer", 1),
+            ("DocumentRuntimeHttpTests", "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf", 1),
+            ("DocumentRuntimeHttpTests", "ProductionRegistration_UsesActualSingletonRendererAndSystemTimeProvider", 1),
         ]
         self.names = [(f"Legacy.Maliev.DocumentService.Tests.{cls}", method, str(index))
                       for cls, method, count in methods for index in range(count)]
         self.trx("focus", "receipt-focus.trx", self.names)
-        self.trx("full", "full-suite.trx", self.names)
+        self.full_names = self.names + [("Legacy.Maliev.DocumentService.Tests.InheritedSuiteFixture", "RetainedCase", str(index))
+                                       for index in range(94)]
+        self.trx("full", "full-suite.trx", self.full_names)
         self.coverage(application_lines=0)
 
     def trx(self, lane, filename, names, failed=False):
@@ -46,8 +57,11 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ET.SubElement(definition, namespace + "Execution", id=execution_id)
             ET.SubElement(definition, namespace + "TestMethod", className=cls, name=method)
         summary = ET.SubElement(document, namespace + "ResultSummary")
-        ET.SubElement(summary, namespace + "Counters", total=str(len(names)),
-                      passed=str(len(names) - int(failed)))
+        counters = {"total": str(len(names)), "executed": str(len(names)), "passed": str(len(names) - int(failed))}
+        counters.update({name: "0" for name in ("failed", "error", "timeout", "aborted", "inconclusive",
+            "passedButRunAborted", "notRunnable", "notExecuted", "disconnected", "warning", "completed", "inProgress", "pending")})
+        counters["failed"] = str(int(failed))
+        ET.SubElement(summary, namespace + "Counters", **counters)
         directory = self.root / lane
         directory.mkdir(exist_ok=True)
         ET.ElementTree(document).write(directory / filename, encoding="utf-8")
@@ -115,6 +129,20 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         code, result = self.read(expected_head="0" * 40)
         self.assertEqual(1, code)
         self.assertIn("Actual git HEAD does not match DOCUMENT_SOURCE_SHA", result["errors"])
+
+    def test_partial_full_suite_and_contradictory_counters_fail_closed(self):
+        self.trx("full", "full-suite.trx", self.names)
+        code, result = self.read()
+        self.assertEqual(1, code)
+        self.assertIn("Full suite differs from 235 expected cases: prior suite count 203 plus 32 actual HTTP cases", result["errors"])
+        self.trx("full", "full-suite.trx", self.full_names)
+        for name in ("executed", "failed", "notExecuted", "warning"):
+            with self.subTest(counter=name):
+                self.trx("focus", "receipt-focus.trx", self.names)
+                self.mutate_focus(lambda tree: tree.find(".//{*}Counters").set(name, "1"))
+                code, result = self.read()
+                self.assertEqual(1, code)
+                self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
 
     def test_duplicate_execution_fails_closed(self):
         def mutation(tree):

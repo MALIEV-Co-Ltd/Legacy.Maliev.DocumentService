@@ -28,6 +28,15 @@ expected_focus = {
     ("Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests", "OtherCurrencies_OmitThaiAmountRow"): 5,
     ("Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests", "LongReceipt_Preserves44ItemsAndOneAmountRowAtEndOfEachCopy"): 1,
     ("Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests", "LegacyThbOracle_AndExplicitNewFixtureRetainFiveBahtNinetyNineSatang"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ActualRoutes_BindPascalCaseJsonAndReturnRealPdfBytes"): 5,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "InvalidBodies_AreRejectedByActualAdmissionWithoutPdf"): 15,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering"): 6,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ReceiptQuantity_RejectsInvalidIntegerWireValue"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "DevelopmentMetadata_DescribesAllFiveActualPostRoutesAndPdfResponses"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ProductionMetadata_IsNotPubliclyExposed"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ReceiptGet_DoesNotInvokePostRenderer"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ProductionRegistration_UsesActualSingletonRendererAndSystemTimeProvider"): 1,
 }
 all_definitions = {}
 for lane, name in (("focus", "receipt-focus.trx"), ("full", "full-suite.trx")):
@@ -77,18 +86,23 @@ for lane, name in (("focus", "receipt-focus.trx"), ("full", "full-suite.trx")):
         except (ValueError, KeyError):
             errors.append(f"{lane} TRX contains an invalid, duplicate or unmapped execution")
     counters = tree.find(".//t:Counters", namespace)
-    if counters is None or int(counters.attrib["total"]) != len(results) or int(counters.attrib["passed"]) != len(results):
+    expected_counters = {"total": len(results), "executed": len(results), "passed": len(results)}
+    expected_counters.update({name: 0 for name in ("failed", "error", "timeout", "aborted", "inconclusive",
+        "passedButRunAborted", "notRunnable", "notExecuted", "disconnected", "warning", "completed", "inProgress", "pending")})
+    if counters is None or counters.attrib != {name: str(value) for name, value in expected_counters.items()}:
         errors.append(f"{lane} TRX counters do not reconcile with passed cases")
     if not results or any(result.attrib["outcome"] != "Passed" for result in results):
         errors.append(f"{lane} TRX has empty or unsuccessful results")
 
 focus = cases.get("focus", [])
 if Counter((case["class"], case["method"]) for case in focus) != Counter(expected_focus):
-    errors.append("Focused inventory differs from the exact 109 allowlisted class/method cases")
+    errors.append("Focused inventory differs from the exact 141 allowlisted class/method cases")
 full_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in cases.get("full", []))
 focus_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in focus)
 if focus_inventory - full_inventory:
     errors.append("Full suite does not retain every focused execution-definition identity")
+if len(cases.get("full", [])) != 235:
+    errors.append("Full suite differs from 235 expected cases: prior suite count 203 plus 32 actual HTTP cases")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}

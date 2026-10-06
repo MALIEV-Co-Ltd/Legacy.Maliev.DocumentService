@@ -46,11 +46,17 @@ jobs:
         run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
       - name: Build Release before tests
         run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror
+      - name: Preserve pristine Application compile provenance before instrumentation
+        run: |-
+          mkdir -p receipt-evidence/application-provenance
+          cp Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll receipt-evidence/application-provenance/
+          cp Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb receipt-evidence/application-provenance/
+          sha256sum receipt-evidence/application-provenance/* Legacy.Maliev.DocumentService.Application/IDocumentRenderer.cs Legacy.Maliev.DocumentService.Application/Legacy.Maliev.DocumentService.Application.csproj > receipt-evidence/application-provenance/sha256.txt
       - name: Focused actual helper and PDF tests
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
           --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
-          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests'
+          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests|FullyQualifiedName~DocumentRuntimeHttpTests'
           --logger 'trx;LogFileName=receipt-focus.trx' --results-directory receipt-evidence/focus
       - name: Full suite with raw coverage
         run: >-
