@@ -1,3 +1,4 @@
+using Legacy.Maliev.DocumentService.Api.Http;
 using Legacy.Maliev.DocumentService.Application;
 using Legacy.Maliev.DocumentService.Rendering;
 using Maliev.Aspire.ServiceDefaults;
@@ -10,6 +11,7 @@ builder.AddDefaultApiVersioning();
 builder.AddStandardCors();
 builder.AddJwtAuthentication();
 builder.AddStandardMiddleware(options => options.EnableRequestLogging = true);
+builder.AddDocumentHostTransportPolicy();
 builder.AddStandardOpenApi(
     title: "Legacy MALIEV Document Service API",
     description: "Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.");
@@ -60,7 +62,9 @@ builder.Services.AddSingleton<IDocumentRenderer, QuestDocumentRenderer>();
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
+app.UseDocumentHostTransportBoundary();
 app.UseStandardMiddleware();
+app.UseDocumentHostTransportPolicy();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();

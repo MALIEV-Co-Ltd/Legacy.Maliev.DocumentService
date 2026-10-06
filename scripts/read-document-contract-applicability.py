@@ -73,7 +73,7 @@ def inspect(root):
     assert surface['dllSha256'] == manifest['files'][ASSEMBLY + '.dll']
     assert surface['pdbSha256'] == manifest['files'][ASSEMBLY + '.pdb']
     # The existing strict reader re-parses both actual TRX files, every execution mapping,
-    # all sixteen counters, exact 156 focused identities and all 339 full executions.
+    # all sixteen counters, exact 156 focused identities and all 361 full executions.
     subprocess.run([sys.executable, '-B', 'scripts/read-receipt-evidence.py', str(root)], check=True)
     observations = json.loads((root / 'receipt-evidence.json').read_text(encoding='utf-8'))
     assert observations['head_sha'] == observations['expected_head_sha'] == head

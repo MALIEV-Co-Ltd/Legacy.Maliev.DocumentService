@@ -105,6 +105,51 @@
     "executions": 1
   },
   {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "DirectHttps_UsesProductionHstsWithoutRedirect",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "ExplicitCorsPreflight_CompletesBeforeAuthenticationAtTrustedHttpsEdge",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "InternalHttp_PreservesProbeAndRealBearerAdmission",
+    "executions": 3
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "RegisteredProbes_RemainReachableThroughTrustedHttp",
+    "executions": 3
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "TrustedEdgeHttps_PreservesAnonymousAndWrongGrantDenial",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "TrustedEdgeHttps_UsesActualForwarderAndRealBearerAdmission",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "TrustedEdge_InsecureOrUnprovenSchemeRejectsBeforeAuthentication",
+    "executions": 4
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "UnsupportedTransportPolicy_FailsNormalStartup",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHostTransportHttpTests",
+    "method": "UntrustedOrUnconfiguredPeer_CannotSpoofForwardedHttpsOrOriginalMarker",
+    "executions": 3
+  },
+  {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
     "method": "AnonymousOrMissingRenderPermission_CannotObtainPdf",
     "executions": 2
