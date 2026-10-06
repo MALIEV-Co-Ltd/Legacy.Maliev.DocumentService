@@ -37,8 +37,9 @@ public sealed class DocumentCurrentConsumerHttpAcceptanceTests
         foreach (var value in new[]
         {
             "QUOTATION", "HTTP-QUOTE-COMMENT", "HTTP-QUOTE-CUSTOMER", "HTTP-QUOTE-EMPLOYEE",
-            "HTTP-QUOTE-LINE", "HTTP-QUOTE-PART", "ทดสอบ", "10.25", "20.50", "21.94",
+            "HTTP-QUOTE-LINE", "ทดสอบ", "10.25", "20.50", "21.94",
         }) Assert.Contains(value, text, StringComparison.Ordinal);
+        Assert.DoesNotContain("HTTP-QUOTE-PART", text, StringComparison.Ordinal);
     }
 
     [Fact]

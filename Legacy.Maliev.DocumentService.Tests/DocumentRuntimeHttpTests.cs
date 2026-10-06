@@ -18,6 +18,44 @@ namespace Legacy.Maliev.DocumentService.Tests;
 public sealed class DocumentRuntimeHttpTests
 {
     [Theory]
+    [InlineData("/Pdfs/quotation")]
+    [InlineData("/pdfs/quotation/")]
+    public async Task QuotationRows_RenderDescriptionWithoutAddingDistinctName(string path)
+    {
+        await using var factory = new RuntimeFactory();
+        using var client = factory.Client();
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        const string name = "FORBIDDEN-NAME-ONLY";
+        const string description = "VISIBLE-DESCRIPTION-ONLY";
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            Currency = "THB",
+            Orders = new[]
+            {
+                new
+                {
+                    Name = name,
+                    Description = description,
+                    UnitPrice = 100m,
+                    Quantity = 2,
+                    Discount = 25m,
+                    Subtotal = 150m,
+                },
+            },
+        }), Encoding.UTF8, "application/json");
+        using var response = await client.PostAsync(path, content, deadline.Token);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
+        using var document = PdfDocument.Open(await response.Content.ReadAsByteArrayAsync(deadline.Token));
+        var text = string.Join('\n', document.GetPages().Select(page => page.Text));
+        Assert.Contains(description, Compact(text), StringComparison.Ordinal);
+        Assert.DoesNotContain(name, Compact(text), StringComparison.Ordinal);
+        Assert.Contains("100.00", text, StringComparison.Ordinal);
+        Assert.Contains("25.00", text, StringComparison.Ordinal);
+        Assert.Contains("150.00", text, StringComparison.Ordinal);
+    }
+
+    [Theory]
     [InlineData("invoice", "Remark", "INVOICE", 1)]
     [InlineData("purchaseorder", "Notes", "PURCHASE ORDER", 1)]
     [InlineData("quotation", "Comment", "QUOTATION", 1)]

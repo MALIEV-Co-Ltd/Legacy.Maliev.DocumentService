@@ -23,6 +23,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("ReceiptThaiAmountContentTests", "OtherCurrencies_OmitThaiAmountRow", 5),
             ("ReceiptThaiAmountContentTests", "LongReceipt_Preserves44ItemsAndOneAmountRowAtEndOfEachCopy", 1),
             ("ReceiptThaiAmountContentTests", "LegacyThbOracle_AndExplicitNewFixtureRetainFiveBahtNinetyNineSatang", 1),
+            ("DocumentRuntimeHttpTests", "QuotationRows_RenderDescriptionWithoutAddingDistinctName", 2),
             ("DocumentRuntimeHttpTests", "ActualRoutes_BindPascalCaseJsonAndReturnRealPdfBytes", 5),
             ("DocumentRuntimeHttpTests", "InvalidBodies_AreRejectedByActualAdmissionWithoutPdf", 15),
             ("DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering", 6),
@@ -139,7 +140,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 337 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 339 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -153,7 +154,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("focus", "receipt-focus.trx", self.names[:-1])
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Focused inventory differs from the exact 154 allowlisted class/method cases", result["errors"])
+        self.assertIn("Focused inventory differs from the exact 156 allowlisted class/method cases", result["errors"])
 
     def test_missing_execution_counter_fails_closed(self):
         self.mutate_focus(lambda tree: tree.find(".//{*}Counters").attrib.pop("failed"))

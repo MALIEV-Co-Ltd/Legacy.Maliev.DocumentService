@@ -226,6 +226,11 @@
   },
   {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "QuotationRows_RenderDescriptionWithoutAddingDistinctName",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
     "method": "ReceiptGet_DoesNotInvokePostRenderer",
     "executions": 1
   },
