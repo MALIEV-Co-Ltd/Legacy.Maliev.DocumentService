@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <MalievWorkspaceRoot Condition="'$(MalievWorkspaceRoot)' == '' and '$(GITHUB_ACTIONS)' != 'true'">$(MSBuildThisFileDirectory)..\..</MalievWorkspaceRoot>
     <SharedLibraryVersion Condition="'$(SharedLibraryVersion)' == ''">1.0.*-*</SharedLibraryVersion>
   </PropertyGroup>

@@ -12,6 +12,7 @@ builder.AddStandardMiddleware(options => options.EnableRequestLogging = true);
 builder.AddStandardOpenApi(
     title: "Legacy MALIEV Document Service API",
     description: "Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.");
+builder.Services.AddOpenApi("v1");
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -31,4 +32,5 @@ app.MapControllers();
 app.MapApiDocumentation(servicePrefix: "documents");
 await app.RunAsync();
 
+/// <summary>Entrypoint marker for the Document Service HTTP host.</summary>
 public partial class Program;

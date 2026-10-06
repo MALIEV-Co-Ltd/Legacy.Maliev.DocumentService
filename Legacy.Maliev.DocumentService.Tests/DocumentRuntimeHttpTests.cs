@@ -119,12 +119,31 @@ public sealed class DocumentRuntimeHttpTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         var paths = document.RootElement.GetProperty("paths");
-        foreach (var route in new[] { "invoice", "purchaseorder", "quotation", "receipt", "orderlabel" })
+        var summaries = new Dictionary<string, string>
+        {
+            ["invoice"] = "Create the invoice PDF.",
+            ["purchaseorder"] = "Create the purchase order PDF.",
+            ["quotation"] = "Create the quotation PDF.",
+            ["receipt"] = "Create the receipt PDF.",
+            ["orderlabel"] = "Create the order label PDF.",
+        };
+        foreach (var (route, summary) in summaries)
         {
             var operation = paths.GetProperty("/Pdfs/" + route).GetProperty("post");
+            Assert.Equal(summary, operation.GetProperty("summary").GetString());
             Assert.True(operation.GetProperty("requestBody").GetProperty("content").TryGetProperty("application/json", out _));
             Assert.True(operation.GetProperty("responses").GetProperty("200").GetProperty("content").TryGetProperty("application/pdf", out _));
+            Assert.True(operation.GetProperty("responses").TryGetProperty("400", out _));
         }
+        var receiptSchema = paths.GetProperty("/Pdfs/receipt").GetProperty("post").GetProperty("requestBody")
+            .GetProperty("content").GetProperty("application/json").GetProperty("schema");
+        if (receiptSchema.TryGetProperty("$ref", out var reference))
+        {
+            var schemaName = reference.GetString()!.Split('/').Last();
+            receiptSchema = document.RootElement.GetProperty("components").GetProperty("schemas").GetProperty(schemaName);
+        }
+        Assert.Equal("Receipt Model.", receiptSchema.GetProperty("description").GetString());
+        Assert.Equal("Gets or sets the amount paid.", receiptSchema.GetProperty("properties").GetProperty("AmountPaid").GetProperty("description").GetString());
     }
 
     [Fact]
