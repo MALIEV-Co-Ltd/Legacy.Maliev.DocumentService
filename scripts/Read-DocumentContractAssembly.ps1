@@ -103,11 +103,6 @@ try {
         }
     }
     if ($information.Count -ne 1 -or $information[0] -cne "1.0.0+$ExpectedHead") { throw 'Compiled candidate SHA mismatch.' }
-    $sequencePoints = 0
-    foreach ($handle in $debug.MethodDebugInformation) {
-        $sequencePoints += @($debug.GetMethodDebugInformation($handle).GetSequencePoints()).Count
-    }
-    if ($sequencePoints -ne 0) { throw 'Executable sequence points present.' }
     $codeViews = @($pe.ReadDebugDirectory() | Where-Object Type -eq CodeView)
     if ($codeViews.Count -ne 1) { throw 'Expected one CodeView identity.' }
     $codeView = $pe.ReadCodeViewDebugDirectoryData($codeViews[0])
@@ -116,6 +111,11 @@ try {
     if ([Convert]::ToHexString($identity) -cne [Convert]::ToHexString($expectedIdentity) -or $codeView.Age -ne 1) {
         throw 'DLL and portable PDB identity mismatch.'
     }
+    $sequencePoints = 0
+    foreach ($handle in $debug.MethodDebugInformation) {
+        $sequencePoints += @($debug.GetMethodDebugInformation($handle).GetSequencePoints()).Count
+    }
+    if ($sequencePoints -ne 0) { throw 'Executable sequence points present.' }
     [ordered]@{
         schemaVersion = 'document-contract-surface/v1'; policyActive = $false; runtimeAccepted = $false
         assembly = $assemblyName; compiledHead = $ExpectedHead; informationalVersion = $information[0]

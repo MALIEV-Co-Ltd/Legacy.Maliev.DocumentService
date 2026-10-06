@@ -51,7 +51,7 @@ jobs:
       - name: Compile test-only contract rejection fixtures without execution
         run: |-
           for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
-            dotnet build scripts/fixtures/contract-surface/ContractSurface.csproj --configuration Release -warnaserror \
+            dotnet build scripts/fixtures/contract-surface/ContractSurface.Tests.csproj --configuration Release -warnaserror \
               -p:SurfaceMutation="$mutation" -p:SourceRevisionId="$DOCUMENT_SOURCE_SHA" \
               -p:DomainAssemblyPath="$PWD/Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.dll" \
               -p:BaseIntermediateOutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/obj/" \
