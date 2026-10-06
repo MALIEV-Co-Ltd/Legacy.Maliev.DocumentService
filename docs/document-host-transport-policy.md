@@ -1,0 +1,9 @@
+# Document host transport policy
+
+The frozen legacy PDF Startup applied production HSTS and HTTPS redirection. DocumentService adapts that intent to internal HTTP with TLS termination at an explicitly admitted edge, using `DocumentHost:TransportPolicy=InternalHttpWithTrustedEdgeHttps`.
+
+Configure exact proxy IP addresses through `ForwardedHeaders:KnownProxies`. Empty configuration disables forwarding; it never means trust every peer. The boundary verifies the original peer before shared forwarding, strips caller-supplied original-scheme markers, permits one valid forwarded scheme, and rejects trusted non-probe requests whose HTTPS cannot be established with 426 before authentication. No request Host/path/query is reflected into a redirect. Direct HTTPS and admitted forwarded HTTPS receive 30-day HSTS outside Development. Internal HTTP and the registered `/documents/liveness`, `/documents/readiness`, and `/documents/aspire-liveness` probes remain reachable.
+
+Explicit CORS origins and the existing RS256 `legacy.documents.render` grant remain required. Host tests execute the normal Program, real forwarding/HSTS/CORS/JWT middleware and unchanged singleton QuestPDF renderer; admitted requests return parsed English/Thai PDFs, and denials do not return PDF content. TestServer supplies transport metadata, so this is not evidence of live TLS, ingress configuration or deployment.
+
+All five render routes, DTO wire names, pricing, totals, embedded fonts, 22 immutable legacy PDF baselines and frozen long-document counts remain unchanged. The exact full inventory adds 22 host executions to 339, becoming 361; the focused receipt inventory remains 156 and its existing real runtime HTTP inventory remains 39. No workflow pin, skip, exclusion, coverage floor or compiled Application N/A policy changes. Source history remains a separate per-SHA/per-path review, not whole-SHA closure.

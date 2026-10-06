@@ -116,7 +116,7 @@ if focus_inventory - full_inventory:
 expected_full = Counter({(row["className"], row["method"]): row["executions"]
                          for row in json.loads((repository / "docs/document-full-test-inventory.json").read_text())})
 if Counter((case["class"], case["method"]) for case in cases.get("full", [])) != expected_full:
-    errors.append("Full suite differs from the exact 339 merged HTTP, raster, receipt and evidence cases")
+    errors.append("Full suite differs from the exact 361 merged HTTP, raster, receipt and evidence cases")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}
