@@ -3,6 +3,5 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Preserved legacy request DTOs predate nullable-reference metadata. -->
     <Nullable>disable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 </Project>

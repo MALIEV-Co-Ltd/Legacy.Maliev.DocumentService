@@ -20,7 +20,14 @@ function Read-DocumentCollectorTrace {
     }
     if($Lines.Count -gt 131072){throw 'Trace line budget exceeded.'}
     foreach($line in $Lines){
-        if($line.Length -gt 32768){throw 'Trace line length budget exceeded.'}
+        if($line.Length -gt 32768){
+            # Retain the existing fail-closed limit. Report only fixed structural facts,
+            # never the diagnostic payload, paths, test display parameters or private data.
+            $collectorRelevant=$line.Contains('CoverletCoverageDataCollector',[StringComparison]::Ordinal) -or $line.Contains('Instrumented module:',[StringComparison]::Ordinal) -or $line.Contains('AssemblyResolver.OnResolve: Resolved assembly: coverlet.',[StringComparison]::Ordinal) -or $line.Contains('AssemblyResolver.OnResolve: Resolved assembly: Mono.Cecil,',[StringComparison]::Ordinal)
+            $completedBatch=$line.Contains('TestExecution.Completed',[StringComparison]::Ordinal)
+            $testBatch=$line.Contains('TestExecution.RunSelectedWithDefaultHost',[StringComparison]::Ordinal)
+            throw "Trace line length budget exceeded; chars=$($line.Length); collectorRelevant=$collectorRelevant; completedBatch=$completedBatch; selectedBatch=$testBatch."
+        }
         if($line -notmatch 'CoverletCoverageDataCollector|Instrumented module:|AssemblyResolver\.OnResolve: Resolved assembly: (coverlet\.(collector|core)|Mono\.Cecil),'){continue}
         if($line -notmatch '^TpTrace (Information|Verbose): 0 : ([0-9]+), ([0-9]+), ([0-9]{4}/[0-9]{2}/[0-9]{2}), ([0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}), ([0-9]+), ([^,]+), (.*)$'){
             $unrecognizedRelevant++;$structure.envelopeUnmatchedRelevant++
