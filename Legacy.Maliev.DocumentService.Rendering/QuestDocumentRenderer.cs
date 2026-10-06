@@ -30,10 +30,10 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
         QuestPDF.Settings.License = LicenseType.Community;
         QuestPDF.Settings.UseSystemFonts = false;
         QuestPDF.Settings.ThrowOnMissingTextGlyphs = true;
-        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSans-Regular.ttf"));
-        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSans-Bold.ttf"));
-        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSansThai-Regular.ttf"));
-        FontManager.RegisterFontFromStream(Resource("Fonts.NotoSansThai-Bold.ttf"));
+        RegisterFont("Fonts.NotoSans-Regular.ttf");
+        RegisterFont("Fonts.NotoSans-Bold.ttf");
+        RegisterFont("Fonts.NotoSansThai-Regular.ttf");
+        RegisterFont("Fonts.NotoSansThai-Bold.ttf");
         using var logo = Resource("logo.png");
         using var memory = new MemoryStream();
         logo.CopyTo(memory);
@@ -763,6 +763,12 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
     }
 
     private static string? Prefix(string prefix, string? value) => string.IsNullOrWhiteSpace(value) ? null : prefix + value;
+
+    private static void RegisterFont(string suffix)
+    {
+        using var stream = Resource(suffix);
+        FontManager.RegisterFontFromStream(stream);
+    }
 
     private static Stream Resource(string suffix)
     {

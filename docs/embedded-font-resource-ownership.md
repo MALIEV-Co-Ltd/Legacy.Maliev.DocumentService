@@ -1,0 +1,9 @@
+# Embedded font resource ownership
+
+The private FontModules getters copy font resources into owned byte arrays while disposing the source and temporary streams. The QuestPDF adaptation registers four embedded Noto Sans and Noto Sans Thai faces once. Each registration now explicitly disposes its caller-owned resource stream after registration, including failure. The existing logo copy already uses bounded stream ownership.
+
+The public renderer keeps system fonts disabled and missing glyphs fatal. No font assets, rendering settings, dependency pins or frozen PDFs change. This is an ownership adaptation, not a claim of a measured memory leak or byte-equivalent fonts. The logo alone is byte-identical to the private checkpoint (SHA2561d072c5485e271082b6f3ce55c460fa387b6fb58783ffe8d8a097ba05a91b20b,1981x455).
+
+QuestPDF documentation demonstrates registration with a using-owned font stream: https://www.questpdf.com/api-reference/text/font-management.html. The exact2026.9.1 package repository commit5a1422e15040484498236a5696d3aa9eefad8b10 implements synchronous CopyTo into an owned MemoryStream and registers its byte array; its embedded-resource overload also uses caller-stream disposal. Source: https://github.com/QuestPDF/QuestPDF/blob/5a1422e15040484498236a5696d3aa9eefad8b10/src/dotnet/library/QuestPDF/Drawing/FontManager.cs. The pinned2026.9.1 native renderer must still prove consumption remains valid after stream disposal through the existing real PDF/text/150-DPI raster tests. Expected full suite361, focus156 and actualHTTP39, retaining all prior identities and all22 immutable baselines. Local .NET execution remains excluded; native validation awaits source review.
+
+Historical FontModules,17 private font files and logo retain their exact19 assignment joins in the private passive review packet. Their source disposition remains subject to individual review; this correction alone does not close those portions or any whole source SHA.
