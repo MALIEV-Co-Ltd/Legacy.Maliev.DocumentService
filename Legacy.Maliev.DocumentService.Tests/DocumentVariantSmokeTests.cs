@@ -65,7 +65,7 @@ public sealed class DocumentVariantSmokeTests
             {
                 Id = index,
                 Name = $"Quotation item {index}",
-                Description = $"DETAIL-{index:D3} รายละเอียดภาษาไทยสำหรับทดสอบการขึ้นหน้าใหม่",
+                Description = $"DETAIL-{index:D3} รายละเอียดภาษาไทยสำหรับทดสอบการขึ้นหน้าใหม่\nROW-END-{index:D3}",
                 Quantity = index,
                 UnitPrice = 12.34m,
                 Subtotal = index * 12.34m,
@@ -134,7 +134,7 @@ public sealed class DocumentVariantSmokeTests
         var itemRowMarker = artifactName switch
         {
             "invoice-long" => "Invoice item ",
-            "quotation-long" => "Quotation item ",
+            "quotation-long" => "DETAIL-",
             "receipt-long" => "Receipt item ",
             "purchase-order-long" => "PART-",
             _ => throw new ArgumentOutOfRangeException(nameof(artifactName), artifactName, "Unknown flowing document artifact."),
@@ -150,11 +150,12 @@ public sealed class DocumentVariantSmokeTests
         if (assertItemRowsStayTogether)
         {
             var pageTexts = pdf.GetPages().Select(page => page.Text).ToArray();
+            Assert.DoesNotContain("Quotation item ", string.Join('\n', pageTexts), StringComparison.Ordinal);
             foreach (var index in Enumerable.Range(1, 80))
             {
                 Assert.Contains(pageTexts, text =>
-                    text.Contains($"Quotation item {index}", StringComparison.Ordinal)
-                    && text.Contains($"DETAIL-{index:D3}", StringComparison.Ordinal));
+                    text.Contains($"DETAIL-{index:D3}", StringComparison.Ordinal)
+                    && text.Contains($"ROW-END-{index:D3}", StringComparison.Ordinal));
             }
         }
     }

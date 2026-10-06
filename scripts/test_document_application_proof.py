@@ -21,7 +21,7 @@ class ApplicationProofAdmissionTests(unittest.TestCase):
                            applicabilityAcceptance=True, applicationStatus='N/A contract-only',
                            applicationNumericalPercent=None, applicationNumericalPassed=False,
                            fourAssemblyNumericalAcceptance=False, deployed=False,
-                           executableFloorsPassed=True, actualHttpPassed=37, exclusions=[],
+                           executableFloorsPassed=True, actualHttpPassed=39, exclusions=[],
                            policySha256=proof.sha(Path('docs/document-contract-applicability-policy.json')),
                            compiledProofSha256=proof.sha(root / 'contract-applicability-proposal.json'),
                            controlsSha256=proof.sha(root / 'contract-negative-controls.json'))

@@ -494,7 +494,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 var discountPerUnit = item.UnitPrice * item.Discount.Value / 100m;
                 pricing += $"\n-{Money(discountPerUnit)} {Safe(quotation.Currency)}/UNIT\nDiscount: {item.Discount:N2}%";
             }
-            LegacyQuotationRow(table, index++, Lines(item.Name, item.Description), pricing, item.Quantity, item.Subtotal, quotation.Currency);
+            LegacyQuotationRow(table, index++, Lines(item.Description), pricing, item.Quantity, item.Subtotal, quotation.Currency);
         }
 
         if (quotation.Orders is null || quotation.Orders.Count == 0) LegacyEmptyItemRow(table);
