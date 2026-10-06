@@ -225,6 +225,11 @@
     "executions": 1
   },
   {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentQuotationPreparerHttpTests",
+    "method": "QuotationPreparerContacts_RenderInTheirOwnColumnAndOmitUnknownFields",
+    "executions": 1
+  },
+  {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentRenderFailureHttpAcceptanceTests",
     "method": "MalformedJson_Returns400WithoutRenderingIncident",
     "executions": 5

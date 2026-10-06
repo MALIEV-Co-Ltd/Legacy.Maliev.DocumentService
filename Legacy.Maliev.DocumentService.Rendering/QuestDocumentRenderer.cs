@@ -298,7 +298,9 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 row.RelativeItem().Text(Lines(
                     quotation.Employee?.FullName,
                     quotation.Employee?.Email,
-                    Prefix("Mobile: ", quotation.Employee?.Mobile))).LineHeight(1.35f);
+                    Prefix("Telephone: ", quotation.Employee?.Telephone),
+                    Prefix("Mobile: ", quotation.Employee?.Mobile),
+                    Prefix("Fax: ", quotation.Employee?.Fax))).LineHeight(1.35f);
             });
             column.Item().PaddingTop(28).Text("We are pleased to quote as follows / เรายินดีเสนอราคาตามรายละเอียดต่อไปนี้:");
             column.Item().Element(box => QuotationShippingTable(box, quotation));
