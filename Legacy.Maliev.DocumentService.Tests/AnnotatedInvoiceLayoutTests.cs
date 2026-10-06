@@ -72,6 +72,8 @@ public sealed class AnnotatedInvoiceLayoutTests
         var text = string.Join(' ', document.GetPages().Select(page => page.Text));
 
         Assert.Contains("Siam", text, StringComparison.Ordinal);
+        Assert.Contains("ธนาคารไทยพาณิชย์", text, StringComparison.Ordinal);
+        Assert.Contains("บริษัท มาลีฟ จำกัด", text, StringComparison.Ordinal);
         Assert.Contains("417-108808-2", text, StringComparison.Ordinal);
         Assert.Contains("Savings account", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Kasikornbank", text, StringComparison.OrdinalIgnoreCase);
