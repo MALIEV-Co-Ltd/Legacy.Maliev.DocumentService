@@ -1,7 +1,10 @@
 # Document Application coverage applicability proposal
 
-This proposal is inactive. The current four-assembly numerical policy remains
-unaccepted. The Application assembly has one interface, `IDocumentRenderer`,
+The scoped contract-only applicability decision is active through the committed
+`document-contract-applicability-policy.json`, after full source and actual native
+compiled-proof review of head6191a98/run37425501847. Application remains N/A with
+a null percentage and numericalPassed=false; four-assembly numerical acceptance
+remains false. The Application assembly has one interface, `IDocumentRenderer`,
 with five abstract methods returning `byte[]` from the five owned Domain DTOs.
 There is no production executable implementation in this assembly. Adding code
 to manufacture a denominator would change production responsibilities.
@@ -26,8 +29,8 @@ mismatched or stale evidence fails closed.
 N/A contract-only has a null percentage and numericalPassed=false. It is never
 100% and never an 80% numerical pass. Any raw Application line, covered or
 uncovered, contradicts applicability. API, Domain and Rendering keep separate
-80% raw floors including generated lines and no exclusions. The actual 32
-consumer HTTP cases and all 149 focused/243 full cases must pass with exact
+80% raw floors including generated lines and no exclusions. The actual 37
+consumer HTTP cases and all 154 focused/248 full cases must pass with exact
 execution mapping and all sixteen TRX counters reconciled. A failing API floor
 remains a failure even if the Application contract proof succeeds.
 
@@ -39,6 +42,15 @@ an updated hash, and either covered or uncovered unexpected raw lines. Fixture
 projects reference the already built Domain DLL and never rebuild production
 assemblies or contribute production coverage. Their outputs stay in runner temp.
 
-The workflow only captures proposal observations. Activation requires full
-review and successful native controls; it does not relax the API floor, merge
-the blocked parent candidate, or establish deployed runtime behavior.
+The metadata producer and capture retain their passive policyActive=false flags:
+they describe the compiled surface, never infer policy approval or runtime deployment.
+The independent applicability reader now emits a separate acceptance receipt only
+after the exact committed policy, source inventory/hashes, current compiled DLL/PDB,
+twenty native controls, both complete TRX inventories and all three executable floors
+pass. Any raw Application line or source/compiled drift fails closed. The raw
+four-assembly numerical result stays false. No denominator, exclusion or runtime
+implementation is added to manufacture coverage; deployment remains unaccepted.
+
+TRX admission requires exactly one direct ResultSummary with outcome Completed and
+exactly one Counters in the whole document. Duplicate summaries/counters, orphan
+counters, missing outcome and incomplete runs are rejected by passive controls.

@@ -1,4 +1,4 @@
-"""Inactive proposal: independently re-read compiled metadata and raw lines, never zero=100."""
+"""Independently re-read compiled metadata and raw lines; scoped N/A never means zero=100."""
 from collections import Counter
 import json
 import os
@@ -9,6 +9,17 @@ import tempfile
 import xml.etree.ElementTree as ET
 
 from capture_document_contract_support import ASSEMBLY, SOURCE_HASHES, sha, snapshot_name
+
+def validate_policy(path):
+    policy = json.loads(path.read_text(encoding='utf-8'))
+    expected = dict(schemaVersion='document-contract-applicability-policy/v1', active=True,
+        applicationAssembly=ASSEMBLY, applicationStatus='N/A contract-only',
+        applicationNumericalPercent=None, applicationNumericalPassed=False,
+        executableFloorPercent=80, includeGeneratedLines=True, exclusions=[],
+        approvedSourceHead='6191a98c57becd7270ede83a7dfc95cb0b52912d', approvalNativeRun='37425501847',
+        sourceHashes=SOURCE_HASHES)
+    assert json.dumps(policy, sort_keys=True) == json.dumps(expected, sort_keys=True), 'Scoped applicability policy differs from the reviewed decision'
+    return policy
 
 def validate_capture(snapshot, head, run_id, attempt):
     manifest = json.loads((snapshot / 'manifest.json').read_text(encoding='utf-8'))
@@ -88,4 +99,21 @@ if __name__ == '__main__':
     output = root / 'contract-applicability-proposal.json'
     assert not output.exists(), 'Refusing to replace previous proposal observation'
     output.write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+    policy_path = Path('docs/document-contract-applicability-policy.json')
+    validate_policy(policy_path)
+    assert subprocess.check_output(['git', 'show', f"{result['head']}:{policy_path.as_posix()}"]) == policy_path.read_bytes(), 'Policy differs from committed candidate'
+    assert result['executableFloorsPassed'], 'An executable assembly remains below the mandatory generated-inclusive floor'
+    controls_path = root / 'contract-negative-controls.json'
+    controls = json.loads(controls_path.read_text(encoding='utf-8'))
+    assert controls['head'] == result['head'] and controls['runId'] == result['runId']
+    assert len(controls['controls']) == 20 and sum(c['rejected'] for c in controls['controls']) == 18
+    acceptance = dict(schemaVersion='document-contract-applicability-acceptance/v1', policyActive=True,
+        head=result['head'], runId=result['runId'], runAttempt=result['runAttempt'],
+        policySha256=sha(policy_path), compiledProofSha256=sha(output), controlsSha256=sha(controls_path),
+        applicationStatus='N/A contract-only', applicationNumericalPercent=None, applicationNumericalPassed=False,
+        executableFloorsPassed=True, actualHttpPassed=37, fourAssemblyNumericalAcceptance=False,
+        applicabilityAcceptance=True, exclusions=[], deployed=False)
+    acceptance_path = root / 'contract-applicability-acceptance.json'
+    assert not acceptance_path.exists(), 'Refusing to replace previous acceptance observation'
+    acceptance_path.write_text(json.dumps(acceptance, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result, indent=2))

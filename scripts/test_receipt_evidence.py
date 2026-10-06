@@ -60,7 +60,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             definition = ET.SubElement(definitions, namespace + "UnitTest", id=test_id)
             ET.SubElement(definition, namespace + "Execution", id=execution_id)
             ET.SubElement(definition, namespace + "TestMethod", className=cls, name=method)
-        summary = ET.SubElement(document, namespace + "ResultSummary")
+        summary = ET.SubElement(document, namespace + "ResultSummary", outcome="Completed")
         counters = {"total": str(len(names)), "executed": str(len(names)), "passed": str(len(names) - int(failed))}
         counters.update({name: "0" for name in ("failed", "error", "timeout", "aborted", "inconclusive",
             "passedButRunAborted", "notRunnable", "notExecuted", "disconnected", "warning", "completed", "inProgress", "pending")})
@@ -159,6 +159,52 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         code, result = self.read()
         self.assertEqual(1, code)
         self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
+
+    def test_missing_duplicate_or_incomplete_summary_fails_closed(self):
+        def missing(tree):
+            tree.getroot().remove(tree.find("./{*}ResultSummary"))
+        def duplicate(tree):
+            tree.getroot().append(ET.fromstring(ET.tostring(tree.find("./{*}ResultSummary"))))
+        for mutation in (missing, duplicate, lambda tree: tree.find("./{*}ResultSummary").set("outcome", "Aborted"),
+                         lambda tree: tree.find("./{*}ResultSummary").attrib.pop("outcome")):
+            self.trx("focus", "receipt-focus.trx", self.names)
+            self.mutate_focus(mutation)
+            code, result = self.read()
+            self.assertEqual(1, code)
+            self.assertIn("focus TRX requires exactly one Completed ResultSummary and one Counters", result["errors"])
+
+    def test_duplicate_or_orphan_counters_fail_closed(self):
+        def duplicate(tree):
+            summary = tree.find("./{*}ResultSummary")
+            summary.append(ET.fromstring(ET.tostring(summary.find("{*}Counters"))))
+        def orphan(tree):
+            tree.getroot().append(ET.fromstring(ET.tostring(tree.find(".//{*}Counters"))))
+        for mutation in (duplicate, orphan):
+            self.trx("focus", "receipt-focus.trx", self.names)
+            self.mutate_focus(mutation)
+            code, result = self.read()
+            self.assertEqual(1, code)
+            self.assertIn("focus TRX requires exactly one Completed ResultSummary and one Counters", result["errors"])
+
+    def test_scoped_contract_policy_rejects_changed_or_expanded_acceptance(self):
+        import importlib.util
+        policy_path = Path(__file__).resolve().parent.parent / "docs/document-contract-applicability-policy.json"
+        spec = importlib.util.spec_from_file_location("contract_policy_test", Path(__file__).with_name("read-document-contract-applicability.py"))
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        policy = gate.validate_policy(policy_path)
+        mutations = [("active", False), ("active", 1), ("executableFloorPercent", 79),
+                     ("includeGeneratedLines", False), ("applicationNumericalPercent", 100),
+                     ("applicationNumericalPassed", True), ("exclusions", ["generated"]),
+                     ("sourceHashes", {}), ("approvedSourceHead", "0" * 40), ("unknown", "field")]
+        for name, value in mutations:
+            with self.subTest(field=name, value=value):
+                changed = dict(policy)
+                changed[name] = value
+                path = self.root / "changed-policy.json"
+                path.write_text(json.dumps(changed), encoding="utf-8")
+                with self.assertRaises(AssertionError):
+                    gate.validate_policy(path)
 
     def test_duplicate_execution_fails_closed(self):
         def mutation(tree):

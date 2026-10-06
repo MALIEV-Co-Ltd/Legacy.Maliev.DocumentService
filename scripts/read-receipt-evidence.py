@@ -89,7 +89,14 @@ for lane, name in (("focus", "receipt-focus.trx"), ("full", "full-suite.trx")):
                                 "execution_id": execution_id, "outcome": outcome})
         except (ValueError, KeyError):
             errors.append(f"{lane} TRX contains an invalid, duplicate or unmapped execution")
-    counters = tree.find(".//t:Counters", namespace)
+    summaries = tree.findall(".//t:ResultSummary", namespace)
+    summary = summaries[0] if len(summaries) == 1 else None
+    summary_counters = summary.findall("t:Counters", namespace) if summary is not None else []
+    counters = summary_counters[0] if len(summary_counters) == 1 else None
+    if (summary is None or summary.attrib.get("outcome") != "Completed" or
+            len(tree.findall("./t:ResultSummary", namespace)) != 1 or
+            len(summary_counters) != 1 or len(tree.findall(".//t:Counters", namespace)) != 1):
+        errors.append(f"{lane} TRX requires exactly one Completed ResultSummary and one Counters")
     expected_counters = {"total": len(results), "executed": len(results), "passed": len(results)}
     expected_counters.update({name: 0 for name in ("failed", "error", "timeout", "aborted", "inconclusive",
         "passedButRunAborted", "notRunnable", "notExecuted", "disconnected", "warning", "completed", "inProgress", "pending")})

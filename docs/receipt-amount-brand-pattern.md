@@ -56,4 +56,8 @@ must agree with passed results, including zero failed, unexecuted, pending and o
 It uploads
 actual PDF/PNG, TRX and generated-inclusive raw coverage. Four production assembly floors
 remain 80% each with no exclusions; an empty denominator remains unavailable and cannot be
-accepted as 100%. The compiled contract-only applicability proposal remains inactive; this draft does not resolve the API generated-line coverage failure or activate any applicability policy.
+accepted as 100%. The scoped compiled contract-only applicability decision now uses
+the separately reviewed policy and fresh compiled proof; it never converts Application
+0/0 into a numerical pass. The five served examples and typed receipt field examples
+passed native head6191a98 with generated-inclusive API351/438; each future accepted
+head still requires fresh compiled proof, tests and all three executable raw floors.

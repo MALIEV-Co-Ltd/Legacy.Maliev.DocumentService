@@ -43,4 +43,6 @@ This is additive developer documentation; no historical example parity is claime
 Native validation of the field examples is pending. Expected focused count154 and full248 retain the
 existing149/243 cases plus five new examples. The generated-inclusive API80% floor
 remains unaccepted until actual raw readback proves it. Application numerical
-coverage and the compiled-contract-only policy remain separate and inactive.
+coverage remains numerical null/false. Its scoped compiled-contract-only applicability
+decision is separately activated by the reviewed policy; fresh native proof is required
+for that acceptance receipt. This does not make four-assembly numerical coverage pass.
