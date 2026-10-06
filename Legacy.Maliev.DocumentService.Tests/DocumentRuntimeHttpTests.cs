@@ -122,6 +122,10 @@ public sealed class DocumentRuntimeHttpTests
         Directory.CreateDirectory(metadataDirectory);
         await File.WriteAllTextAsync(Path.Combine(metadataDirectory, "v1.json"), metadataJson);
         using var document = JsonDocument.Parse(metadataJson);
+        var info = document.RootElement.GetProperty("info");
+        Assert.Equal("Legacy MALIEV Document Service API", info.GetProperty("title").GetString());
+        Assert.Equal("Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.", info.GetProperty("description").GetString());
+        Assert.Equal("1.0", info.GetProperty("version").GetString());
         var paths = document.RootElement.GetProperty("paths");
         var summaries = new Dictionary<string, string>
         {
@@ -141,13 +145,17 @@ public sealed class DocumentRuntimeHttpTests
         }
         var receiptSchema = paths.GetProperty("/Pdfs/receipt").GetProperty("post").GetProperty("requestBody")
             .GetProperty("content").GetProperty("application/json").GetProperty("schema");
+        var nullableAlternatives = receiptSchema.GetProperty("oneOf");
+        Assert.Equal(2, nullableAlternatives.GetArrayLength());
+        Assert.Equal("null", nullableAlternatives[0].GetProperty("type").GetString());
+        receiptSchema = nullableAlternatives[1];
         if (receiptSchema.TryGetProperty("$ref", out var reference))
         {
             var schemaName = reference.GetString()!.Split('/').Last();
             receiptSchema = document.RootElement.GetProperty("components").GetProperty("schemas").GetProperty(schemaName);
         }
         Assert.Equal("Receipt Model.", receiptSchema.GetProperty("description").GetString());
-        Assert.Equal("Gets or sets the amount paid.", receiptSchema.GetProperty("properties").GetProperty("AmountPaid").GetProperty("description").GetString());
+        Assert.Equal("Gets or sets the amount paid.\nThe amount paid.", receiptSchema.GetProperty("properties").GetProperty("AmountPaid").GetProperty("description").GetString());
     }
 
     [Fact]

@@ -41,6 +41,16 @@ evidence now retains the normal HTTP metadata JSON, emitted API/Domain XML and
 generated transformer source to trace the actual compile-to-schema boundary.
 These are read-only artifacts; the strict assertions and 149/243 inventory remain.
 
+Candidate 44d2d05's retained metadata resolves the cause: the request schema is a
+nullable `oneOf` wrapper whose second alternative references `Receipt`. The
+referenced component already contains `Receipt Model.` and the AmountPaid
+summary plus value text. Domain XML appears in actual `AdditionalFiles` and the
+generated transformer cache. The schema assertion now resolves that exact
+nullable shape and requires both retained XML texts. OpenAPI's HTTP JSON options
+are aligned with the existing MVC PascalCase/null-omission options, correcting
+the observed camelCase schema without changing controller wire binding.
+Existing shared document title, description and version are asserted explicitly.
+
 The existing real Development HTTP case checks all five exact source summaries,
 declared 400 responses, retained PDF success content, the receipt type description
 and AmountPaid property description. Production still requires 404 for metadata,
