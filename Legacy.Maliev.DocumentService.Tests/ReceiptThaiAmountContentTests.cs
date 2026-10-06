@@ -107,9 +107,9 @@ public sealed class ReceiptThaiAmountContentTests
     private static void AssertAmountGeometryAndRaster(byte[] bytes, Page page, string culture)
     {
         var words = NearestNeighbourWordExtractor.Instance.GetWords(page.Letters).ToArray();
-        var amount = Assert.Single(words.Where(word => Compact(word.Text).Contains(PaidWords, StringComparison.Ordinal)));
-        var received = Assert.Single(words.Where(word => Compact(word.Text) == "Received"));
-        var remark = Assert.Single(words.Where(word => word.Text.StartsWith("Remark", StringComparison.Ordinal)));
+        var amount = Assert.Single(words, word => Compact(word.Text).Contains(PaidWords, StringComparison.Ordinal));
+        var received = Assert.Single(words, word => Compact(word.Text) == "Received");
+        var remark = Assert.Single(words, word => word.Text.StartsWith("Remark", StringComparison.Ordinal));
         var bounds = amount.BoundingBox;
         // A4Page uses an 18 mm left and 14 mm right content margin.
         var contentCenter = (18 * 72d / 25.4 + page.Width - 14 * 72d / 25.4) / 2;
