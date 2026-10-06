@@ -13,6 +13,11 @@ failed because method-wide Produces(application/pdf) still appeared on400 alongs
 the explicit ProblemDetails media type. The correction declares PDF only on the200
 response and removes that method-wide declaration. Assertions and the File(...)
 runtime response remain unchanged; no unchanged failing head is requeued.
+Corrected head11bdb0e made all five served-example/PDF/400 cases pass, but its
+void200 metadata omitted PDF content entirely and failed the existing metadata case.
+The next correction declares the binary wire body as Stream, supported by the
+pinned .NET10 schema generator, and requires string/binary PDF schemas in all five
+new HTTP cases. Existing content-type and real PDF assertions stay unchanged.
 
 Five new HTTP cases fetch each example from the served OpenAPI JSON and submit that
 exact JSON to the normal authenticated Production route. They require real PDF bytes

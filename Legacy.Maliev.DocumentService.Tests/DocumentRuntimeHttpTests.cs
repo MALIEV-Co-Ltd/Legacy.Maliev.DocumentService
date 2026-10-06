@@ -175,6 +175,14 @@ public sealed class DocumentRuntimeHttpTests
         Assert.Equal("Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.",
             operation.GetProperty("description").GetString());
         Assert.Equal("The rendered PDF document.", operation.GetProperty("responses").GetProperty("200").GetProperty("description").GetString());
+        var pdfSchema = operation.GetProperty("responses").GetProperty("200").GetProperty("content")
+            .GetProperty("application/pdf").GetProperty("schema");
+        if (pdfSchema.TryGetProperty("$ref", out var pdfReference))
+        {
+            pdfSchema = metadata.RootElement.GetProperty("components").GetProperty("schemas").GetProperty(pdfReference.GetString()!.Split('/').Last());
+        }
+        Assert.Equal("string", pdfSchema.GetProperty("type").GetString());
+        Assert.Equal("binary", pdfSchema.GetProperty("format").GetString());
         Assert.Equal("The JSON body is missing or invalid.", operation.GetProperty("responses").GetProperty("400").GetProperty("description").GetString());
         var errorContent = operation.GetProperty("responses").GetProperty("400").GetProperty("content");
         Assert.True(errorContent.TryGetProperty("application/problem+json", out _));

@@ -24,7 +24,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult CreateInvoiceAsync([FromBody] Invoice? item) =>
         item is null ? BadRequest() : File(renderer.RenderInvoice(item), MediaTypeNames.Application.Pdf);
@@ -36,7 +36,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult CreatePurchaseOrderAsync([FromBody] PurchaseOrder? item) =>
         item is null ? BadRequest() : File(renderer.RenderPurchaseOrder(item), MediaTypeNames.Application.Pdf);
@@ -48,7 +48,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult CreateQuotationAsync([FromBody] Quotation? item) =>
         item is null ? BadRequest() : File(renderer.RenderQuotation(item), MediaTypeNames.Application.Pdf);
@@ -60,7 +60,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult CreateReceiptAsync([FromBody] Receipt? item) =>
         item is null ? BadRequest() : File(renderer.RenderReceipt(item), MediaTypeNames.Application.Pdf);
@@ -72,7 +72,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
+    [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult CreateOrderLabelAsync([FromBody] OrderLabel? item) =>
         item is null ? BadRequest() : File(renderer.RenderOrderLabel(item), MediaTypeNames.Application.Pdf);
