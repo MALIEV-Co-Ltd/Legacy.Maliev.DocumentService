@@ -107,10 +107,20 @@ public sealed class ReceiptThaiAmountContentTests
     private static void AssertAmountGeometryAndRaster(byte[] bytes, Page page, string culture)
     {
         var words = NearestNeighbourWordExtractor.Instance.GetWords(page.Letters).ToArray();
-        var amount = Assert.Single(words, word => Compact(word.Text).Contains(PaidWords, StringComparison.Ordinal));
+        // Thai combining glyphs need not be grouped into one word by the spatial extractor.
+        var logicalLetters = page.Letters.SelectMany(letter => Compact(letter.Value)
+            .Select(character => (Character: character, Letter: letter))).ToArray();
+        var logicalText = new string(logicalLetters.Select(item => item.Character).ToArray());
+        var amountStart = logicalText.IndexOf(PaidWords, StringComparison.Ordinal);
+        Assert.True(amountStart >= 0, "The actual PDF must contain the complete Thai amount phrase.");
+        Assert.Equal(amountStart, logicalText.LastIndexOf(PaidWords, StringComparison.Ordinal));
+        var amountLetters = logicalLetters.Skip(amountStart).Take(PaidWords.Length).Select(item => item.Letter).ToArray();
         var received = Assert.Single(words, word => Compact(word.Text) == "Received");
         var remark = Assert.Single(words, word => word.Text.StartsWith("Remark", StringComparison.Ordinal));
-        var bounds = amount.BoundingBox;
+        var bounds = (Left: amountLetters.Min(letter => letter.BoundingBox.Left),
+            Right: amountLetters.Max(letter => letter.BoundingBox.Right),
+            Bottom: amountLetters.Min(letter => letter.BoundingBox.Bottom),
+            Top: amountLetters.Max(letter => letter.BoundingBox.Top));
         // A4Page uses an 18 mm left and 14 mm right content margin.
         var contentCenter = (18 * 72d / 25.4 + page.Width - 14 * 72d / 25.4) / 2;
         Assert.InRange((bounds.Left + bounds.Right) / 2, contentCenter - 3, contentCenter + 3);
