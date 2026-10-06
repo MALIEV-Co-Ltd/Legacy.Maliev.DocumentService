@@ -73,7 +73,9 @@ public sealed class AnnotatedInvoiceLayoutTests
 
         Assert.Contains("Siam", text, StringComparison.Ordinal);
         Assert.Contains("ธนาคารไทยพาณิชย์", text, StringComparison.Ordinal);
-        Assert.Contains("บริษัท มาลีฟ จำกัด", text, StringComparison.Ordinal);
+        // PDF text extraction can omit Thai word spacing while retaining every glyph.
+        var compactText = string.Concat(text.Where(character => !char.IsWhiteSpace(character)));
+        Assert.Contains("บริษัทมาลีฟจำกัด", compactText, StringComparison.Ordinal);
         Assert.Contains("417-108808-2", text, StringComparison.Ordinal);
         Assert.Contains("Savings account", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Kasikornbank", text, StringComparison.OrdinalIgnoreCase);
