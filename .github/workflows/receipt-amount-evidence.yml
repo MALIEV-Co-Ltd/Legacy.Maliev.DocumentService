@@ -47,11 +47,25 @@ jobs:
       - name: Build Release before tests
         run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror
       - name: Preserve pristine Application compile provenance before instrumentation
+        run: python3 -B scripts/capture-document-contract-proof.py receipt-evidence/application-provenance
+      - name: Compile test-only contract rejection fixtures without execution
         run: |-
-          mkdir -p receipt-evidence/application-provenance
-          cp Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll receipt-evidence/application-provenance/
-          cp Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb receipt-evidence/application-provenance/
-          sha256sum receipt-evidence/application-provenance/* Legacy.Maliev.DocumentService.Application/IDocumentRenderer.cs Legacy.Maliev.DocumentService.Application/Legacy.Maliev.DocumentService.Application.csproj > receipt-evidence/application-provenance/sha256.txt
+          for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
+            dotnet build scripts/fixtures/contract-surface/ContractSurface.csproj --configuration Release -warnaserror \
+              -p:SurfaceMutation="$mutation" -p:SourceRevisionId="$DOCUMENT_SOURCE_SHA" \
+              -p:DomainAssemblyPath="$PWD/Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.dll" \
+              -p:BaseIntermediateOutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/obj/" \
+              -p:OutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/" -p:AppendTargetFrameworkToOutputPath=false
+          done
+      - name: Preserve compiled rejection fixtures for independent metadata inspection
+        run: |-
+          for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
+            mkdir -p "receipt-evidence/contract-fixtures/$mutation"
+            cp "$RUNNER_TEMP/contract-fixtures/$mutation/Legacy.Maliev.DocumentService.Application.dll" "receipt-evidence/contract-fixtures/$mutation/"
+            cp "$RUNNER_TEMP/contract-fixtures/$mutation/Legacy.Maliev.DocumentService.Application.pdb" "receipt-evidence/contract-fixtures/$mutation/"
+          done
+      - name: Verify compiled contract surface and rejection controls
+        run: python3 -B scripts/test-document-contract-controls.py receipt-evidence/application-provenance "$RUNNER_TEMP/contract-fixtures"
       - name: Focused actual helper and PDF tests
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
@@ -69,6 +83,7 @@ jobs:
         run: |-
           python3 -B -m unittest discover -s scripts -p test_receipt_evidence.py
           python3 -B scripts/read-receipt-evidence.py receipt-evidence
+          python3 -B scripts/read-document-contract-applicability.py receipt-evidence
       - name: Preserve actual receipt evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

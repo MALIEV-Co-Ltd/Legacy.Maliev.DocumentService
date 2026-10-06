@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Legacy.Maliev.DocumentService.Application</AssemblyName>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants>$(SurfaceMutation)</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Surface.cs" />
+    <Reference Include="Legacy.Maliev.DocumentService.Domain">
+      <HintPath>$(DomainAssemblyPath)</HintPath>
+    </Reference>
+    <EmbeddedResource Include="marker.txt" Condition="'$(SurfaceMutation)' == 'RESOURCE'" />
+  </ItemGroup>
+</Project>
