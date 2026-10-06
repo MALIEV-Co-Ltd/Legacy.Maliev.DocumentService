@@ -15,6 +15,22 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_SatisfiesStructuralContract()
     {
         WorkflowContractValidator.Validate(Workflow);
+        AssertMutationRejected("    needs: contract-proof\n", string.Empty);
+        AssertMutationRejected("./.github/workflows/receipt-amount-evidence.yml", "./.github/workflows/ci-main.yml");
+        AssertMutationRejected("receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}", "receipt-amount-evidence-main");
+        AssertMutationRejected("runner-results contract-proof/receipt-evidence", "runner-results");
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsMissingCoverageCollection()
+    {
+        AssertMutationRejected("      VSTestCollect: XPlat Code Coverage\n", string.Empty);
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsEvidenceOnlyOnSuccess()
+    {
+        AssertMutationRejected("        if: always()", "        if: success()");
     }
 
     [Fact]
@@ -138,8 +154,8 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_RejectsSharedActionMainWithPinnedShaComment()
     {
         AssertMutationRejected(
-            "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@73dd7304ffe85ec504389fd7664cc39070b9f148",
-            "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@main # 73dd7304ffe85ec504389fd7664cc39070b9f148");
+            "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8",
+            "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@main # e3a6093324a24968876782153286f52db8b29fd8");
     }
 
     [Fact]
@@ -208,6 +224,24 @@ public sealed class WorkflowContractTests
             "          use-local-maliev-dependencies: 'true'\n        env:\n          GITHUB_ACTIONS: 'false'\n");
     }
 
+    [Fact]
+    public void BuildAndTest_RejectsPrivateCleanupOnSuccessOnly()
+    {
+        AssertMutationRejected("always() && github.event_name", "success() && github.event_name");
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsPrivateCleanupAgainstAnotherRepository()
+    {
+        AssertMutationRejected("github.repository == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'", "github.repository == 'Untrusted/Other'");
+    }
+
+    [Fact]
+    public void BuildAndTest_RejectsUnreviewedPrivateCleanupCommand()
+    {
+        AssertMutationRejected("-Phase Cleanup -RepositoryRoot", "-Phase PreTest -RepositoryRoot");
+    }
+
     private static void AssertMutationRejected(string original, string replacement)
     {
         Assert.Contains(original, Workflow, StringComparison.Ordinal);
@@ -246,7 +280,7 @@ public sealed class WorkflowContractTests
 internal static partial class WorkflowContractValidator
 {
     private const string CheckoutAction = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1";
-    private const string SharedValidationAction = "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@73dd7304ffe85ec504389fd7664cc39070b9f148";
+    private const string SharedValidationAction = "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8";
 
     public static void Validate(string workflow)
     {
@@ -272,12 +306,19 @@ internal static partial class WorkflowContractValidator
 
         var workflowPermissions = RequireExactReadOnlyPermissions(RequireMapping(root, "permissions"), "workflow");
         var jobs = RequireMapping(root, "jobs");
-        if (jobs.Children.Count != 1)
+        if (jobs.Children.Count != 2)
         {
-            throw new InvalidOperationException("Workflow must define only the validate job.");
+            throw new InvalidOperationException("Workflow must define only validation and the approved contract-proof job.");
         }
 
+        var proofJob = RequireMapping(jobs, "contract-proof");
+        if (proofJob.Children.Count != 1)
+        {
+            throw new InvalidOperationException("Contract proof must use only the owned reusable workflow.");
+        }
+        RequireScalarValue(proofJob, "uses", "./.github/workflows/receipt-amount-evidence.yml");
         var validateJob = RequireMapping(jobs, "validate");
+        RequireScalarValue(validateJob, "needs", "contract-proof");
         var jobPermissionsNode = GetOptional(validateJob, "permissions");
         var effectiveJobPermissions = jobPermissionsNode is null
             ? workflowPermissions
@@ -291,16 +332,80 @@ internal static partial class WorkflowContractValidator
         RejectDuplicatedValidationActionsAndCommands(jobs);
 
         var steps = RequireSequence(validateJob, "steps");
-        if (steps.Children.Count != 4)
+        if (steps.Children.Count != 8)
         {
-            throw new InvalidOperationException("Validate job must contain exactly four caller-owned steps.");
+            throw new InvalidOperationException("Validate job must contain four validation, three evidence and one bounded cleanup step.");
         }
+
+        var environment = RequireMapping(validateJob, "env");
+        if (environment.Children.Count != 5)
+        {
+            throw new InvalidOperationException("Validate environment must contain only dependency root and evidence properties.");
+        }
+
+        RequireScalarValue(environment, "MalievWorkspaceRoot", "${{ github.workspace }}/.dependencies");
+        RequireScalarValue(environment, "VSTestCollect", "XPlat Code Coverage");
+        RequireScalarValue(environment, "VSTestLogger", "trx");
+        RequireScalarValue(environment, "VSTestResultsDirectory", "${{ github.workspace }}/runner-results");
+
+        RequireScalarValue(environment, "DOCUMENT_SOURCE_SHA", "${{ github.event.pull_request.head.sha || github.sha }}");
+        ValidateStep(steps.Children[4],
+            "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["name"] = "receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}",
+                ["path"] = "contract-proof",
+            });
+        var gate = RequireMapping(steps.Children[5], "coverage gate");
+        if (gate.Children.Count != 2)
+        {
+            throw new InvalidOperationException("Coverage gate must contain only name and run.");
+        }
+
+        RequireScalarValue(gate, "name", "Gate owned production coverage");
+        RequireScalarValue(gate, "run", "python3 scripts/verify-runner-coverage.py runner-results contract-proof/receipt-evidence");
+        var cleanup = RequireMapping(steps.Children[6], "private diagnostics cleanup");
+        if (cleanup.Children.Count != 4)
+        {
+            throw new InvalidOperationException("Cleanup must contain exactly name, if, shell and run.");
+        }
+        RequireScalarValue(cleanup, "name", "Clean owned private Document diagnostics");
+        RequireScalarValue(cleanup, "if", "always() && github.event_name == 'pull_request' && github.repository == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'");
+        RequireScalarValue(cleanup, "shell", "pwsh");
+        RequireScalarValue(cleanup, "run", "$privatePath = Join-Path $env:RUNNER_TEMP \"document-provenance-Legacy.Maliev.DocumentService.Tests-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT\"\n"
+            + "& ./Legacy.Maliev.DocumentService.Tests/Evidence/Capture-DocumentCollectorProvenance.ps1 -Phase Cleanup -RepositoryRoot $env:GITHUB_WORKSPACE -PrivateDiagnosticDirectory $privatePath");
+        var evidence = RequireMapping(steps.Children[7], "evidence upload");
+        if (evidence.Children.Count != 4)
+        {
+            throw new InvalidOperationException("Evidence upload must contain exactly name, if, uses and with.");
+        }
+
+        RequireScalarValue(evidence, "name", "Preserve validation evidence");
+        RequireScalarValue(evidence, "if", "always()");
+        RequireScalarValue(evidence, "uses", "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02");
+        var evidenceInputs = RequireMapping(evidence, "with");
+        if (evidenceInputs.Children.Count != 4)
+        {
+            throw new InvalidOperationException("Evidence upload must have exactly four bounded inputs.");
+        }
+
+        RequireScalarValue(evidenceInputs, "name", "document-validation-${{ github.sha }}");
+        RequireScalarValue(evidenceInputs, "path", "runner-results\n"
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll\n"
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll");
+        RequireScalarValue(evidenceInputs, "if-no-files-found", "warn");
+        RequireScalarValue(evidenceInputs, "retention-days", "7");
 
         ValidateStep(
             steps.Children[0],
             CheckoutAction,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
+                ["ref"] = "${{ github.event.pull_request.head.sha || github.sha }}",
                 ["persist-credentials"] = "false",
             });
         ValidateStep(

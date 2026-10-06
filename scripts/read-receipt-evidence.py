@@ -112,8 +112,10 @@ full_inventory = Counter((case["test_id"], case["class"], case["method"]) for ca
 focus_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in focus)
 if focus_inventory - full_inventory:
     errors.append("Full suite does not retain every focused execution-definition identity")
-if len(cases.get("full", [])) != 248:
-    errors.append("Full suite differs from 248 expected cases: prior suite count 243 plus five served-example HTTP cases")
+expected_full = Counter({(row["className"], row["method"]): row["executions"]
+                         for row in json.loads((repository / "docs/document-full-test-inventory.json").read_text())})
+if Counter((case["class"], case["method"]) for case in cases.get("full", [])) != expected_full:
+    errors.append("Full suite differs from the exact 337 merged HTTP, raster, receipt and evidence cases")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}

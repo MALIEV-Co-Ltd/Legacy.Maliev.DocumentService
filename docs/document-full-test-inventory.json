@@ -1,0 +1,572 @@
+[
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "BillingAddress_UsesCompactLabelsAndLineGrouping",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceFooter_AnchorsPaginationAtPrintableBottomOnEveryPage",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceFooter_UsesParallelEnglishAndThaiPaymentColumns",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceFooter_UsesVerifiedScbAccountAndLegacyFourColumnContactBlock",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceMasthead_HasNoDeadSpaceBelowLogoOrMetadata",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceMasthead_ShowsReferenceOnceAndKeepsMetadataPairsCompact",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.AnnotatedInvoiceLayoutTests",
+    "method": "InvoiceTotals_PreserveLegacyFinancialLabelsAndThaiRemark",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Api.RequestFailureTracingTests",
+    "method": "PdfApi_UsesTheSharedRequestFailureBoundary",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Api.RequestFailureTracingTests",
+    "method": "SharedBoundary_EmitsOneSafeIncidentAndPreservesGenericResponse",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ApiContractTests",
+    "method": "Api_PreservesFiveAuthenticatedLegacyPdfRoutes",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ApiContractTests",
+    "method": "ContainerRestore_CopiesSharedBuildPropertiesBeforeProjectEvaluation",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ApiContractTests",
+    "method": "ProductionProjects_ContainNeitherITextNorPayPal",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ApiContractTests",
+    "method": "ProductionRendering_EmbedsNotoSansFamiliesAndContainsNoSarabun",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.BilingualLayoutTests",
+    "method": "BilingualHeading_RendersEnglishAboveSmallerThaiSubtitle",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ConcurrentQuestPdfAcceptanceTests",
+    "method": "FiveDocumentKinds_ConcurrentGenerationUnderCollection_PreservesIsolatedContentAndCatalogTaggingState",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentAssemblyEvidenceTests",
+    "method": "RuntimeApplicationContract_PreservesAbstractPublicRenderingSurface",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentCompiledDomainXmlContractTests",
+    "method": "CompiledDomainXml_IdentifiesTheActualPublicModelAssembly",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentCompiledDomainXmlContractTests",
+    "method": "CompiledDomainXml_PreservesPublicDocumentTypeAndPropertyDocumentation",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentCurrentConsumerHttpAcceptanceTests",
+    "method": "IntranetCamelCaseOrderLabel_BindsAllThreeQuantityFieldsIntoRealPdf",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentCurrentConsumerHttpAcceptanceTests",
+    "method": "IntranetCamelCasePurchaseOrder_BindsNestedPartiesFobAndComputedLineAmount",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentCurrentConsumerHttpAcceptanceTests",
+    "method": "IntranetPascalCaseQuotation_BindsNestedCustomerEmployeeAndLineMoney",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "AnonymousOrMissingRenderPermission_CannotObtainPdf",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "ConsumerInvoiceJson_BindsNestedIntegerAndDecimalFieldsIntoPdfBytes",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "ConsumerInvoiceJson_WithNonIntegerQuantity_ReturnsBinding400WithoutPdf",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "EveryRenderRoute_RejectsInvalidCredentialsBeforeProducingPdf",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "NullDocument_Returns400WithoutPdf",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentHttpAcceptanceTests",
+    "method": "PascalCaseJson_ProducesRealBilingualPdfWithExpectedGeometry",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentJwtExternalizationTests",
+    "method": "DocumentApi_UsesExternalPublicKeyWithoutAStoredSymmetricKey",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentJwtExternalizationTests",
+    "method": "ProductionDocumentValidator_AcceptsOnlyConfiguredRs256IssuerAndAudience",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentJwtExternalizationTests",
+    "method": "ProductionDocumentValidator_DoesNotFallBackToLegacySymmetricKey",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiHttpAcceptanceTests",
+    "method": "DevelopmentOpenApi_PreservesOriginalRenderSummaryAndBodyDescription",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiHttpAcceptanceTests",
+    "method": "ProductionOpenApi_IsNotExposed",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiResponseSecurityHttpContractTests",
+    "method": "DevelopmentOpenApi_DescribesExistingPascalCaseConsumerFieldTypes",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiResponseSecurityHttpContractTests",
+    "method": "DevelopmentOpenApi_PreservesBearerAuthorizationHeaderAndEffectiveSecurity",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiResponseSecurityHttpContractTests",
+    "method": "DevelopmentOpenApi_PreservesOriginalResponseDeclarations",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOpenApiResponseSecurityHttpContractTests",
+    "method": "DevelopmentOpenApi_RetainsApprovedDomainXmlDocumentation",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRenderFailureHttpAcceptanceTests",
+    "method": "MalformedJson_Returns400WithoutRenderingIncident",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRenderFailureHttpAcceptanceTests",
+    "method": "MissingEmbeddedFontGlyph_ReturnsOpaque500AndOneSafeIncident",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ActualJwtAndPermissionAdmission_PreventsReceiptRendering",
+    "executions": 6
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ActualRoutes_BindPascalCaseJsonAndReturnRealPdfBytes",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "DevelopmentMetadata_DescribesAllFiveActualPostRoutesAndPdfResponses",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "InvalidBodies_AreRejectedByActualAdmissionWithoutPdf",
+    "executions": 15
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ProductionMetadata_IsNotPubliclyExposed",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ProductionRegistration_UsesActualSingletonRendererAndSystemTimeProvider",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ReceiptGet_DoesNotInvokePostRenderer",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ReceiptQuantity_RejectsInvalidIntegerWireValue",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "ServedOpenApiExample_RendersThroughNormalAuthenticatedProductionRoute",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentStructuralProposalFixtureTests",
+    "method": "CompiledProfile_ReportsIntendedReasonWithoutAcceptingIncompleteEvidence",
+    "executions": 26
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentStructuralProposalFixtureTests",
+    "method": "CompiledRuntimeNativeHeader_IsRejectedWithoutInvokingTargetCode",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentVariantSmokeTests",
+    "method": "EmptyA4Documents_RenderPrintablePages",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentVariantSmokeTests",
+    "method": "LongItemCollections_FlowAcrossPagesWithoutLosingHeadersOrLogo",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.FoldingMarkParityTests",
+    "method": "A4Documents_UseExactOneThirdFoldCoordinates",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.FoldingMarkParityTests",
+    "method": "FoldIndicators_UseReservedLeftGutterInsideThePrintableArea",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyBaselineTests",
+    "method": "ITextBaselines_FreezeAllLegacyDocumentVariants",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyBaselineTests",
+    "method": "ITextBaselines_FreezePageCountsAndGeometry",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyBaselineTests",
+    "method": "QuestPdfMigration_HasAProductionRendererForEveryLegacyRoute",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.MonochromePrintContractTests",
+    "method": "RenderingSource_UsesOnlyApprovedMonochromeColorTokens",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.MonochromePrintContractTests",
+    "method": "RepresentativeOutputs_ArePrintableAndContainRequiredAssets",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PublishWorkflowPermissionContractTests",
+    "method": "PublishWorkflow_ScopesOidcToPublishJobs",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "FixedTimeProvider_ProducesDeterministicOrderLabelContent",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "Invoice_PreservesA4TitleTotalsAndThaiToneMarks",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "OrderLabel_PreservesFourByThreeGeometryAndThaiToneMarks",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "PurchaseOrder_PreservesA4TitleAmountAndThaiToneMarks",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "Quotation_PreservesA4TitleAmountsAndThaiToneMarks",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.QuestRendererContractTests",
+    "method": "Receipt_PreservesTwoA4CopiesTitleAmountsAndThaiToneMarks",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "EveryImmutableLegacyFixture_HasMappedQuestVariantAndPageRegionParity",
+    "executions": 22
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "Invoice_PreservesLegacyPageRegionGeometryAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "Invoice_ThaiToneMarkCropRetainsAboveLineInkAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "OrderLabel_PreservesLegacyFourByThreeGeometryAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "PurchaseOrder_PreservesLegacyPageRegionGeometryAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "Quotation_PreservesLegacyPageRegionGeometryAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.RasterVisualParityTests",
+    "method": "Receipt_PreservesLegacyOriginalPageRegionGeometryAt150Dpi",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptAmountBrandPatternTests",
+    "method": "EmbeddedArtwork_RetainsSixOrderedLettersFromTheBundledFont",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptAmountBrandPatternTests",
+    "method": "OtherCurrencies_OmitAmountWordsAndGrayBrandBand",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptAmountBrandPatternTests",
+    "method": "ThbReceipt_HasVisibleClippedBrandingOnTheFinalPageOfBothCopies",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptSignatureParityTests",
+    "method": "Receipt_EmbedsSignatureOnCopyOnly_LikeLegacyRenderer",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests",
+    "method": "LegacyThbOracle_AndExplicitNewFixtureRetainFiveBahtNinetyNineSatang",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests",
+    "method": "LongReceipt_Preserves44ItemsAndOneAmountRowAtEndOfEachCopy",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests",
+    "method": "OtherCurrencies_OmitThaiAmountRow",
+    "executions": 5
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ReceiptThaiAmountContentTests",
+    "method": "ThbReceipt_UsesAmountPaidInBothCopiesWithCenteredVisibleWords",
+    "executions": 3
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedBusinessDocumentLayoutTests",
+    "method": "BusinessDocumentFooters_KeepPaginationAtBottomWithoutRepeatingCompanyIdentity",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedBusinessDocumentLayoutTests",
+    "method": "EveryBusinessDocument_LocalizesMetadataAndOperationalLabels",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedBusinessDocumentLayoutTests",
+    "method": "Metadata_DoesNotRenderRowsForMissingValues",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedBusinessDocumentLayoutTests",
+    "method": "PurchaseOrder_PresentsSupplierAboveBalancedBillingAndShippingRow",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedBusinessDocumentLayoutTests",
+    "method": "Receipt_DoesNotRepeatMetadataInsideASecondPaymentCard",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedComponentContractTests",
+    "method": "DocumentFormat_UsesReadableDurationsForUnassignedValues",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedComponentContractTests",
+    "method": "DocumentFormat_UsesReadableIdentifiersForUnassignedValues",
+    "executions": 4
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.SharedComponentContractTests",
+    "method": "RenderingAssembly_ExposesFocusedInternalDocumentComponents",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ThaiBahtAmountWordsTests",
+    "method": "DecimalEdges_HaveExplicitDisplayWords",
+    "executions": 17
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ThaiBahtAmountWordsTests",
+    "method": "DecimalExtremes_RetainEveryMillionGroupAndSign",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.ThaiBahtAmountWordsTests",
+    "method": "RetainedSourceValues_PreserveThaiWords",
+    "executions": 81
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.VisualAssetParityTests",
+    "method": "OrderLabel_PreservesLegacyPortraitViewerRotation",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.VisualAssetParityTests",
+    "method": "Quotation_PreservesLegacyLogo",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.VisualLayoutParityTests",
+    "method": "RepresentativeDocuments_KeepReadableTopToBottomSectionFlow",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "ApiProject_UsesOnlyLegacyServiceDefaults",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsCommentedDependencySha",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsEvidenceOnlyOnSuccess",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsJobPermissionEscalation",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsMissingCoverageCollection",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsMissingLocalDependencyOptIn",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsPrivateCleanupAgainstAnotherRepository",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsPrivateCleanupOnSuccessOnly",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsReservedGitHubActionsOverride",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsSecretExpressionInJobEnvironment",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsSecretReferenceAnywhere",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsSharedActionMainWithPinnedShaComment",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsUnreviewedPrivateCleanupCommand",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsWhitespaceObfuscatedRestoreCommand",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_SatisfiesStructuralContract",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "DependabotConfiguration_GroupsOnlyCompatibleUpdatesWithinQueueLimits",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "DependabotConfiguration_RejectsKnownIncompatibleQuestPdfReleases",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "DependabotConfiguration_ScansOnlyIndependentlyResolvableProjectDirectories",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "GatedImagePublish_UsesTheValidatedImmutableDependencyCommits",
+    "executions": 1
+  }
+]

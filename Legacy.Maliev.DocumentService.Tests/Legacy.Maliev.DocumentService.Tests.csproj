@@ -24,4 +24,20 @@
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Rendering\Legacy.Maliev.DocumentService.Rendering.csproj" />
   </ItemGroup>
+  <!-- Opt-in Document-owned evidence only; no production/shared-runner or coverage-setting change. -->
+  <PropertyGroup>
+    <DocumentProvenanceCapture Condition="'$(DocumentProvenanceCapture)' == '' and '$(GITHUB_EVENT_NAME)' == 'pull_request' and '$(GITHUB_REPOSITORY)' == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'">true</DocumentProvenanceCapture>
+    <DocumentProvenanceCapture Condition="'$(DocumentProvenanceCapture)' == ''">false</DocumentProvenanceCapture>
+  </PropertyGroup>
+  <Target Name="CaptureDocumentPreTestEvidence" BeforeTargets="VSTest" Condition="'$(DocumentProvenanceCapture)' == 'true' and '$(TargetFramework)' == 'net10.0'">
+    <PropertyGroup>
+      <DocumentEvidenceOutput>$(MSBuildProjectDirectory)/../runner-results/document-provenance</DocumentEvidenceOutput>
+      <DocumentPrivateDiagnostics>$(RUNNER_TEMP)/document-provenance-$(MSBuildProjectName)-$(GITHUB_RUN_ID)-$(GITHUB_RUN_ATTEMPT)</DocumentPrivateDiagnostics>
+      <VSTestDiag>$(DocumentPrivateDiagnostics)/vstest.log</VSTestDiag>
+    </PropertyGroup>
+    <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)/Evidence/Capture-DocumentCollectorProvenance.ps1&quot; -Phase PreTest -RepositoryRoot &quot;$(MSBuildProjectDirectory)/..&quot; -TestOutputDirectory &quot;$(TargetDir)&quot; -AssetsPath &quot;$(ProjectAssetsFile)&quot; -OutputRoot &quot;$(DocumentEvidenceOutput)&quot; -PrivateDiagnosticDirectory &quot;$(DocumentPrivateDiagnostics)&quot; -CollectorRequest &quot;$(VSTestCollect)&quot;" />
+  </Target>
+  <Target Name="CaptureDocumentPostTestEvidence" AfterTargets="VSTest" Condition="'$(DocumentProvenanceCapture)' == 'true' and '$(TargetFramework)' == 'net10.0'">
+    <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)/Evidence/Capture-DocumentCollectorProvenance.ps1&quot; -Phase PostTest -RepositoryRoot &quot;$(MSBuildProjectDirectory)/..&quot; -TestOutputDirectory &quot;$(TargetDir)&quot; -AssetsPath &quot;$(ProjectAssetsFile)&quot; -OutputRoot &quot;$(DocumentEvidenceOutput)&quot; -PrivateDiagnosticDirectory &quot;$(DocumentPrivateDiagnostics)&quot; -CollectorRequest &quot;$(VSTestCollect)&quot;" />
+  </Target>
 </Project>

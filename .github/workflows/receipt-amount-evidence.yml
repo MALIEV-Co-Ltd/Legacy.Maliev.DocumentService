@@ -1,9 +1,7 @@
 name: Receipt amount evidence
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -16,6 +14,7 @@ jobs:
     env:
       MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
       DOCUMENT_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      DocumentProvenanceCapture: 'false'
     steps:
       - name: Check out DocumentService
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -92,6 +91,7 @@ jobs:
         if: always()
         run: |-
           python3 -B -m unittest discover -s scripts -p test_receipt_evidence.py
+          python3 -B -m unittest discover -s scripts -p test_document_application_proof.py
           python3 -B scripts/read-receipt-evidence.py receipt-evidence
           python3 -B scripts/read-document-contract-applicability.py receipt-evidence
       - name: Preserve actual receipt evidence

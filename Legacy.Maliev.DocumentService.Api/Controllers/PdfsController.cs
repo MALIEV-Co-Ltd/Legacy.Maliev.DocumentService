@@ -26,6 +26,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render)]
     [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesDefaultResponseType]
     public ActionResult CreateInvoiceAsync([FromBody] Invoice? item) =>
         item is null ? BadRequest() : File(renderer.RenderInvoice(item), MediaTypeNames.Application.Pdf);
 
@@ -38,6 +39,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render)]
     [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesDefaultResponseType]
     public ActionResult CreatePurchaseOrderAsync([FromBody] PurchaseOrder? item) =>
         item is null ? BadRequest() : File(renderer.RenderPurchaseOrder(item), MediaTypeNames.Application.Pdf);
 
@@ -50,6 +52,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render)]
     [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesDefaultResponseType]
     public ActionResult CreateQuotationAsync([FromBody] Quotation? item) =>
         item is null ? BadRequest() : File(renderer.RenderQuotation(item), MediaTypeNames.Application.Pdf);
 
@@ -62,6 +65,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render)]
     [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesDefaultResponseType]
     public ActionResult CreateReceiptAsync([FromBody] Receipt? item) =>
         item is null ? BadRequest() : File(renderer.RenderReceipt(item), MediaTypeNames.Application.Pdf);
 
@@ -74,6 +78,7 @@ public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
     [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render)]
     [ProducesResponseType(typeof(Stream), StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesDefaultResponseType]
     public ActionResult CreateOrderLabelAsync([FromBody] OrderLabel? item) =>
         item is null ? BadRequest() : File(renderer.RenderOrderLabel(item), MediaTypeNames.Application.Pdf);
 }

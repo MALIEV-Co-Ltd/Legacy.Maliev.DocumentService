@@ -7,15 +7,23 @@ permissions:
   contents: read
 
 jobs:
+  contract-proof:
+    uses: ./.github/workflows/receipt-amount-evidence.yml
   validate:
     name: validate
+    needs: contract-proof
     runs-on: ubuntu-latest
     env:
       MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
+      VSTestCollect: XPlat Code Coverage
+      VSTestLogger: trx
+      VSTestResultsDirectory: ${{ github.workspace }}/runner-results
+      DOCUMENT_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Check out DocumentService
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Check out Legacy.Maliev.ServiceDefaults
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -32,7 +40,35 @@ jobs:
           path: .dependencies/Legacy.Maliev.CompatibilityContracts
           persist-credentials: false
       - name: Validate .NET solution
-        uses: MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@73dd7304ffe85ec504389fd7664cc39070b9f148
+        uses: MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8
         with:
           solution: Legacy.Maliev.DocumentService.slnx
           use-local-maliev-dependencies: 'true'
+      - name: Obtain exact candidate contract proof
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
+          path: contract-proof
+      - name: Gate owned production coverage
+        run: python3 scripts/verify-runner-coverage.py runner-results contract-proof/receipt-evidence
+      - name: Clean owned private Document diagnostics
+        if: always() && github.event_name == 'pull_request' && github.repository == 'MALIEV-Co-Ltd/Legacy.Maliev.DocumentService'
+        shell: pwsh
+        run: |-
+          $privatePath = Join-Path $env:RUNNER_TEMP "document-provenance-Legacy.Maliev.DocumentService.Tests-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./Legacy.Maliev.DocumentService.Tests/Evidence/Capture-DocumentCollectorProvenance.ps1 -Phase Cleanup -RepositoryRoot $env:GITHUB_WORKSPACE -PrivateDiagnosticDirectory $privatePath
+      - name: Preserve validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: document-validation-${{ github.sha }}
+          path: |-
+            runner-results
+            Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll
+            Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb
+            Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll
+            Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll
+          if-no-files-found: warn
+          retention-days: 7

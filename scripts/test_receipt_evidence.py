@@ -40,8 +40,9 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.names = [(f"Legacy.Maliev.DocumentService.Tests.{cls}", method, str(index))
                       for cls, method, count in methods for index in range(count)]
         self.trx("focus", "receipt-focus.trx", self.names)
-        self.full_names = self.names + [("Legacy.Maliev.DocumentService.Tests.InheritedSuiteFixture", "RetainedCase", str(index))
-                                       for index in range(94)]
+        inventory = json.loads((Path(__file__).resolve().parent.parent / "docs/document-full-test-inventory.json").read_text())
+        self.full_names = [(row["className"], row["method"], str(index))
+                           for row in inventory for index in range(row["executions"])]
         self.trx("full", "full-suite.trx", self.full_names)
         self.coverage(application_lines=0)
 
@@ -138,7 +139,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from 248 expected cases: prior suite count 243 plus five served-example HTTP cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 337 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -244,9 +245,13 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             tree = ET.parse(path)
             definitions = tree.findall(".//{*}UnitTest")
             results = tree.findall(".//{*}UnitTestResult")
-            test_id = definitions[0].get("id")
-            definitions[1].set("id", test_id)
-            results[1].set("testId", test_id)
+            # Select two rows of the same method even when the merged full inventory is sorted.
+            repeated = [index for index, definition in enumerate(definitions)
+                        if definition.find("{*}TestMethod").get("name") == "RetainedSourceValues_PreserveThaiWords"][:2]
+            first, second = repeated
+            test_id = definitions[first].get("id")
+            definitions[second].set("id", test_id)
+            results[second].set("testId", test_id)
             tree.write(path, encoding="utf-8")
         code, result = self.read()
         self.assertEqual(0, code)
