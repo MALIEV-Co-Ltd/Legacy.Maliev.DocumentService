@@ -5,12 +5,20 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
+builder.AddDefaultApiVersioning();
 builder.AddStandardCors();
 builder.AddJwtAuthentication();
 builder.AddStandardMiddleware(options => options.EnableRequestLogging = true);
 builder.AddStandardOpenApi(
     title: "Legacy MALIEV Document Service API",
     description: "Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.");
+builder.Services.AddOpenApi("v1");
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.SerializerOptions.PropertyNamingPolicy = null;
+    options.SerializerOptions.DictionaryKeyPolicy = null;
+});
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -30,4 +38,5 @@ app.MapControllers();
 app.MapApiDocumentation(servicePrefix: "documents");
 await app.RunAsync();
 
+/// <summary>Entrypoint marker for the Document Service HTTP host.</summary>
 public partial class Program;

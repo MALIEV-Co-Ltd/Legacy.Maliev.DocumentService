@@ -17,7 +17,13 @@ public sealed partial class MonochromePrintContractTests
             .Distinct(StringComparer.Ordinal)
             .ToArray();
 
-        var approved = new[] { "#111111", "#333333", "#4A4A4A", "#D9D9D9" };
+        // The retained receipt branding uses the legacy 190/190/190 gray tone.
+        var approved = new[] { "#111111", "#333333", "#4A4A4A", "#D9D9D9", "#BEBEBE" };
+        Assert.All(approved, color =>
+        {
+            Assert.Equal(color[1..3], color[3..5]);
+            Assert.Equal(color[1..3], color[5..7]);
+        });
         Assert.All(colors, color => Assert.Contains(color, approved));
     }
 

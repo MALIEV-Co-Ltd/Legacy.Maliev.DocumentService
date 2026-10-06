@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="14.26" height="4" viewBox="0 0 14.26 4" data-word="MALIEV" data-font-sha256="b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5" data-font-size-pt="4">
+  <!--Static word artwork from the existing embedded Noto Sans Regular; no runtime font lookup. Copyright 2015-2021 Google LLC. All Rights Reserved.-->
+  <g transform="translate(0 4) scale(0.004 -0.004)">
+    <path data-letter="M" transform="translate(0 0)" d="M412 0 177 626H173Q176 595 178.0 542.5Q180 490 180 433V0H97V714H230L450 129H454L678 714H810V0H721V439Q721 491 723.5 542.0Q726 593 728 625H724L486 0Z" />
+    <path data-letter="A" transform="translate(907 0)" d="M545 0 459 221H176L91 0H0L279 717H360L638 0ZM352 517Q349 525 342.0 546.0Q335 567 328.5 589.5Q322 612 318 624Q311 593 302.0 563.5Q293 534 287 517L206 301H432Z" />
+    <path data-letter="L" transform="translate(1546 0)" d="M97 0V714H187V80H499V0Z" />
+    <path data-letter="I" transform="translate(2070 0)" d="M298 0H40V52L124 71V642L40 662V714H298V662L214 642V71L298 52Z" />
+    <path data-letter="E" transform="translate(2409 0)" d="M496 0H97V714H496V635H187V412H478V334H187V79H496Z" />
+    <path data-letter="V" transform="translate(2965 0)" d="M600 714 345 0H255L0 714H94L255 256Q271 212 282.0 173.5Q293 135 300 100Q307 135 318.0 174.0Q329 213 345 258L505 714Z" />
+  </g>
+</svg>

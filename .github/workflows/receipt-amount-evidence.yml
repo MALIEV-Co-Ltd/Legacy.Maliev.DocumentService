@@ -1,0 +1,108 @@
+name: Receipt amount evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  receipt-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
+      DOCUMENT_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Check out DocumentService
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned ServiceDefaults
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults
+          ref: 8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3
+          path: .dependencies/Legacy.Maliev.ServiceDefaults
+          persist-credentials: false
+      - name: Check out pinned CompatibilityContracts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts
+          ref: 78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7
+          path: .dependencies/Legacy.Maliev.CompatibilityContracts
+          persist-credentials: false
+      - name: Set up .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: 10.0.x
+      - name: Verify candidate source identity
+        run: test "$(git rev-parse HEAD)" = "$DOCUMENT_SOURCE_SHA"
+      - name: Restore
+        run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
+      - name: Build Release before tests
+        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -p:EmitCompilerGeneratedFiles=true -warnaserror
+      - name: Preserve actual OpenAPI compiler inputs and generated source
+        run: |-
+          mkdir -p receipt-evidence/openapi-compile
+          dotnet msbuild Legacy.Maliev.DocumentService.Api/Legacy.Maliev.DocumentService.Api.csproj -target:ResolveReferences,GenerateAdditionalXmlFilesForOpenApi -p:Configuration=Release -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -getItem:AdditionalFiles,ReferencePath > receipt-evidence/openapi-compile/resolved-inputs.json
+          cp Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.xml receipt-evidence/openapi-compile/
+          cp Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.xml receipt-evidence/openapi-compile/
+          mapfile -t generated_sources < <(find Legacy.Maliev.DocumentService.Api/obj/Release/net10.0 -name OpenApiXmlCommentSupport.generated.cs)
+          test "${#generated_sources[@]}" = 1
+          cp "${generated_sources[0]}" receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
+          test -s receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
+      - name: Preserve pristine Application compile provenance before instrumentation
+        run: python3 -B scripts/capture-document-contract-proof.py receipt-evidence/application-provenance
+      - name: Compile test-only contract rejection fixtures without execution
+        run: |-
+          for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
+            dotnet build scripts/fixtures/contract-surface/ContractSurface.Tests.csproj --configuration Release -warnaserror \
+              -p:SurfaceMutation="$mutation" -p:SourceRevisionId="$DOCUMENT_SOURCE_SHA" \
+              -p:DomainAssemblyPath="$PWD/Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.dll" \
+              -p:BaseIntermediateOutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/obj/" \
+              -p:OutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/" -p:AppendTargetFrameworkToOutputPath=false
+          done
+      - name: Preserve compiled rejection fixtures for independent metadata inspection
+        run: |-
+          for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
+            mkdir -p "receipt-evidence/contract-fixtures/$mutation"
+            cp "$RUNNER_TEMP/contract-fixtures/$mutation/Legacy.Maliev.DocumentService.Application.dll" "receipt-evidence/contract-fixtures/$mutation/"
+            cp "$RUNNER_TEMP/contract-fixtures/$mutation/Legacy.Maliev.DocumentService.Application.pdb" "receipt-evidence/contract-fixtures/$mutation/"
+          done
+      - name: Verify compiled contract surface and rejection controls
+        run: python3 -B scripts/test-document-contract-controls.py receipt-evidence/application-provenance "$RUNNER_TEMP/contract-fixtures"
+      - name: Focused actual helper and PDF tests
+        run: >-
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
+          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests|FullyQualifiedName~DocumentRuntimeHttpTests|FullyQualifiedName~ReceiptAmountBrandPatternTests'
+          --logger 'trx;LogFileName=receipt-focus.trx' --results-directory receipt-evidence/focus
+      - name: Full suite with raw coverage
+        run: >-
+          dotnet test Legacy.Maliev.DocumentService.slnx
+          --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
+          --logger 'trx;LogFileName=full-suite.trx' --results-directory receipt-evidence/full
+          --collect 'XPlat Code Coverage'
+      - name: Record observed coverage and sanitized cases
+        if: always()
+        run: |-
+          python3 -B -m unittest discover -s scripts -p test_receipt_evidence.py
+          python3 -B scripts/read-receipt-evidence.py receipt-evidence
+          python3 -B scripts/read-document-contract-applicability.py receipt-evidence
+      - name: Preserve actual receipt evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
+          path: |-
+            receipt-evidence
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-thai-amount-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-brand-pattern-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/openapi-owned-xml
+          if-no-files-found: error
+          retention-days: 7
