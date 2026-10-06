@@ -72,6 +72,33 @@ public sealed class AnnotatedInvoiceLayoutTests
         var text = string.Join(' ', document.GetPages().Select(page => page.Text));
 
         Assert.Contains("Siam", text, StringComparison.Ordinal);
+        Assert.Contains("ธนาคารไทยพาณิชย์", text, StringComparison.Ordinal);
+        // Locate the public Thai bank heading, then inspect only its recipient line.
+        var page = document.GetPage(1);
+        var logical = page.Letters.SelectMany(letter => letter.Value.Select(character =>
+            (Character: character, Letter: letter))).ToArray();
+        var logicalText = string.Concat(logical.Select(value => value.Character));
+        const string bankName = "ธนาคารไทยพาณิชย์";
+        var bankStart = logicalText.LastIndexOf(bankName, StringComparison.Ordinal);
+        Assert.True(bankStart >= 0, "Public Thai bank heading missing.");
+        var bankLetters = logical.Skip(bankStart).Take(bankName.Length).Select(value => value.Letter).ToArray();
+        var bankBaseline = bankLetters[0].StartBaseLine.Y;
+        var bankLeft = bankLetters.Min(letter => letter.BoundingBox.Left);
+        var bankRight = bankLetters.Max(letter => letter.BoundingBox.Right);
+        var recipientText = PublicRecipientLine(page.Letters.Select(letter =>
+            (letter.Value, letter.StartBaseLine.Y, letter.BoundingBox.Left)), bankBaseline, bankLeft, bankRight);
+        var matched = IsPublicThaiRecipient(recipientText);
+        Assert.False(IsPublicThaiRecipient(PublicRecipientLine([
+            ("ผู้รับ:บริษัทอื่นจำกัด", 93d, 10d), ("บริษัทมาลีฟจำกัด", 400d, 10d),
+        ], 100, 10, 110)));
+        Assert.False(IsPublicThaiRecipient(PublicRecipientLine([
+            ("ผู้รับ:บริษัทมาลีฟจำกัด", 400d, 10d),
+        ], 100, 10, 110)));
+        Assert.True(IsPublicThaiRecipient("ผู้รับ:บริษัทมาลีฟจ\u0e4d\u0e32กัด"));
+        Assert.False(IsPublicThaiRecipient(string.Empty));
+        Assert.True(matched, $"Public footer recipient outcomes: FormKC={matched}; "
+            + $"characters={recipientText.Length}; SaraAm={recipientText.Contains('\u0e33')}; "
+            + $"splitSaraAm={recipientText.Contains("\u0e4d\u0e32", StringComparison.Ordinal)}.");
         Assert.Contains("417-108808-2", text, StringComparison.Ordinal);
         Assert.Contains("Savings account", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Kasikornbank", text, StringComparison.OrdinalIgnoreCase);
@@ -80,6 +107,18 @@ public sealed class AnnotatedInvoiceLayoutTests
         Assert.Equal(2, Count(text, "36/1 Moo 3"));
         Assert.Equal(2, Count(text, "www.maliev.com"));
     }
+
+    private static string PublicRecipientLine(
+        IEnumerable<(string Text, double Baseline, double Left)> letters,
+        double bankBaseline, double bankLeft, double bankRight) =>
+        string.Concat(letters.Where(letter => bankBaseline - letter.Baseline is > 2 and < 12
+            && letter.Left >= bankLeft - 1 && letter.Left <= bankRight + 12)
+            .Select(letter => letter.Text));
+
+    private static bool IsPublicThaiRecipient(string text) =>
+        string.Concat(text.Where(character => !char.IsWhiteSpace(character)))
+            .Normalize(System.Text.NormalizationForm.FormKC)
+            == "ผู้รับ:บริษัทมาลีฟจำกัด".Normalize(System.Text.NormalizationForm.FormKC);
 
     [Fact]
     public void InvoiceFooter_AnchorsPaginationAtPrintableBottomOnEveryPage()
