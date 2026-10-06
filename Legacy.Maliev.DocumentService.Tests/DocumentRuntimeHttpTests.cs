@@ -117,7 +117,11 @@ public sealed class DocumentRuntimeHttpTests
         using var client = factory.Client("anonymous");
         using var response = await client.GetAsync("/documents/openapi/v1.json");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var metadataJson = await response.Content.ReadAsStringAsync();
+        var metadataDirectory = Path.Combine(AppContext.BaseDirectory, "TestResults", "openapi-owned-xml");
+        Directory.CreateDirectory(metadataDirectory);
+        await File.WriteAllTextAsync(Path.Combine(metadataDirectory, "v1.json"), metadataJson);
+        using var document = JsonDocument.Parse(metadataJson);
         var paths = document.RootElement.GetProperty("paths");
         var summaries = new Dictionary<string, string>
         {

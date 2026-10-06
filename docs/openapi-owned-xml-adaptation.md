@@ -35,6 +35,12 @@ resolve discovery; the direct package imports the required XML collection target
 The DTO assembly and exact schema-description assertions remain unchanged; no
 runtime transformer substitutes the comments.
 
+Candidate 6df4395 still failed the same schema-description assertion after the
+direct package import. That import alone is not a verified resolution. Hosted
+evidence now retains the normal HTTP metadata JSON, emitted API/Domain XML and
+generated transformer source to trace the actual compile-to-schema boundary.
+These are read-only artifacts; the strict assertions and 149/243 inventory remain.
+
 The existing real Development HTTP case checks all five exact source summaries,
 declared 400 responses, retained PDF success content, the receipt type description
 and AmountPaid property description. Production still requires 404 for metadata,

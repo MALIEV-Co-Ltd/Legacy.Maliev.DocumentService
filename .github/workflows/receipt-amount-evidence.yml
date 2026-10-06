@@ -45,7 +45,17 @@ jobs:
       - name: Restore
         run: dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
       - name: Build Release before tests
-        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror
+        run: dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -p:EmitCompilerGeneratedFiles=true -warnaserror
+      - name: Preserve actual OpenAPI compiler inputs and generated source
+        run: |-
+          mkdir -p receipt-evidence/openapi-compile
+          dotnet msbuild Legacy.Maliev.DocumentService.Api/Legacy.Maliev.DocumentService.Api.csproj -target:ResolveReferences,GenerateAdditionalXmlFilesForOpenApi -p:Configuration=Release -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -getItem:AdditionalFiles,ReferencePath > receipt-evidence/openapi-compile/resolved-inputs.json
+          cp Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.xml receipt-evidence/openapi-compile/
+          cp Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.xml receipt-evidence/openapi-compile/
+          mapfile -t generated_sources < <(find Legacy.Maliev.DocumentService.Api/obj/Release/net10.0 -name OpenApiXmlCommentSupport.generated.cs)
+          test "${#generated_sources[@]}" = 1
+          cp "${generated_sources[0]}" receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
+          test -s receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
       - name: Preserve pristine Application compile provenance before instrumentation
         run: python3 -B scripts/capture-document-contract-proof.py receipt-evidence/application-provenance
       - name: Compile test-only contract rejection fixtures without execution
@@ -93,5 +103,6 @@ jobs:
             receipt-evidence
             Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-thai-amount-v1
             Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-brand-pattern-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/openapi-owned-xml
           if-no-files-found: error
           retention-days: 7
