@@ -8,6 +8,11 @@ Committed v1 metadata incorrectly advertised application/pdf for every400 respon
 while the accepted actual HTTP tests require rejection responses to be non-PDF.
 The400 response metadata now explicitly declares ProblemDetails/application/problem+json;
 the new actual HTTP cases require that media type and a status400 JSON body.
+The first candidate7516df6 built without warnings/errors but all five new cases
+failed because method-wide Produces(application/pdf) still appeared on400 alongside
+the explicit ProblemDetails media type. The correction declares PDF only on the200
+response and removes that method-wide declaration. Assertions and the File(...)
+runtime response remain unchanged; no unchanged failing head is requeued.
 
 Five new HTTP cases fetch each example from the served OpenAPI JSON and submit that
 exact JSON to the normal authenticated Production route. They require real PDF bytes
