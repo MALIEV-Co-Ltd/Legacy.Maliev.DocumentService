@@ -6,7 +6,9 @@
     <SharedLibraryVersion Condition="'$(SharedLibraryVersion)' == ''">1.0.*-*</SharedLibraryVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Application\Legacy.Maliev.DocumentService.Application.csproj" />
+    <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Rendering\Legacy.Maliev.DocumentService.Rendering.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' != 'true' Or '$(UseLocalMalievDependencies)' == 'true'">

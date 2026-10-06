@@ -1,8 +1,8 @@
 namespace Legacy.Maliev.DocumentService.Api.Authorization;
 
-/// <summary>Permissions required by authenticated document routes.</summary>
+/// <summary>Permissions required by the authenticated document rendering routes.</summary>
 public static class DocumentPermissions
 {
-    /// <summary>Permission to render legacy document PDFs.</summary>
+    /// <summary>Allows rendering the five supported legacy document types.</summary>
     public const string Render = "legacy.documents.render";
 }

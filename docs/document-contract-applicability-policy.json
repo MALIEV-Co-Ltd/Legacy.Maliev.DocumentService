@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "document-contract-applicability-policy/v1",
+  "active": true,
+  "applicationAssembly": "Legacy.Maliev.DocumentService.Application",
+  "applicationStatus": "N/A contract-only",
+  "applicationNumericalPercent": null,
+  "applicationNumericalPassed": false,
+  "executableFloorPercent": 80,
+  "includeGeneratedLines": true,
+  "exclusions": [],
+  "approvedSourceHead": "6191a98c57becd7270ede83a7dfc95cb0b52912d",
+  "approvalNativeRun": "37425501847",
+  "sourceHashes": {
+    "IDocumentRenderer.cs": "1405f50026f21694314101df0e3c34a710ad09d29e173b1b6e66f37837c8996f",
+    "Legacy.Maliev.DocumentService.Application.csproj": "63cc9bad95d614c8672f25b5f54c768458ea47d0f15e67df0b7f7ea2933578ea"
+  }
+}

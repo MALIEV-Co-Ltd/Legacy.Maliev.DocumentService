@@ -12,5 +12,6 @@
     <EmbeddedResource Include="Resources\Fonts\NotoSansThai-Regular.ttf" />
     <EmbeddedResource Include="Resources\Fonts\NotoSansThai-Bold.ttf" />
     <EmbeddedResource Include="Resources\logo.png" />
+    <EmbeddedResource Include="Resources\ReceiptAmountBrandWord.svg" />
   </ItemGroup>
 </Project>

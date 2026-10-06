@@ -4,6 +4,7 @@ import hashlib
 import pathlib
 import sys
 import xml.etree.ElementTree as ET
+import subprocess
 
 expected = {
     "Legacy.Maliev.DocumentService.Api",
@@ -37,9 +38,15 @@ for name, inventory in sorted(lines.items()):
     summary.append({"assembly": name, "covered": covered, "valid": valid,
                     "percent": covered * 100 / valid if valid else None,
                     "threshold": 80, "passed": passed})
+application = next(item for item in summary if item["assembly"].endswith(".Application"))
+assert application["valid"] == 0, "Executable Application lines contradict the approved contract-only policy"
+subprocess.run([sys.executable, "-B", "scripts/verify-document-application-proof.py", sys.argv[2]], check=True)
+executable_passed = all(item["passed"] for item in summary if not item["assembly"].endswith(".Application"))
 output = {"raw_report": str(reports[0]), "raw_sha256": next(iter(digests)),
           "identical_raw_copies": len(reports), "exclusions": [], "assemblies": summary,
-          "note": "Empty applicability requires separate reviewed evidence; it is not 100%."}
+          "applicationStatus": "N/A contract-only", "applicationNumericalPassed": False,
+          "fourAssemblyNumericalAcceptance": False, "applicabilityAcceptance": executable_passed,
+          "note": "Application N/A requires independently rechecked same-candidate/run compiled proof; it is not 100%."}
 (root / "coverage-gate.json").write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(output, indent=2))
-raise SystemExit(0 if all(item["passed"] for item in summary) else 1)
+raise SystemExit(0 if executable_passed else 1)

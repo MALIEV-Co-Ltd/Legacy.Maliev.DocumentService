@@ -18,6 +18,7 @@ namespace Legacy.Maliev.DocumentService.Domain.Receipt
         /// <value>
         /// The amount paid.
         /// </value>
+        /// <example>5.99</example>
         public decimal AmountPaid { get; set; }
 
         /// <summary>
@@ -114,6 +115,7 @@ namespace Legacy.Maliev.DocumentService.Domain.Receipt
         /// <value>
         /// The currency.
         /// </value>
+        /// <example>"THB"</example>
         public string Currency { get; set; }
 
         /// <summary>

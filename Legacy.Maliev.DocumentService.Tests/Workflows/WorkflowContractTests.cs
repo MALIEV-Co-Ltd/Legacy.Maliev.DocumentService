@@ -15,6 +15,10 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_SatisfiesStructuralContract()
     {
         WorkflowContractValidator.Validate(Workflow);
+        AssertMutationRejected("    needs: contract-proof\n", string.Empty);
+        AssertMutationRejected("./.github/workflows/receipt-amount-evidence.yml", "./.github/workflows/ci-main.yml");
+        AssertMutationRejected("receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}", "receipt-amount-evidence-main");
+        AssertMutationRejected("runner-results contract-proof/receipt-evidence", "runner-results");
     }
 
     [Fact]
@@ -302,12 +306,19 @@ internal static partial class WorkflowContractValidator
 
         var workflowPermissions = RequireExactReadOnlyPermissions(RequireMapping(root, "permissions"), "workflow");
         var jobs = RequireMapping(root, "jobs");
-        if (jobs.Children.Count != 1)
+        if (jobs.Children.Count != 2)
         {
-            throw new InvalidOperationException("Workflow must define only the validate job.");
+            throw new InvalidOperationException("Workflow must define only validation and the approved contract-proof job.");
         }
 
+        var proofJob = RequireMapping(jobs, "contract-proof");
+        if (proofJob.Children.Count != 1)
+        {
+            throw new InvalidOperationException("Contract proof must use only the owned reusable workflow.");
+        }
+        RequireScalarValue(proofJob, "uses", "./.github/workflows/receipt-amount-evidence.yml");
         var validateJob = RequireMapping(jobs, "validate");
+        RequireScalarValue(validateJob, "needs", "contract-proof");
         var jobPermissionsNode = GetOptional(validateJob, "permissions");
         var effectiveJobPermissions = jobPermissionsNode is null
             ? workflowPermissions
@@ -321,13 +332,13 @@ internal static partial class WorkflowContractValidator
         RejectDuplicatedValidationActionsAndCommands(jobs);
 
         var steps = RequireSequence(validateJob, "steps");
-        if (steps.Children.Count != 7)
+        if (steps.Children.Count != 8)
         {
-            throw new InvalidOperationException("Validate job must contain four validation, two evidence and one bounded cleanup step.");
+            throw new InvalidOperationException("Validate job must contain four validation, three evidence and one bounded cleanup step.");
         }
 
         var environment = RequireMapping(validateJob, "env");
-        if (environment.Children.Count != 4)
+        if (environment.Children.Count != 5)
         {
             throw new InvalidOperationException("Validate environment must contain only dependency root and evidence properties.");
         }
@@ -337,15 +348,23 @@ internal static partial class WorkflowContractValidator
         RequireScalarValue(environment, "VSTestLogger", "trx");
         RequireScalarValue(environment, "VSTestResultsDirectory", "${{ github.workspace }}/runner-results");
 
-        var gate = RequireMapping(steps.Children[4], "coverage gate");
+        RequireScalarValue(environment, "DOCUMENT_SOURCE_SHA", "${{ github.event.pull_request.head.sha || github.sha }}");
+        ValidateStep(steps.Children[4],
+            "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["name"] = "receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}",
+                ["path"] = "contract-proof",
+            });
+        var gate = RequireMapping(steps.Children[5], "coverage gate");
         if (gate.Children.Count != 2)
         {
             throw new InvalidOperationException("Coverage gate must contain only name and run.");
         }
 
         RequireScalarValue(gate, "name", "Gate owned production coverage");
-        RequireScalarValue(gate, "run", "python3 scripts/verify-runner-coverage.py runner-results");
-        var cleanup = RequireMapping(steps.Children[5], "private diagnostics cleanup");
+        RequireScalarValue(gate, "run", "python3 scripts/verify-runner-coverage.py runner-results contract-proof/receipt-evidence");
+        var cleanup = RequireMapping(steps.Children[6], "private diagnostics cleanup");
         if (cleanup.Children.Count != 4)
         {
             throw new InvalidOperationException("Cleanup must contain exactly name, if, shell and run.");
@@ -355,7 +374,7 @@ internal static partial class WorkflowContractValidator
         RequireScalarValue(cleanup, "shell", "pwsh");
         RequireScalarValue(cleanup, "run", "$privatePath = Join-Path $env:RUNNER_TEMP \"document-provenance-Legacy.Maliev.DocumentService.Tests-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT\"\n"
             + "& ./Legacy.Maliev.DocumentService.Tests/Evidence/Capture-DocumentCollectorProvenance.ps1 -Phase Cleanup -RepositoryRoot $env:GITHUB_WORKSPACE -PrivateDiagnosticDirectory $privatePath");
-        var evidence = RequireMapping(steps.Children[6], "evidence upload");
+        var evidence = RequireMapping(steps.Children[7], "evidence upload");
         if (evidence.Children.Count != 4)
         {
             throw new InvalidOperationException("Evidence upload must contain exactly name, if, uses and with.");
@@ -386,6 +405,7 @@ internal static partial class WorkflowContractValidator
             CheckoutAction,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
+                ["ref"] = "${{ github.event.pull_request.head.sha || github.sha }}",
                 ["persist-credentials"] = "false",
             });
         ValidateStep(
