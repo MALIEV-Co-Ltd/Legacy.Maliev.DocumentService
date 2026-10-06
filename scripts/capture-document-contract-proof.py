@@ -16,6 +16,10 @@ SOURCE_HASHES = {
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def snapshot_name(name):
+    # An archived source project must not become a discoverable build project.
+    return name + '.source' if name.endswith('.csproj') else name
+
 def capture(destination):
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     assert head == os.environ['DOCUMENT_SOURCE_SHA'], 'Checkout SHA mismatch'
@@ -36,8 +40,9 @@ def capture(destination):
         shutil.copyfile(source, destination / name)
         files[name] = sha(destination / name)
     for name in SOURCE_HASHES:
-        shutil.copyfile(project / name, destination / name)
-        files[name] = sha(destination / name)
+        captured = snapshot_name(name)
+        shutil.copyfile(project / name, destination / captured)
+        files[captured] = sha(destination / captured)
     manifest = dict(schemaVersion='document-contract-capture/v1', head=head,
                     runId=os.environ['GITHUB_RUN_ID'], runAttempt=os.environ['GITHUB_RUN_ATTEMPT'],
                     phase='release-build-before-test-instrumentation', files=files,

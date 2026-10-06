@@ -9,7 +9,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
-from capture_document_contract_support import ASSEMBLY, sha
+from capture_document_contract_support import ASSEMBLY, sha, snapshot_name
 
 spec = importlib.util.spec_from_file_location('contract_gate', Path(__file__).with_name('read-document-contract-applicability.py'))
 gate = importlib.util.module_from_spec(spec)
@@ -36,6 +36,8 @@ def metadata(dll, pdb, expected, output):
     return json.loads(output.read_text(encoding='utf-8-sig'))
 
 gate.validate_capture(snapshot, head, run, attempt)
+assert not list(snapshot.rglob('*.csproj')), 'Archived evidence became a discoverable build project'
+results.append(dict(control='source archive retains validated bytes without a discoverable project', rejected=False))
 with tempfile.TemporaryDirectory() as temporary:
     root = Path(temporary)
     dll, pdb = (snapshot / (ASSEMBLY + suffix) for suffix in ('.dll', '.pdb'))
@@ -58,6 +60,8 @@ with tempfile.TemporaryDirectory() as temporary:
     for name, mutation in (
         ('changed source with updated manifest hash', 'source'),
         ('missing source', 'missing'),
+        ('changed archived project with updated manifest hash', 'project'),
+        ('missing archived project source', 'missing-project'),
         ('wrong manifest candidate', 'head'),
         ('wrong run', 'run'),
         ('wrong attempt', 'attempt'),
@@ -72,6 +76,12 @@ with tempfile.TemporaryDirectory() as temporary:
             manifest['files'][source.name] = sha(source)
         elif mutation == 'missing':
             (copy / 'IDocumentRenderer.cs').unlink()
+        elif mutation == 'project':
+            source = copy / snapshot_name(ASSEMBLY + '.csproj')
+            source.write_bytes(source.read_bytes() + b'\n<!-- changed -->\n')
+            manifest['files'][source.name] = sha(source)
+        elif mutation == 'missing-project':
+            (copy / snapshot_name(ASSEMBLY + '.csproj')).unlink()
         elif mutation == 'head':
             manifest['head'] = '0' * 40
         elif mutation == 'run':

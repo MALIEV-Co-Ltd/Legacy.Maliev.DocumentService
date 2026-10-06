@@ -8,22 +8,22 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
-from capture_document_contract_support import ASSEMBLY, SOURCE_HASHES, sha
+from capture_document_contract_support import ASSEMBLY, SOURCE_HASHES, sha, snapshot_name
 
 def validate_capture(snapshot, head, run_id, attempt):
     manifest = json.loads((snapshot / 'manifest.json').read_text(encoding='utf-8'))
     assert manifest['schemaVersion'] == 'document-contract-capture/v1'
     assert (manifest['head'], manifest['runId'], manifest['runAttempt']) == (head, run_id, attempt)
     assert manifest['phase'] == 'release-build-before-test-instrumentation' and manifest['policyActive'] is False
-    expected_files = set(SOURCE_HASHES) | {ASSEMBLY + '.dll', ASSEMBLY + '.pdb'}
+    expected_files = {snapshot_name(n) for n in SOURCE_HASHES} | {ASSEMBLY + '.dll', ASSEMBLY + '.pdb'}
     assert set(manifest['files']) == expected_files
     assert set(manifest['sourceInventory']) == {f'{ASSEMBLY}/{n}' for n in SOURCE_HASHES}
     for name in expected_files:
         assert sha(snapshot / name) == manifest['files'][name], 'Captured file hash mismatch'
     for name, digest in SOURCE_HASHES.items():
-        assert sha(snapshot / name) == digest, 'Frozen source contract changed'
+        assert sha(snapshot / snapshot_name(name)) == digest, 'Frozen source contract changed'
         committed = subprocess.check_output(['git', 'show', f'{head}:{ASSEMBLY}/{name}'])
-        assert committed == (snapshot / name).read_bytes(), 'Captured source differs from candidate'
+        assert committed == (snapshot / snapshot_name(name)).read_bytes(), 'Captured source differs from candidate'
     return manifest
 
 def raw_assemblies(report):

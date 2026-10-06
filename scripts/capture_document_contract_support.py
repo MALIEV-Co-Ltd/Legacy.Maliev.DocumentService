@@ -8,3 +8,4 @@ spec.loader.exec_module(module)
 ASSEMBLY = module.ASSEMBLY
 SOURCE_HASHES = module.SOURCE_HASHES
 sha = module.sha
+snapshot_name = module.snapshot_name
