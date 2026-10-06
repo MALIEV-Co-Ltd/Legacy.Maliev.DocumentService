@@ -83,10 +83,10 @@ public sealed class AnnotatedInvoiceLayoutTests
         Assert.True(bankStart >= 0, "Public Thai bank heading missing.");
         var bankLetters = logical.Skip(bankStart).Take(bankName.Length).Select(value => value.Letter).ToArray();
         var bankBaseline = bankLetters[0].StartBaseLine.Y;
-        var bankLeft = bankLetters.Min(letter => letter.GlyphRectangle.Left);
-        var bankRight = bankLetters.Max(letter => letter.GlyphRectangle.Right);
+        var bankLeft = bankLetters.Min(letter => letter.BoundingBox.Left);
+        var bankRight = bankLetters.Max(letter => letter.BoundingBox.Right);
         var recipientText = PublicRecipientLine(page.Letters.Select(letter =>
-            (letter.Value, letter.StartBaseLine.Y, letter.GlyphRectangle.Left)), bankBaseline, bankLeft, bankRight);
+            (letter.Value, letter.StartBaseLine.Y, letter.BoundingBox.Left)), bankBaseline, bankLeft, bankRight);
         var matched = IsPublicThaiRecipient(recipientText);
         Assert.False(IsPublicThaiRecipient(PublicRecipientLine([
             ("ผู้รับ:บริษัทอื่นจำกัด", 93d, 10d), ("บริษัทมาลีฟจำกัด", 400d, 10d),
