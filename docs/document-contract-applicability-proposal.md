@@ -27,7 +27,7 @@ N/A contract-only has a null percentage and numericalPassed=false. It is never
 100% and never an 80% numerical pass. Any raw Application line, covered or
 uncovered, contradicts applicability. API, Domain and Rendering keep separate
 80% raw floors including generated lines and no exclusions. The actual 32
-consumer HTTP cases and all 141 focused/235 full cases must pass with exact
+consumer HTTP cases and all 149 focused/243 full cases must pass with exact
 execution mapping and all sixteen TRX counters reconciled. A failing API floor
 remains a failure even if the Application contract proof succeeds.
 

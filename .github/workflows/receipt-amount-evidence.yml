@@ -70,7 +70,7 @@ jobs:
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
           --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
-          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests|FullyQualifiedName~DocumentRuntimeHttpTests'
+          --filter 'FullyQualifiedName~ThaiBahtAmountWordsTests|FullyQualifiedName~ReceiptThaiAmountContentTests|FullyQualifiedName~DocumentRuntimeHttpTests|FullyQualifiedName~ReceiptAmountBrandPatternTests'
           --logger 'trx;LogFileName=receipt-focus.trx' --results-directory receipt-evidence/focus
       - name: Full suite with raw coverage
         run: >-
@@ -92,5 +92,6 @@ jobs:
           path: |-
             receipt-evidence
             Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-thai-amount-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-brand-pattern-v1
           if-no-files-found: error
           retention-days: 7

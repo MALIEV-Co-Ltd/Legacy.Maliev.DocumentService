@@ -32,6 +32,9 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("DocumentRuntimeHttpTests", "ReceiptGet_DoesNotInvokePostRenderer", 1),
             ("DocumentRuntimeHttpTests", "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf", 1),
             ("DocumentRuntimeHttpTests", "ProductionRegistration_UsesActualSingletonRendererAndSystemTimeProvider", 1),
+            ("ReceiptAmountBrandPatternTests", "EmbeddedArtwork_RetainsSixOrderedLettersFromTheBundledFont", 1),
+            ("ReceiptAmountBrandPatternTests", "ThbReceipt_HasVisibleClippedBrandingOnTheFinalPageOfBothCopies", 2),
+            ("ReceiptAmountBrandPatternTests", "OtherCurrencies_OmitAmountWordsAndGrayBrandBand", 5),
         ]
         self.names = [(f"Legacy.Maliev.DocumentService.Tests.{cls}", method, str(index))
                       for cls, method, count in methods for index in range(count)]
@@ -134,7 +137,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from 235 expected cases: prior suite count 203 plus 32 actual HTTP cases", result["errors"])
+        self.assertIn("Full suite differs from 243 expected cases: prior suite count 235 plus eight brand-pattern cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -143,6 +146,18 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 code, result = self.read()
                 self.assertEqual(1, code)
                 self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
+
+    def test_missing_brand_pattern_case_fails_closed(self):
+        self.trx("focus", "receipt-focus.trx", self.names[:-1])
+        code, result = self.read()
+        self.assertEqual(1, code)
+        self.assertIn("Focused inventory differs from the exact 149 allowlisted class/method cases", result["errors"])
+
+    def test_missing_execution_counter_fails_closed(self):
+        self.mutate_focus(lambda tree: tree.find(".//{*}Counters").attrib.pop("failed"))
+        code, result = self.read()
+        self.assertEqual(1, code)
+        self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
 
     def test_duplicate_execution_fails_closed(self):
         def mutation(tree):

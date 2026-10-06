@@ -374,7 +374,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 });
                 if (string.Equals(receipt.Currency, "THB", StringComparison.Ordinal))
                 {
-                    column.Item().AlignCenter().Text($"( {ThaiBahtAmountWords.Format(receipt.AmountPaid)} )");
+                    column.Item().Element(container => ReceiptAmountBrandPattern.Compose(container, ThaiBahtAmountWords.Format(receipt.AmountPaid)));
                 }
 
                 column.Item().PaddingTop(6).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
