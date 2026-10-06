@@ -188,17 +188,35 @@ public sealed class DocumentRuntimeHttpTests
         Assert.True(errorContent.TryGetProperty("application/problem+json", out _));
         Assert.False(errorContent.TryGetProperty("application/pdf", out _));
         var example = operation.GetProperty("requestBody").GetProperty("content").GetProperty("application/json").GetProperty("example");
+        var requestJson = example.GetRawText();
         Assert.Equal(JsonValueKind.Object, example.ValueKind);
         Assert.Equal(marker, example.GetProperty(field).GetString());
         if (route == "receipt")
         {
             Assert.Equal(5.99m, example.GetProperty("AmountPaid").GetDecimal());
             Assert.Equal(JsonValueKind.Null, example.GetProperty("WithholdingTax").ValueKind);
+            var receiptSchema = operation.GetProperty("requestBody").GetProperty("content").GetProperty("application/json")
+                .GetProperty("schema").GetProperty("oneOf")[1];
+            if (receiptSchema.TryGetProperty("$ref", out var receiptReference))
+            {
+                receiptSchema = metadata.RootElement.GetProperty("components").GetProperty("schemas").GetProperty(receiptReference.GetString()!.Split('/').Last());
+            }
+            var properties = receiptSchema.GetProperty("properties");
+            var amountExample = properties.GetProperty("AmountPaid").GetProperty("examples")[0];
+            var currencyExample = properties.GetProperty("Currency").GetProperty("examples")[0];
+            Assert.Equal(JsonValueKind.Number, amountExample.ValueKind);
+            Assert.Equal(5.99m, amountExample.GetDecimal());
+            Assert.Equal(JsonValueKind.String, currencyExample.ValueKind);
+            Assert.Equal("THB", currencyExample.GetString());
+            var schemaRequest = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(requestJson)!;
+            schemaRequest["AmountPaid"] = amountExample;
+            schemaRequest["Currency"] = currencyExample;
+            requestJson = JsonSerializer.Serialize(schemaRequest);
         }
 
         await using var productionFactory = new RuntimeFactory();
         using var productionClient = productionFactory.Client();
-        using var body = new StringContent(example.GetRawText(), Encoding.UTF8, "application/json");
+        using var body = new StringContent(requestJson, Encoding.UTF8, "application/json");
         using var response = await productionClient.PostAsync("/Pdfs/" + route, body);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
