@@ -1,0 +1,28 @@
+# Runnable document examples
+
+The existing five PDF operations now expose synthetic PascalCase request examples
+in their generated development OpenAPI reference. Their remarks explain the actual
+render permission and PDF content type; the existing 200/400 statuses have concrete
+descriptions. Examples contain no customer data or private source fixture values.
+Committed v1 metadata incorrectly advertised application/pdf for every400 response,
+while the accepted actual HTTP tests require rejection responses to be non-PDF.
+The400 response metadata now explicitly declares ProblemDetails/application/problem+json;
+the new actual HTTP cases require that media type and a status400 JSON body.
+
+Five new HTTP cases fetch each example from the served OpenAPI JSON and submit that
+exact JSON to the normal authenticated Production route. They require real PDF bytes
+containing the example marker, and the receipt case also checks its Thai amount text.
+Each route's documented invalid-body400 outcome is checked through actual HTTP.
+The existing production metadata404 and JWT/permission rejection controls remain.
+No controller, renderer, serializer, auth or test-boundary replacement is added.
+
+This improves the developer reference rather than claiming that historical private
+XML already contained examples. It uses the existing .NET10 XML documentation
+generator through normal AddOpenApi and HTTP; no helper reflection, generated-code
+edits, extra endpoint, coverage exclusion or numerical waiver is introduced.
+Reference: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/openapi-comments?view=aspnetcore-10.0
+
+Native validation is pending. Expected focused count154 and full248 retain the
+existing149/243 cases plus five new examples. The generated-inclusive API80% floor
+remains unaccepted until actual raw readback proves it. Application numerical
+coverage and the compiled-contract-only policy remain separate and inactive.

@@ -18,46 +18,66 @@ namespace Legacy.Maliev.DocumentService.Api.Controllers;
 public sealed class PdfsController(IDocumentRenderer renderer) : ControllerBase
 {
     /// <summary>Create the invoice PDF.</summary>
-    /// <param name="item">The item.</param>
+    /// <remarks>Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.</remarks>
+    /// <param name="item" example="{&quot;Remark&quot;:&quot;EXAMPLE-INVOICE&quot;}">The item.</param>
+    /// <response code="200">The rendered PDF document.</response>
+    /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("invoice"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateInvoiceAsync([FromBody] Invoice? item) =>
         item is null ? BadRequest() : File(renderer.RenderInvoice(item), MediaTypeNames.Application.Pdf);
 
     /// <summary>Create the purchase order PDF.</summary>
-    /// <param name="item">The item.</param>
+    /// <remarks>Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.</remarks>
+    /// <param name="item" example="{&quot;Notes&quot;:&quot;EXAMPLE-PURCHASE-ORDER&quot;}">The item.</param>
+    /// <response code="200">The rendered PDF document.</response>
+    /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("purchaseorder"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreatePurchaseOrderAsync([FromBody] PurchaseOrder? item) =>
         item is null ? BadRequest() : File(renderer.RenderPurchaseOrder(item), MediaTypeNames.Application.Pdf);
 
     /// <summary>Create the quotation PDF.</summary>
-    /// <param name="item">The item.</param>
+    /// <remarks>Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.</remarks>
+    /// <param name="item" example="{&quot;Comment&quot;:&quot;EXAMPLE-QUOTATION&quot;}">The item.</param>
+    /// <response code="200">The rendered PDF document.</response>
+    /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("quotation"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateQuotationAsync([FromBody] Quotation? item) =>
         item is null ? BadRequest() : File(renderer.RenderQuotation(item), MediaTypeNames.Application.Pdf);
 
     /// <summary>Create the receipt PDF.</summary>
-    /// <param name="item">The item.</param>
+    /// <remarks>Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.</remarks>
+    /// <param name="item" example="{&quot;Id&quot;:89,&quot;InvoiceNumber&quot;:&quot;EXAMPLE-RECEIPT&quot;,&quot;Currency&quot;:&quot;THB&quot;,&quot;AmountPaid&quot;:5.99,&quot;WithholdingTax&quot;:null,&quot;Remark&quot;:&quot;EXAMPLE-RECEIPT&quot;}">The item.</param>
+    /// <response code="200">The rendered PDF document.</response>
+    /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("receipt"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateReceiptAsync([FromBody] Receipt? item) =>
         item is null ? BadRequest() : File(renderer.RenderReceipt(item), MediaTypeNames.Application.Pdf);
 
     /// <summary>Create the order label PDF.</summary>
-    /// <param name="item">The item.</param>
+    /// <remarks>Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.</remarks>
+    /// <param name="item" example="{&quot;Name&quot;:&quot;EXAMPLE-ORDER-LABEL&quot;}">The item.</param>
+    /// <response code="200">The rendered PDF document.</response>
+    /// <response code="400">The JSON body is missing or invalid.</response>
     /// <returns>The PDF response or a bad request for missing input.</returns>
     [HttpPost("orderlabel"), RequirePermission(DocumentPermissions.Render)]
-    [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [Produces(MediaTypeNames.Application.Pdf)]
     public ActionResult CreateOrderLabelAsync([FromBody] OrderLabel? item) =>
         item is null ? BadRequest() : File(renderer.RenderOrderLabel(item), MediaTypeNames.Application.Pdf);

@@ -33,6 +33,7 @@ expected_focus = {
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering"): 6,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ReceiptQuantity_RejectsInvalidIntegerWireValue"): 1,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "DevelopmentMetadata_DescribesAllFiveActualPostRoutesAndPdfResponses"): 1,
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ServedOpenApiExample_RendersThroughNormalAuthenticatedProductionRoute"): 5,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ProductionMetadata_IsNotPubliclyExposed"): 1,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ReceiptGet_DoesNotInvokePostRenderer"): 1,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf"): 1,
@@ -99,13 +100,13 @@ for lane, name in (("focus", "receipt-focus.trx"), ("full", "full-suite.trx")):
 
 focus = cases.get("focus", [])
 if Counter((case["class"], case["method"]) for case in focus) != Counter(expected_focus):
-    errors.append("Focused inventory differs from the exact 149 allowlisted class/method cases")
+    errors.append("Focused inventory differs from the exact 154 allowlisted class/method cases")
 full_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in cases.get("full", []))
 focus_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in focus)
 if focus_inventory - full_inventory:
     errors.append("Full suite does not retain every focused execution-definition identity")
-if len(cases.get("full", [])) != 243:
-    errors.append("Full suite differs from 243 expected cases: prior suite count 235 plus eight brand-pattern cases")
+if len(cases.get("full", [])) != 248:
+    errors.append("Full suite differs from 248 expected cases: prior suite count 243 plus five served-example HTTP cases")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}

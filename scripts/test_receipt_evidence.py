@@ -28,6 +28,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering", 6),
             ("DocumentRuntimeHttpTests", "ReceiptQuantity_RejectsInvalidIntegerWireValue", 1),
             ("DocumentRuntimeHttpTests", "DevelopmentMetadata_DescribesAllFiveActualPostRoutesAndPdfResponses", 1),
+            ("DocumentRuntimeHttpTests", "ServedOpenApiExample_RendersThroughNormalAuthenticatedProductionRoute", 5),
             ("DocumentRuntimeHttpTests", "ProductionMetadata_IsNotPubliclyExposed", 1),
             ("DocumentRuntimeHttpTests", "ReceiptGet_DoesNotInvokePostRenderer", 1),
             ("DocumentRuntimeHttpTests", "ActualRendererFailure_ReturnsOpaqueProductionErrorWithoutPdf", 1),
@@ -137,7 +138,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from 243 expected cases: prior suite count 235 plus eight brand-pattern cases", result["errors"])
+        self.assertIn("Full suite differs from 248 expected cases: prior suite count 243 plus five served-example HTTP cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -151,7 +152,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("focus", "receipt-focus.trx", self.names[:-1])
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Focused inventory differs from the exact 149 allowlisted class/method cases", result["errors"])
+        self.assertIn("Focused inventory differs from the exact 154 allowlisted class/method cases", result["errors"])
 
     def test_missing_execution_counter_fails_closed(self):
         self.mutate_focus(lambda tree: tree.find(".//{*}Counters").attrib.pop("failed"))

@@ -158,6 +158,57 @@ public sealed class DocumentRuntimeHttpTests
         Assert.Equal("Gets or sets the amount paid.\nThe amount paid.", receiptSchema.GetProperty("properties").GetProperty("AmountPaid").GetProperty("description").GetString());
     }
 
+    [Theory]
+    [InlineData("invoice", "Remark", "EXAMPLE-INVOICE")]
+    [InlineData("purchaseorder", "Notes", "EXAMPLE-PURCHASE-ORDER")]
+    [InlineData("quotation", "Comment", "EXAMPLE-QUOTATION")]
+    [InlineData("receipt", "Remark", "EXAMPLE-RECEIPT")]
+    [InlineData("orderlabel", "Name", "EXAMPLE-ORDER-LABEL")]
+    public async Task ServedOpenApiExample_RendersThroughNormalAuthenticatedProductionRoute(string route, string field, string marker)
+    {
+        await using var metadataFactory = new RuntimeFactory("Development");
+        using var metadataClient = metadataFactory.Client("anonymous");
+        using var metadataResponse = await metadataClient.GetAsync("/documents/openapi/v1.json");
+        Assert.Equal(HttpStatusCode.OK, metadataResponse.StatusCode);
+        using var metadata = JsonDocument.Parse(await metadataResponse.Content.ReadAsStringAsync());
+        var operation = metadata.RootElement.GetProperty("paths").GetProperty("/Pdfs/" + route).GetProperty("post");
+        Assert.Equal("Requires the legacy.documents.render permission. Send PascalCase JSON to receive an application/pdf document.",
+            operation.GetProperty("description").GetString());
+        Assert.Equal("The rendered PDF document.", operation.GetProperty("responses").GetProperty("200").GetProperty("description").GetString());
+        Assert.Equal("The JSON body is missing or invalid.", operation.GetProperty("responses").GetProperty("400").GetProperty("description").GetString());
+        var errorContent = operation.GetProperty("responses").GetProperty("400").GetProperty("content");
+        Assert.True(errorContent.TryGetProperty("application/problem+json", out _));
+        Assert.False(errorContent.TryGetProperty("application/pdf", out _));
+        var example = operation.GetProperty("requestBody").GetProperty("content").GetProperty("application/json").GetProperty("example");
+        Assert.Equal(JsonValueKind.Object, example.ValueKind);
+        Assert.Equal(marker, example.GetProperty(field).GetString());
+        if (route == "receipt")
+        {
+            Assert.Equal(5.99m, example.GetProperty("AmountPaid").GetDecimal());
+            Assert.Equal(JsonValueKind.Null, example.GetProperty("WithholdingTax").ValueKind);
+        }
+
+        await using var productionFactory = new RuntimeFactory();
+        using var productionClient = productionFactory.Client();
+        using var body = new StringContent(example.GetRawText(), Encoding.UTF8, "application/json");
+        using var response = await productionClient.PostAsync("/Pdfs/" + route, body);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        Assert.True(bytes.AsSpan().StartsWith("%PDF-"u8));
+        using var pdf = PdfDocument.Open(bytes);
+        var text = string.Join('\n', pdf.GetPages().Select(page => page.Text));
+        Assert.Contains(marker, text, StringComparison.Ordinal);
+        if (route == "receipt") Assert.Contains("ห้าบาทเก้าสิบเก้าสตางค์", Compact(text), StringComparison.Ordinal);
+
+        using var invalidBody = new StringContent("null", Encoding.UTF8, "application/json");
+        using var invalidResponse = await productionClient.PostAsync("/Pdfs/" + route, invalidBody);
+        await AssertRejectedAsync(invalidResponse, HttpStatusCode.BadRequest);
+        Assert.Equal("application/problem+json", invalidResponse.Content.Headers.ContentType?.MediaType);
+        using var problem = JsonDocument.Parse(await invalidResponse.Content.ReadAsStringAsync());
+        Assert.Equal(400, problem.RootElement.GetProperty("status").GetInt32());
+    }
+
     [Fact]
     public async Task ProductionMetadata_IsNotPubliclyExposed()
     {

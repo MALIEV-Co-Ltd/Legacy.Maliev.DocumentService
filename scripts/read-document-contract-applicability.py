@@ -62,14 +62,14 @@ def inspect(root):
     assert surface['dllSha256'] == manifest['files'][ASSEMBLY + '.dll']
     assert surface['pdbSha256'] == manifest['files'][ASSEMBLY + '.pdb']
     # The existing strict reader re-parses both actual TRX files, every execution mapping,
-    # all sixteen counters, exact 149 focused identities and all 243 full executions.
+    # all sixteen counters, exact 154 focused identities and all 248 full executions.
     subprocess.run([sys.executable, '-B', 'scripts/read-receipt-evidence.py', str(root)], check=True)
     observations = json.loads((root / 'receipt-evidence.json').read_text(encoding='utf-8'))
     assert observations['head_sha'] == observations['expected_head_sha'] == head
     assert observations['run_id'] == run_id and observations['errors'] == []
     runtime = [[(c['class'], c['method']) for c in observations['cases'][lane]
                 if c['class'].endswith('.DocumentRuntimeHttpTests')] for lane in ('focus', 'full')]
-    assert len(runtime[0]) == len(runtime[1]) == 32 and Counter(runtime[0]) == Counter(runtime[1])
+    assert len(runtime[0]) == len(runtime[1]) == 37 and Counter(runtime[0]) == Counter(runtime[1])
     reports = list((root / 'full').rglob('coverage.cobertura.xml'))
     assert reports and len({sha(p) for p in reports}) == 1
     assert sha(reports[0]) == observations['raw_sha256']
@@ -79,7 +79,7 @@ def inspect(root):
         head=head, runId=run_id, runAttempt=attempt, rawSha256=sha(reports[0]), exclusions=[],
         application=dict(status='N/A contract-only', numericalPercent=None, numericalPassed=False, surface=surface),
         executableAssemblies=actual, executableFloorsPassed=all(x['numericalPassed'] for x in actual),
-        actualHttpPassed=32, fourAssemblyNumericalAcceptance=False,
+        actualHttpPassed=37, fourAssemblyNumericalAcceptance=False,
         note='Inactive reviewed proposal. N/A is separate from the three mandatory numerical floors; no deployment acceptance.')
 
 if __name__ == '__main__':
