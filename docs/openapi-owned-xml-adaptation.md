@@ -23,6 +23,13 @@ Microsoft documents that standard literal overloads are intercepted and
 referenced projects must emit XML:
 [OpenAPI XML documentation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/openapi-comments?view=aspnetcore-10.0).
 
+The API explicitly references the existing Domain project so the generator can
+discover its emitted XML at compile time. Native candidate d7e8bdb built with
+zero warnings/errors and passed 148/149 focused cases, including route summaries,
+but the Receipt schema description was absent with only a transitive Domain
+reference. The direct reference preserves the existing DTO assembly and exact
+schema-description assertions; no runtime transformer substitutes the comments.
+
 The existing real Development HTTP case checks all five exact source summaries,
 declared 400 responses, retained PDF success content, the receipt type description
 and AmountPaid property description. Production still requires 404 for metadata,

@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Application\Legacy.Maliev.DocumentService.Application.csproj" />
+    <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Rendering\Legacy.Maliev.DocumentService.Rendering.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' != 'true' Or '$(UseLocalMalievDependencies)' == 'true'">
