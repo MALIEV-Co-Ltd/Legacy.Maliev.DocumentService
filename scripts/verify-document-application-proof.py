@@ -19,7 +19,7 @@ def validate_receipt(root, head, run, attempt):
     assert receipt['applicationStatus'] == 'N/A contract-only'
     assert receipt['applicationNumericalPercent'] is None and receipt['applicationNumericalPassed'] is False
     assert receipt['fourAssemblyNumericalAcceptance'] is False and receipt['deployed'] is False
-    assert receipt['executableFloorsPassed'] is True and receipt['actualHttpPassed'] == 39
+    assert receipt['executableFloorsPassed'] is True and receipt['actualHttpPassed'] == 43
     assert receipt['exclusions'] == []
     assert receipt['policySha256'] == sha(Path('docs/document-contract-applicability-policy.json'))
     assert receipt['compiledProofSha256'] == sha(root / 'contract-applicability-proposal.json')

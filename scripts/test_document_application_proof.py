@@ -21,7 +21,7 @@ class ApplicationProofAdmissionTests(unittest.TestCase):
                            applicabilityAcceptance=True, applicationStatus='N/A contract-only',
                            applicationNumericalPercent=None, applicationNumericalPassed=False,
                            fourAssemblyNumericalAcceptance=False, deployed=False,
-                           executableFloorsPassed=True, actualHttpPassed=39, exclusions=[],
+                           executableFloorsPassed=True, actualHttpPassed=43, exclusions=[],
                            policySha256=proof.sha(Path('docs/document-contract-applicability-policy.json')),
                            compiledProofSha256=proof.sha(root / 'contract-applicability-proposal.json'),
                            controlsSha256=proof.sha(root / 'contract-negative-controls.json'))
@@ -37,6 +37,11 @@ class ApplicationProofAdmissionTests(unittest.TestCase):
             for key, value in mutations.items():
                 with self.subTest(key=key):
                     path.write_text(json.dumps(dict(receipt, **{key: value})))
+                    with self.assertRaises(AssertionError):
+                        proof.validate_receipt(root, 'a' * 40, '123', '1')
+            for count in (39, 42, 44):
+                with self.subTest(runtime_count=count):
+                    path.write_text(json.dumps(dict(receipt, actualHttpPassed=count)))
                     with self.assertRaises(AssertionError):
                         proof.validate_receipt(root, 'a' * 40, '123', '1')
             path.unlink()

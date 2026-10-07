@@ -151,6 +151,18 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.assertEqual(1, code)
                 self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
 
+    def test_same_count_substituted_runtime_method_fails_closed(self):
+        substituted = list(self.names)
+        index = next(index for index, item in enumerate(substituted)
+                     if item[1] == "QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus")
+        class_name, _, count = substituted[index]
+        substituted[index] = (class_name, "UnreviewedReplacement", count)
+        self.assertEqual(len(self.names), len(substituted))
+        self.trx("focus", "receipt-focus.trx", substituted)
+        code, result = self.read()
+        self.assertEqual(1, code)
+        self.assertIn("Focused inventory differs from the exact 160 allowlisted class/method cases", result["errors"])
+
     def test_missing_brand_pattern_case_fails_closed(self):
         self.trx("focus", "receipt-focus.trx", self.names[:-1])
         code, result = self.read()
