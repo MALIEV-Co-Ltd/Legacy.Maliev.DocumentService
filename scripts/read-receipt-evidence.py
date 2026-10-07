@@ -21,6 +21,7 @@ expected_head = os.environ.get("DOCUMENT_SOURCE_SHA", "")
 if not re.fullmatch(r"[0-9a-f]{40}", expected_head) or actual_head != expected_head:
     errors.append("Actual git HEAD does not match DOCUMENT_SOURCE_SHA")
 expected_focus = {
+    ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus"): 4,
     ("Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests", "QuotationRows_RenderDescriptionWithoutAddingDistinctName"): 2,
     ("Legacy.Maliev.DocumentService.Tests.ThaiBahtAmountWordsTests", "RetainedSourceValues_PreserveThaiWords"): 81,
     ("Legacy.Maliev.DocumentService.Tests.ThaiBahtAmountWordsTests", "DecimalEdges_HaveExplicitDisplayWords"): 17,
@@ -108,7 +109,7 @@ for lane, name in (("focus", "receipt-focus.trx"), ("full", "full-suite.trx")):
 
 focus = cases.get("focus", [])
 if Counter((case["class"], case["method"]) for case in focus) != Counter(expected_focus):
-    errors.append("Focused inventory differs from the exact 156 allowlisted class/method cases")
+    errors.append(f"Focused inventory differs from the exact {sum(expected_focus.values())} allowlisted class/method cases")
 full_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in cases.get("full", []))
 focus_inventory = Counter((case["test_id"], case["class"], case["method"]) for case in focus)
 if focus_inventory - full_inventory:
@@ -116,7 +117,7 @@ if focus_inventory - full_inventory:
 expected_full = Counter({(row["className"], row["method"]): row["executions"]
                          for row in json.loads((repository / "docs/document-full-test-inventory.json").read_text())})
 if Counter((case["class"], case["method"]) for case in cases.get("full", [])) != expected_full:
-    errors.append("Full suite differs from the exact 361 merged HTTP, raster, receipt and evidence cases")
+    errors.append(f"Full suite differs from the exact {sum(expected_full.values())} merged HTTP, raster, receipt and evidence cases")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}
