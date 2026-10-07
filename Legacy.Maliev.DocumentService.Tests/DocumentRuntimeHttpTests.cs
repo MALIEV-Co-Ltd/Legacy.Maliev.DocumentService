@@ -56,6 +56,56 @@ public sealed class DocumentRuntimeHttpTests
     }
 
     [Theory]
+    [InlineData(1, "-1.00THB/UNIT", "Discount:1.00%")]
+    [InlineData(-1, "1.00THB/UNIT", "Discount:-1.00%")]
+    [InlineData(0, null, null)]
+    [InlineData(null, null, null)]
+    public async Task QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus(int? discount, string? adjustment, string? percentage)
+    {
+        await using var factory = new RuntimeFactory();
+        using var client = factory.Client();
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            Currency = "THB",
+            Orders = new[]
+            {
+                new
+                {
+                    Description = "SIGNED-DISCOUNT-LINE",
+                    UnitPrice = 100m,
+                    Quantity = 1,
+                    Discount = discount,
+                    Subtotal = 100m - (discount ?? 0),
+                },
+            },
+        }), Encoding.UTF8, "application/json");
+        using var response = await client.PostAsync("/Pdfs/quotation", content, deadline.Token);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
+        using var document = PdfDocument.Open(await response.Content.ReadAsByteArrayAsync(deadline.Token));
+        var text = Compact(string.Join('\n', document.GetPages().Select(page => page.Text)));
+        Assert.Contains("SIGNED-DISCOUNT-LINE", text, StringComparison.Ordinal);
+        var suppliedSubtotal = (100m - (discount ?? 0)).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
+        Assert.Contains(suppliedSubtotal, text, StringComparison.Ordinal);
+        Assert.DoesNotContain("--1.00", text, StringComparison.Ordinal);
+        if (adjustment is null)
+        {
+            Assert.DoesNotContain("/UNIT", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("Discount:", text, StringComparison.Ordinal);
+        }
+        else
+        {
+            Assert.Contains(adjustment, text, StringComparison.Ordinal);
+            Assert.Contains(percentage!, text, StringComparison.Ordinal);
+            if (discount < 0)
+            {
+                Assert.DoesNotContain("-1.00THB/UNIT", text, StringComparison.Ordinal);
+            }
+        }
+    }
+
+    [Theory]
     [InlineData("invoice", "Remark", "INVOICE", 1)]
     [InlineData("purchaseorder", "Notes", "PURCHASE ORDER", 1)]
     [InlineData("quotation", "Comment", "QUOTATION", 1)]
