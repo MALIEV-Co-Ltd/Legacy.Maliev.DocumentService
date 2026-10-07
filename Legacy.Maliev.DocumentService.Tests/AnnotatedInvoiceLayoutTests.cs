@@ -49,7 +49,7 @@ public sealed class AnnotatedInvoiceLayoutTests
         Assert.Contains("(\"Subtotal\", invoice.Subtotal)", source, StringComparison.Ordinal);
         Assert.Contains("(\"VAT 7%\", invoice.Vat)", source, StringComparison.Ordinal);
         Assert.Contains("(\"Grand Total\", invoice.Total)", source, StringComparison.Ordinal);
-        Assert.Contains("(\"Withholding Tax\", invoice.WithholdingTax is null ? null : -invoice.WithholdingTax)", source, StringComparison.Ordinal);
+        Assert.Contains("(\"Withholding Tax\", invoice.WithholdingTax is > 0 ? -invoice.WithholdingTax : invoice.WithholdingTax)", source, StringComparison.Ordinal);
         Assert.Contains("(\"Outstanding\", invoice.Outstanding)", source, StringComparison.Ordinal);
     }
 

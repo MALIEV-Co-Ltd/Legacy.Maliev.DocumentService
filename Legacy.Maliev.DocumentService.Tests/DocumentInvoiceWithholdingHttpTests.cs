@@ -8,7 +8,7 @@ public sealed class DocumentInvoiceWithholdingHttpTests
 {
     [Theory]
     [InlineData("3", "-3.00")]
-    [InlineData("-3", "3.00")]
+    [InlineData("-3", "-3.00")]
     [InlineData("0", "0.00")]
     [InlineData("null", null)]
     public async Task InvoiceWithholding_RendersNumericDeductionAndPreservesSuppliedOutstanding(string withholding, string? expected)
