@@ -96,7 +96,7 @@ jobs:
           python3 -B scripts/read-document-contract-applicability.py receipt-evidence
       - name: Preserve actual receipt evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
           path: |-
