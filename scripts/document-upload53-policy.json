@@ -1,0 +1,4175 @@
+{
+  "schemaVersion": 1,
+  "repository": "MALIEV-Co-Ltd/Legacy.Maliev.DocumentService",
+  "acceptedBase": "b37c45ac92b1cdfd159a1f3fdb973f3588b45e91",
+  "root": "D:/codex-temp/2026-10-03/legacy-code-workflows-20261003",
+  "candidateWorktree": "D:/codex-temp/2026-10-03/legacy-code-workflows-20261003/work/documentservice-artifact-upload-contract-20261008",
+  "sourceSealSha256": "bbaccc97550d923fb3148672de5eb4235b8ded02909b9294215b97cee76d5ef7",
+  "dependencyManifestSha256": "edd136d82f33ae7b0450ba0bed80d8e4825d079522c51c69f46a75dfdf51834f",
+  "sharedModuleSha256": "44a8a5accac9da11422d606be02fe28487642215df511b5f1c4284296a453ee2",
+  "executionMode": "source-intake-only",
+  "bundleSha256": "c09a490c37a7a70374a76923a29853f256006456fcc98d32de04e9f4c73fb068",
+  "bundleBytes": 229292,
+  "entries": [
+    {
+      "path": "candidate/raw/.github/workflows/_build-and-test.yml",
+      "bytes": 3737,
+      "sha256": "10ee28c5149e75c8198835e4345ccc75b987e67ae43b4fd3444a9058ae2ea812",
+      "compressedBytes": 1211,
+      "crc32": 2197950872,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "candidate/raw/.github/workflows/receipt-amount-evidence.yml",
+      "bytes": 6976,
+      "sha256": "fcb932dd04e3d0123d2e36ba5f14e29ce4efaf6149c36fa2dcaedd050579eeed",
+      "compressedBytes": 2006,
+      "crc32": 2512130959,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "candidate/raw/Legacy.Maliev.DocumentService.Tests/Workflows/WorkflowContractTests.cs",
+      "bytes": 28082,
+      "sha256": "ac7ccd7c311f75f9d53006ace738ed57609e036f113c047fd2013dd75e8e83f8",
+      "compressedBytes": 6064,
+      "crc32": 1868857352,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.gitattributes",
+      "bytes": 39,
+      "sha256": "91c171a7f4e295966f6e40aba83b0a11a56b4c99b59b9c55fcf54f15df207bc0",
+      "compressedBytes": 34,
+      "crc32": 2166835507,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/dependabot.yml",
+      "bytes": 423,
+      "sha256": "e81f3e1eeecb10098563cb9138649958782e712eb5dcbd56179ee9ecf93982be",
+      "compressedBytes": 193,
+      "crc32": 84851831,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/workflows/_build-and-test.yml",
+      "bytes": 792,
+      "sha256": "52fa7e1c93387cb4036ee3ccf7e87e036d8b1552c568f6835d4d024600afe7df",
+      "compressedBytes": 412,
+      "crc32": 2614190733,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/workflows/ci-develop.yml",
+      "bytes": 247,
+      "sha256": "55438892e1be3a3f5ff3e3e96aa69d74fc50884f1f465ce0ef1bc7e733ff825f",
+      "compressedBytes": 177,
+      "crc32": 2317594291,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/workflows/ci-main.yml",
+      "bytes": 241,
+      "sha256": "4a5aeebe5da345b1fd15ff1a81197914a8bcd2fdb4c478bf04166ceeca273892",
+      "compressedBytes": 176,
+      "crc32": 498678149,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/workflows/ci-staging.yml",
+      "bytes": 247,
+      "sha256": "626bc3b27313d26d916ca2cce22b6a40447aad7fe0f2d9b0e8d565bafb61a43c",
+      "compressedBytes": 177,
+      "crc32": 4242409951,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.github/workflows/pr-validation.yml",
+      "bytes": 275,
+      "sha256": "11b3efa5dfab28b675891a89f33567e052efee01fb4bf4a1bf2b2be3713d9397",
+      "compressedBytes": 187,
+      "crc32": 2364754528,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/.gitignore",
+      "bytes": 82,
+      "sha256": "51e17ee2b0482a62c369fdc28bd5f63a975531afd9f84fa5efbfb63526b31a6a",
+      "compressedBytes": 74,
+      "crc32": 2741479433,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/AGENTS.md",
+      "bytes": 1493,
+      "sha256": "e23ce9504f05a156b935c25259a1c1c366eb545ef18e87b52a41bce04f9f0f29",
+      "compressedBytes": 644,
+      "crc32": 2607921605,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/Directory.Build.props",
+      "bytes": 377,
+      "sha256": "1ed87f1b0cf8d42c77558b99547a1eb0c444f222527b6932e5586cbd3e42c2bc",
+      "compressedBytes": 186,
+      "crc32": 3380698733,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/Legacy.Maliev.CompatibilityContracts.slnx",
+      "bytes": 249,
+      "sha256": "f8412ccb32dbf0b0399d11fd28383028c6a1979946a87e7f71c3b874f8b55f6d",
+      "compressedBytes": 100,
+      "crc32": 1768146155,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/README.md",
+      "bytes": 1443,
+      "sha256": "73a6602df83deb65bc66cfe3332686c93eef0230c3c1ccf9144afea76040a110",
+      "compressedBytes": 664,
+      "crc32": 3943557004,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/global.json",
+      "bytes": 81,
+      "sha256": "b48d6da8fa62c0da7cc8a2da4ea036ac55836660a448ba533135abb5b8451b73",
+      "compressedBytes": 75,
+      "crc32": 2462188557,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/nuget.config",
+      "bytes": 197,
+      "sha256": "aec93b5637ab6d62470979a008990a4a336a287ab83a3f2541849ae735674055",
+      "compressedBytes": 139,
+      "crc32": 3528484626,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/src/Legacy.Maliev.CompatibilityContracts/Iam/PermissionRegistrationRequest.cs",
+      "bytes": 2507,
+      "sha256": "037f981561153af4dd0d1969f98c599e4f8f013c0465732a0c45d242d6cc5bf7",
+      "compressedBytes": 619,
+      "crc32": 646136842,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/src/Legacy.Maliev.CompatibilityContracts/Legacy.Maliev.CompatibilityContracts.csproj",
+      "bytes": 871,
+      "sha256": "11bdd1d8f71bafe7c49f1cb9957b6368e8a8c0af9c44e8bf5ae50af747ead005",
+      "compressedBytes": 415,
+      "crc32": 3039427234,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/src/Legacy.Maliev.CompatibilityContracts/Shared/MessageEnvelope.cs",
+      "bytes": 1591,
+      "sha256": "81120a5065869e23a39a8b0bd3ae5e8130eab245a106252bcf9897b54b2d75ee",
+      "compressedBytes": 571,
+      "crc32": 872918340,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/tests/Legacy.Maliev.CompatibilityContracts.Tests/IamRegistrationContractTests.cs",
+      "bytes": 4347,
+      "sha256": "4cbe6bd7a2acdae2502965b2c76f396361128a55f27269686948b54926a1b432",
+      "compressedBytes": 1150,
+      "crc32": 47185361,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.CompatibilityContracts/tests/Legacy.Maliev.CompatibilityContracts.Tests/Legacy.Maliev.CompatibilityContracts.Tests.csproj",
+      "bytes": 810,
+      "sha256": "4765b1b02168e926034495b9e4c3fba49bb2c3bec6c47b6546186ea0c01f25c5",
+      "compressedBytes": 338,
+      "crc32": 4150281363,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.editorconfig",
+      "bytes": 62,
+      "sha256": "c8208a2f140351680b233171c060ea28bd8b1be2816445764b33f4194f457576",
+      "compressedBytes": 56,
+      "crc32": 356041920,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.gitattributes",
+      "bytes": 39,
+      "sha256": "91c171a7f4e295966f6e40aba83b0a11a56b4c99b59b9c55fcf54f15df207bc0",
+      "compressedBytes": 34,
+      "crc32": 2166835507,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/dependabot.yml",
+      "bytes": 703,
+      "sha256": "335aa96947b0b5b12bdca3f41b4f025cd1d5a758058e01d9793b23fb65bb8a67",
+      "compressedBytes": 243,
+      "crc32": 3782073707,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/workflows/_build-and-test.yml",
+      "bytes": 1316,
+      "sha256": "bf4ac8ca8d196c99608c0c32504720c826fdb0ac66ef9f94b0ce95abf9bc3d12",
+      "compressedBytes": 589,
+      "crc32": 3231177759,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/workflows/ci-develop.yml",
+      "bytes": 247,
+      "sha256": "55438892e1be3a3f5ff3e3e96aa69d74fc50884f1f465ce0ef1bc7e733ff825f",
+      "compressedBytes": 177,
+      "crc32": 2317594291,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/workflows/ci-main.yml",
+      "bytes": 241,
+      "sha256": "4a5aeebe5da345b1fd15ff1a81197914a8bcd2fdb4c478bf04166ceeca273892",
+      "compressedBytes": 176,
+      "crc32": 498678149,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/workflows/ci-staging.yml",
+      "bytes": 245,
+      "sha256": "f48c53159877c426a873bbcf725cbaff784985ca2852bdd44bcb96ea83b01b19",
+      "compressedBytes": 180,
+      "crc32": 2360517627,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.github/workflows/pr-validation.yml",
+      "bytes": 275,
+      "sha256": "11b3efa5dfab28b675891a89f33567e052efee01fb4bf4a1bf2b2be3713d9397",
+      "compressedBytes": 187,
+      "crc32": 2364754528,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/.gitignore",
+      "bytes": 97,
+      "sha256": "8504135686608a5ef0f407045f398cd5ce78f38fd71e11376343b3e0792d7458",
+      "compressedBytes": 82,
+      "crc32": 3332851324,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/AGENTS.md",
+      "bytes": 1651,
+      "sha256": "8fd5aeb63f773ded6a032cf2cba1db04f10a8083bae8c5e6941e4dd58bf970c0",
+      "compressedBytes": 759,
+      "crc32": 1540396715,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/Directory.Build.props",
+      "bytes": 598,
+      "sha256": "56228ebe62fe27ad7377a27dcbd954968cd05aaf8ae5a3fa113f3e1da773a8de",
+      "compressedBytes": 282,
+      "crc32": 3596927048,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.slnx",
+      "bytes": 221,
+      "sha256": "27306562c9b1ca3e025a6616c2bdbcd0d201944d9fea5350772ddc9773557fb1",
+      "compressedBytes": 92,
+      "crc32": 16588965,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/README.md",
+      "bytes": 4081,
+      "sha256": "4b53d4f577d7c438acfe7f096b3d82cd0b4ce1495ebe60648c2cecf8191ad576",
+      "compressedBytes": 1944,
+      "crc32": 888902220,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/docs/native-logging-wire-proof.md",
+      "bytes": 3714,
+      "sha256": "d0c7e16437403b4f841c13f3db8c6b779bbcd4ee9dcccabef612525a156d0732",
+      "compressedBytes": 1832,
+      "crc32": 3025239252,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/global.json",
+      "bytes": 81,
+      "sha256": "b48d6da8fa62c0da7cc8a2da4ea036ac55836660a448ba533135abb5b8451b73",
+      "compressedBytes": 75,
+      "crc32": 2462188557,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/nuget.config",
+      "bytes": 197,
+      "sha256": "aec93b5637ab6d62470979a008990a4a336a287ab83a3f2541849ae735674055",
+      "compressedBytes": 139,
+      "crc32": 3528484626,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/AssemblyInfo.cs",
+      "bytes": 102,
+      "sha256": "50b9c15ab1f0fe2def488072d2434f67f609c9bdc6c2b19358f28ed64f40f719",
+      "compressedBytes": 98,
+      "crc32": 3648466636,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Authorization/IAuthMetrics.cs",
+      "bytes": 677,
+      "sha256": "c8f92faba768eb2defaf0b17407750a6c0c6f25a9b3d2de6c4acdb0b950805ea",
+      "compressedBytes": 269,
+      "crc32": 1627436586,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Authorization/PermissionAuthorizationHandler.cs",
+      "bytes": 17197,
+      "sha256": "687d32dc8d21fc6a150a3cfd40ba332b921bac7f32ada23ec7490177a7d86d17",
+      "compressedBytes": 4349,
+      "crc32": 1454501342,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Authorization/PermissionAuthorizationPolicyProvider.cs",
+      "bytes": 4626,
+      "sha256": "d28a44a4add52e11cbb54d9cb8beb273d969b52c030d7241afb12dc387a8986d",
+      "compressedBytes": 1336,
+      "crc32": 1306759640,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Authorization/PermissionRequirement.cs",
+      "bytes": 2631,
+      "sha256": "aa8df5dbc098b67741f5564cf390b1a77cf2b0ca303105edd1eb2e4ffa5bcbff",
+      "compressedBytes": 792,
+      "crc32": 1135580360,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Authorization/RequirePermissionAttribute.cs",
+      "bytes": 4470,
+      "sha256": "4fa797ffcc231f5b92f916b90a0650d4f391eac5cd552c6cac9d924d82008f64",
+      "compressedBytes": 1385,
+      "crc32": 3680507983,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Caching/CacheLogValue.cs",
+      "bytes": 718,
+      "sha256": "821ae5218cd3f3ef0bd54968145837660b092f8a8a976f6e0e5ed763b11344f9",
+      "compressedBytes": 437,
+      "crc32": 683824804,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Caching/ICacheService.cs",
+      "bytes": 2576,
+      "sha256": "ca0cb9b86d92ac7b37a5cab67ad0e3e6cae35ff9695774948e795e8cc6c16123",
+      "compressedBytes": 581,
+      "crc32": 4114868188,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Caching/InMemoryCacheService.cs",
+      "bytes": 8966,
+      "sha256": "01dc21381386d0a278a17e83f968f895a783f22d76141fb6881ffba0ee7af5d8",
+      "compressedBytes": 1890,
+      "crc32": 3852880027,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Caching/RedisAvailabilityHealthCheck.cs",
+      "bytes": 997,
+      "sha256": "bf34d883d56208e67962c3064780ced956824e6ab37c9cfa8ecb4f78f7411dc4",
+      "compressedBytes": 442,
+      "crc32": 2526301778,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Caching/RedisCacheService.cs",
+      "bytes": 9856,
+      "sha256": "5c9f4e8321a31a650ff08c16ea1adbc2338d50688a57a15524e8ff7134964022",
+      "compressedBytes": 2004,
+      "crc32": 3579974535,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Database/SnakeCaseNamingHelper.cs",
+      "bytes": 3724,
+      "sha256": "96930338889040a674f2f4f7dcca54ae98b68dfe87c461cb28b994a1c03711f8",
+      "compressedBytes": 1089,
+      "crc32": 3425194426,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.ApiDocumentation.cs",
+      "bytes": 5424,
+      "sha256": "e2e69acc3f6e7558074841cf06c5aafb05f2f45a41408ccc7f8c5f395022e3c6",
+      "compressedBytes": 1326,
+      "crc32": 3026647430,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.ApiVersioning.cs",
+      "bytes": 1262,
+      "sha256": "d73355cae6bca988ea3cd75efeaaebf4eb4a0fbb8217198d53da0f9422c80e05",
+      "compressedBytes": 504,
+      "crc32": 2801561918,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.AuthServiceTokenExchange.cs",
+      "bytes": 9437,
+      "sha256": "b480464172e42a932637d7b87947880b1a6f8b9dc33aa7bd94d7c808beff9210",
+      "compressedBytes": 1982,
+      "crc32": 2091598272,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Authentication.Cookie.cs",
+      "bytes": 4623,
+      "sha256": "5572fdcf51a85738f8b8dc3c6c822189ded39efed0377fdcf5251ee0c9b6816e",
+      "compressedBytes": 1488,
+      "crc32": 526256192,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Authentication.cs",
+      "bytes": 10677,
+      "sha256": "a39e5dde44a8fd406ce7aad6ea2f63b083cf7e8a2a1297af93d4e5854ebeea56",
+      "compressedBytes": 2315,
+      "crc32": 3498316010,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.BackgroundServiceResilience.cs",
+      "bytes": 1737,
+      "sha256": "7a4155057807c363cca9ac21ada9c1416c2edf549f37076591ef5aceb444c238",
+      "compressedBytes": 620,
+      "crc32": 2136293610,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Caching.cs",
+      "bytes": 7467,
+      "sha256": "94fa3177963e877451eb2c03967163e3e38ee5e62f5e22b1a1ae872cdae372ce",
+      "compressedBytes": 1965,
+      "crc32": 1187886505,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Cors.cs",
+      "bytes": 5579,
+      "sha256": "217cede0788cf8611a94052ccb3f3c26966b8b3ae6bf81cc7ba7b7b7b1dc2666",
+      "compressedBytes": 1375,
+      "crc32": 1067361011,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Database.cs",
+      "bytes": 8784,
+      "sha256": "6e01fa4212904233e62e6a258a257b84feca7f6c8ae422765a06aa22f98e9638",
+      "compressedBytes": 2400,
+      "crc32": 1016085387,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.HttpClients.cs",
+      "bytes": 11977,
+      "sha256": "192c6573bfe3c0f8e026c7fc9a162ee96a4cb9c1b401c47ffc16dd21b1a7627d",
+      "compressedBytes": 2109,
+      "crc32": 375123323,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.IAM.cs",
+      "bytes": 3742,
+      "sha256": "c0f97b7347a1bf400a9aedc7527a7020720bd4047cf8c12d200781f55a91e46f",
+      "compressedBytes": 1260,
+      "crc32": 919822324,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.IAMRegistration.cs",
+      "bytes": 2024,
+      "sha256": "afd5d6831cc7f32091c1c2c5fb075bbbd563f6537e0629fda3b1d6e94931f8c1",
+      "compressedBytes": 746,
+      "crc32": 3189514859,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.LegacyServiceAuthentication.cs",
+      "bytes": 2804,
+      "sha256": "4d2cd12e93adf8436de735b37fb97413ec05eb64be5f2d5098981caa97bb60f8",
+      "compressedBytes": 993,
+      "crc32": 4053826624,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.MassTransit.cs",
+      "bytes": 9521,
+      "sha256": "d178f512edb603e1da8f97575cf46f9bbf11d0c258aff244a1b2cbf8bf232797",
+      "compressedBytes": 2451,
+      "crc32": 346398036,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Middleware.cs",
+      "bytes": 4406,
+      "sha256": "581473862acca83145d81eeb131dd842718f5955dd7b192221376d633c240683",
+      "compressedBytes": 1464,
+      "crc32": 1568376376,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.RateLimiting.cs",
+      "bytes": 8935,
+      "sha256": "a15a09e2c4a1f2b203e56f739c21a4d7967897ecbc325d9a21107d54e84773b3",
+      "compressedBytes": 1806,
+      "crc32": 3255680483,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Redis.cs",
+      "bytes": 7120,
+      "sha256": "ad478557399007cf4aa3850f22a42e987753223054a25855c6f0903744c37267",
+      "compressedBytes": 1848,
+      "crc32": 3675567745,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.Secrets.cs",
+      "bytes": 993,
+      "sha256": "fcd6f3f4e7d14c394b22cdc5c4c052c690982b45b5e79f2ae6f9dd07db728061",
+      "compressedBytes": 444,
+      "crc32": 1192879272,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.ServiceRegistration.cs",
+      "bytes": 4914,
+      "sha256": "9ea5602e48bc033c555980f2b25892e8a49f095fd02a15e369e3a63627af36cc",
+      "compressedBytes": 1310,
+      "crc32": 2259837636,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Extensions.cs",
+      "bytes": 13310,
+      "sha256": "645b99cdd4fca495da84f5b55ce93645b7e96641232d11ee387c9a520505c791",
+      "compressedBytes": 3767,
+      "crc32": 604737517,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/AuthServiceTokenExchangeHandler.cs",
+      "bytes": 868,
+      "sha256": "510ebf95f32ab2cb64fa3918c75e9fd1486c7a469acaf70bdb5289ad467ddebe",
+      "compressedBytes": 438,
+      "crc32": 2091015542,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/AuthServiceTokenProvider.cs",
+      "bytes": 20765,
+      "sha256": "9d51ada5721927261fc276df241bc38e6685ba263f9f8dba751c91259a429702",
+      "compressedBytes": 4837,
+      "crc32": 2065972143,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/BackgroundIAMRegistrationService.cs",
+      "bytes": 11366,
+      "sha256": "7c9b120870ae9b41e0223716ac7dbdfdf08fe7b7fa85ff907c444cd33bb9fe4e",
+      "compressedBytes": 3079,
+      "crc32": 615927860,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IAMRegistrationHealthCheck.cs",
+      "bytes": 2861,
+      "sha256": "fd3a1735cbf7ca7f17f106a46edd368bd4bff2fe1803d70248e72e56bae443a8",
+      "compressedBytes": 886,
+      "crc32": 3165450247,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IAMRegistrationService.cs",
+      "bytes": 4082,
+      "sha256": "5ba4464c409aa6b3622f4bab33316454f9cacb4b1fcb965a3bc15e2e5a1c8220",
+      "compressedBytes": 1043,
+      "crc32": 760918294,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IIamServiceClient.cs",
+      "bytes": 4524,
+      "sha256": "62eb9950c7a8ff816f0084fdf1226f7925b727e7cf8e4a6abc0e03aafa9649fa",
+      "compressedBytes": 1187,
+      "crc32": 4286274964,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IServicePermissions.cs",
+      "bytes": 300,
+      "sha256": "2381ba0c905141c5ec7447d4d1b165b9da2fb8bc254b87a08e5bbab27b0eb064",
+      "compressedBytes": 180,
+      "crc32": 4054514102,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IamClientRegistrationGuard.cs",
+      "bytes": 3261,
+      "sha256": "dbdb345c8a834bc6bbb813061fd8ffe6f50e349f6cb6e316d6edbb8e4789d7f7",
+      "compressedBytes": 705,
+      "crc32": 3591393178,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/IamServiceClient.cs",
+      "bytes": 15348,
+      "sha256": "c3841cb9b2a2f92840fd3a935ca5397d68f956c28b5f77bd996e90a05e655160",
+      "compressedBytes": 3511,
+      "crc32": 105998188,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/MalievIamRoles.cs",
+      "bytes": 7016,
+      "sha256": "29a5350fc2d9ffb011a36a063215320fd57d5af75e97770621f5cb58b65ce8c9",
+      "compressedBytes": 1864,
+      "crc32": 1163743897,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/PermissionMatcher.cs",
+      "bytes": 4749,
+      "sha256": "eccb03922b191fcd5b1f3655127357d53c9dbab818010d5cb57ba5835d89e364",
+      "compressedBytes": 1482,
+      "crc32": 2955355415,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/README.md",
+      "bytes": 2818,
+      "sha256": "1f31fef74a895890746397553ffcc6ee7eb30641fe94bc914906a8edabbaf007",
+      "compressedBytes": 1376,
+      "crc32": 2101301905,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/ServiceAccountAuthenticationHandler.cs",
+      "bytes": 5129,
+      "sha256": "d5000934d801a3d1a2ddd3a37c7675f135751c1df24a115828de43040b7e1a92",
+      "compressedBytes": 1729,
+      "crc32": 4257994408,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/IAM/ServiceAccountTokenProvider.cs",
+      "bytes": 8226,
+      "sha256": "285e9278b43f9936063f462ba4a4eef3c159fd597877d11da9e6dca6db8adf36",
+      "compressedBytes": 2097,
+      "crc32": 2975481433,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.csproj",
+      "bytes": 3216,
+      "sha256": "8938676ca6848677628fc11fccd78774c2732a991e7f8d166f8440e448093d4a",
+      "compressedBytes": 964,
+      "crc32": 3894077946,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/LegacyAuth/LegacyServiceAccessTokenProvider.cs",
+      "bytes": 8944,
+      "sha256": "9fd90711fd065f689373067e2c7b9a15607027ed293ab90b8c334842ce509c2c",
+      "compressedBytes": 2417,
+      "crc32": 3745851597,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/LegacyAuth/LegacyServiceAuthenticationHandler.cs",
+      "bytes": 1232,
+      "sha256": "af65b00aeafdd6323e9446da851e10f18a2cee9494fe3715a88e2f0c40136714",
+      "compressedBytes": 560,
+      "crc32": 2787447147,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Logging/MalievCloudJsonConsoleFormatter.cs",
+      "bytes": 4448,
+      "sha256": "3000ff8e529b6a2b1f58b1ec12b816531db2f566e4657fb7a567493836c758ff",
+      "compressedBytes": 1548,
+      "crc32": 3144561492,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Middleware/CorrelationIdMiddleware.cs",
+      "bytes": 2598,
+      "sha256": "a0348054276f43e5b087720ad4f3d4ae81d7b5483b18ade27fb614b6d54443ee",
+      "compressedBytes": 989,
+      "crc32": 488255247,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Middleware/ExceptionHandlingMiddleware.cs",
+      "bytes": 8930,
+      "sha256": "874a496bd238028c25c6e449d35d1b52ea241a44b5c7bda722cc2112cb851df7",
+      "compressedBytes": 2530,
+      "crc32": 3204811307,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Middleware/RequestLoggingMiddleware.cs",
+      "bytes": 2371,
+      "sha256": "764874e385000ec946dceddc7d8f1a806b5305e53e4f76100ada1f6fa20f57b6",
+      "compressedBytes": 895,
+      "crc32": 1400529994,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Middleware/RouteLogPath.cs",
+      "bytes": 542,
+      "sha256": "9fc508e9d06bd0f637ac90677c52ea41bef78257cd44192ac519a954c52dd2d3",
+      "compressedBytes": 319,
+      "crc32": 3990858596,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Middleware/SecurityHeadersMiddleware.cs",
+      "bytes": 2212,
+      "sha256": "9f6cde8cdac3ad4987b55eff6c58d4b2c3c8c24c4ddaf8801591e5e13e3cc29d",
+      "compressedBytes": 843,
+      "crc32": 4078764395,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/RateLimitPolicies.cs",
+      "bytes": 1342,
+      "sha256": "f20f6a30b15ad588a1f13cb78219c91263030ff81d63cb969cc20f4a788ea50f",
+      "compressedBytes": 446,
+      "crc32": 574171583,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Resilience/LegacyHttpResilienceExtensions.cs",
+      "bytes": 1953,
+      "sha256": "934a9270a68ae2c9af4fd28a6f7929d104a392e81987c4f7cb41a8ad2dea1c88",
+      "compressedBytes": 787,
+      "crc32": 2632472727,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Telemetry/SafeRequestLogContextProcessor.cs",
+      "bytes": 1180,
+      "sha256": "cb76fb0692f43350c091d45a2379effbed4115ede1b9465e137cea43253744fd",
+      "compressedBytes": 562,
+      "crc32": 2031747977,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Telemetry/UrlQueryRedactionProcessor.cs",
+      "bytes": 3063,
+      "sha256": "245a698880d040a8dacc58475c8555bda4cb3fa398876f3e0f6ab935c46c39d8",
+      "compressedBytes": 969,
+      "crc32": 2028995168,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Testing/IAMTestHelpers.cs",
+      "bytes": 2582,
+      "sha256": "2f652999489bdcfb5cf33dca91467a79b589560e9ae27f59ad078b3c1ee70d8a",
+      "compressedBytes": 992,
+      "crc32": 52699083,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/ApiDocumentationCompatibilityTests.cs",
+      "bytes": 1303,
+      "sha256": "919ab223e5d59be0ab109c4ff7f0c321a2541a0e4fe4c38ee726838993436c95",
+      "compressedBytes": 478,
+      "crc32": 1528975034,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/AuthServiceTokenExchangeTests.cs",
+      "bytes": 45735,
+      "sha256": "00daed9fcaa4b4f15837e9401568a058b7e024fba5e8ce308c33ccf758c2e6b3",
+      "compressedBytes": 7730,
+      "crc32": 1542745197,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/BackgroundIAMRegistrationServiceTests.cs",
+      "bytes": 7682,
+      "sha256": "bdc05038e170b3f589cf9bca91f3733b7b89df8413ca7c2164475e70118b49ac",
+      "compressedBytes": 1520,
+      "crc32": 3802161380,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Caching/CacheCancellationTests.cs",
+      "bytes": 3277,
+      "sha256": "59d03389b2106a3caefe83008c1f97a4e9db2974c26c474bb517bf6a88c42b59",
+      "compressedBytes": 819,
+      "crc32": 210194564,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Caching/CacheLoggingContractTests.cs",
+      "bytes": 1049,
+      "sha256": "e281cf7cb38c1356254bd71a3ad6ebeb81e55abc9889b902f167460dcefac7f7",
+      "compressedBytes": 555,
+      "crc32": 3432421696,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Caching/InMemoryCacheServiceTests.cs",
+      "bytes": 4326,
+      "sha256": "e9b1440e39c2081c32f5e378e752b88ba378cf1b5e881df94224041d21bafa33",
+      "compressedBytes": 1238,
+      "crc32": 2618380367,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Caching/StandardCacheTests.cs",
+      "bytes": 3070,
+      "sha256": "7d25fc7b75105a29f820c6baa731e542bc64348839256c951cbd0cb1c87f963b",
+      "compressedBytes": 1001,
+      "crc32": 1308418917,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/ClientAndRedisRegistrationBehaviorTests.cs",
+      "bytes": 5960,
+      "sha256": "85c08ddc4b19560d1d5a7140bf76c7d2188667537583fe7bd956a51dcb1e9371",
+      "compressedBytes": 1442,
+      "crc32": 2018078191,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/CompatibilityBaselineTests.cs",
+      "bytes": 1570,
+      "sha256": "75bad788c699bada2b654913c0e53ad30fbd454411da044151a6f0f761b17a15",
+      "compressedBytes": 590,
+      "crc32": 4027675226,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/CompatibilityDependencyTests.cs",
+      "bytes": 6185,
+      "sha256": "90f022e6c29030a36bb19e04ae4866ff4f5b58ddad876df1027b0fe3d3c35afc",
+      "compressedBytes": 1677,
+      "crc32": 1819794023,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/DatabaseMigrationBoundaryTests.cs",
+      "bytes": 1804,
+      "sha256": "697b7eb5b0c79f1938d9c84870a01705fdaa049b03b8d982f5e037ee80efa33f",
+      "compressedBytes": 681,
+      "crc32": 829418463,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/DatabaseRegistrationBehaviorTests.cs",
+      "bytes": 4701,
+      "sha256": "da79360be62eb74425ab89574a8356adc98702ac08332e772c991e660a0f0cf9",
+      "compressedBytes": 1315,
+      "crc32": 1483384092,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/DefaultEndpointsBehaviorTests.cs",
+      "bytes": 2842,
+      "sha256": "335797b19108de040c0cd9dc631f7b7a6fe8cc62acd96191ee8da23c6f629845",
+      "compressedBytes": 968,
+      "crc32": 1339863421,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/HttpInfrastructureBehaviorTests.cs",
+      "bytes": 6386,
+      "sha256": "4d9fa77d413d2e4263574192ed4d6378dc24f6181357ce6cf46b600f66bcb3ec",
+      "compressedBytes": 1799,
+      "crc32": 1375049010,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/IAMRegistrationHealthCheckTests.cs",
+      "bytes": 3342,
+      "sha256": "96e21af497786db25631efb99dbfd5b4add83531ba9444c7ab1f2b42815f6cec",
+      "compressedBytes": 860,
+      "crc32": 3658499046,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/IamServiceClientTests.cs",
+      "bytes": 12835,
+      "sha256": "a87ef3d4d5868b03c7e66932af5035bb5f32647cd92872266e08b614ec603692",
+      "compressedBytes": 2823,
+      "crc32": 1913734986,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/JwtAuthenticationSecurityTests.cs",
+      "bytes": 16855,
+      "sha256": "fd921a7e828cbfd4d19947548252d8512bab40fd6f20f02cf8fe09edb5cf5556",
+      "compressedBytes": 2652,
+      "crc32": 2072669339,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Legacy.Maliev.ServiceDefaults.Tests.csproj",
+      "bytes": 1105,
+      "sha256": "acc34689c4fa0bfa0ac55364ee779ac95c79d141544f6f540d7ffeb0572bb4d9",
+      "compressedBytes": 373,
+      "crc32": 3686634854,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/LegacyServiceAuthenticationTests.cs",
+      "bytes": 6621,
+      "sha256": "231b5e462c310ad64344994efc6869fe696bb96c4d6f33adaf547b66b2a23957",
+      "compressedBytes": 2015,
+      "crc32": 3786305415,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/MessagingRegistrationBehaviorTests.cs",
+      "bytes": 3710,
+      "sha256": "c5575900addac69824a2e716c5e33af483ac1c7046455a1e60b2765bcfa235ae",
+      "compressedBytes": 1285,
+      "crc32": 4175264221,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Middleware/ExceptionEventLoggingTests.cs",
+      "bytes": 9055,
+      "sha256": "7198331c91d4aac220248ca9b5e2e1dcaa168b4a233fcc1243ad503e7c590e99",
+      "compressedBytes": 2101,
+      "crc32": 3904980020,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Middleware/ExceptionHandlingMiddlewareTests.cs",
+      "bytes": 2962,
+      "sha256": "c4fe103b59e27f641086771071202346f1c2a58697bcc30e98c93d19a4f66584",
+      "compressedBytes": 960,
+      "crc32": 613735824,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Middleware/ForwardedHeadersSecurityTests.cs",
+      "bytes": 2365,
+      "sha256": "30756da88772d73e1b3d97b597d53ad0a1edade70bc0dd18c6438f51dc283342",
+      "compressedBytes": 669,
+      "crc32": 892896540,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Middleware/RequestLoggingPathTests.cs",
+      "bytes": 3250,
+      "sha256": "7fff297580023e455ba7227bd20da0973c9a308718e633da826803bcfda1ed63",
+      "compressedBytes": 1048,
+      "crc32": 1841865124,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/NativeJsonLoggingTests.cs",
+      "bytes": 2953,
+      "sha256": "834730c7151bb8ee5f1cc04a6d4302325d92de2defdce975ca209dca1bac3426",
+      "compressedBytes": 885,
+      "crc32": 2063079370,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/NativeLoggingWireTests.cs",
+      "bytes": 17326,
+      "sha256": "5e0a5146d6912f8318af3d7ec8986f117a0856b5e9ac270517ed30675098a6fe",
+      "compressedBytes": 4153,
+      "crc32": 1233902440,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/OpenApiEndpointBehaviorTests.cs",
+      "bytes": 2594,
+      "sha256": "22415a55066b8ceafe50c4089ecdd3817e1c165e5fc86fd6c5bbb7c92bf23f68",
+      "compressedBytes": 947,
+      "crc32": 2575481096,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/PermissionAuthorizationPolicyTests.cs",
+      "bytes": 35640,
+      "sha256": "bb2c94f46134d81305adb7684ff498b2f0c77e2465ebf2824d26cb9ad4199be7",
+      "compressedBytes": 4801,
+      "crc32": 912555621,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/PermissionAuthorizationSemaphoreTests.cs",
+      "bytes": 2650,
+      "sha256": "fa1e770224758a146ad5b266920a2a60c28e48ba3055f45b96e2c425931383ed",
+      "compressedBytes": 910,
+      "crc32": 3320107334,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Resilience/LegacyHttpResilienceTests.cs",
+      "bytes": 5760,
+      "sha256": "7cfbce003aef17d33c8d8d49ac194e59c63e37379d5ee2bc3642c79aee3e1cfa",
+      "compressedBytes": 1412,
+      "crc32": 4106644227,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/ServiceAccountAuthenticationHandlerTests.cs",
+      "bytes": 4047,
+      "sha256": "fae196beef808ea58e79916a396d844ea7c4a2b1c9a58eec94aa9ce4b4f10acb",
+      "compressedBytes": 1271,
+      "crc32": 3184935985,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/SharedRegistrationBehaviorTests.cs",
+      "bytes": 9146,
+      "sha256": "db3773b8a3c55586c7e3864f56ad18398edc2923c482e10afb0eeafac49f994c",
+      "compressedBytes": 2356,
+      "crc32": 2003564602,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/Source5acLoggingRemovalContractTests.cs",
+      "bytes": 2060,
+      "sha256": "8fcdc45040911521b1ee2a1f8a81093eb626ac4ef3ae18c515ffd1daf94987a9",
+      "compressedBytes": 739,
+      "crc32": 1316123771,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "dependencies/Legacy.Maliev.ServiceDefaults/tests/Legacy.Maliev.ServiceDefaults.Tests/UrlQueryRedactionProcessorTests.cs",
+      "bytes": 3818,
+      "sha256": "cf391568ee5e54eae7135da034dfd155385a49866f8bd6a96fd99053e4157cf7",
+      "compressedBytes": 929,
+      "crc32": 4051991219,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/artifact_pin_native_result_validation_v2.py",
+      "bytes": 7608,
+      "sha256": "d3fa01beaef13a5e75a312fab8296197b4bfeb96492d1032ad07c5c4abe9dbf3",
+      "compressedBytes": 2283,
+      "crc32": 1963551085,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/consumer-artifact-pin-contract-source-20261008-v1/source-seal.json",
+      "bytes": 6713,
+      "sha256": "bbaccc97550d923fb3148672de5eb4235b8ded02909b9294215b97cee76d5ef7",
+      "compressedBytes": 1465,
+      "crc32": 162661481,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/consumer-artifact-pin-native-preparation-20261008-v1/dependency-manifest.json",
+      "bytes": 29962,
+      "sha256": "edd136d82f33ae7b0450ba0bed80d8e4825d079522c51c69f46a75dfdf51834f",
+      "compressedBytes": 6614,
+      "crc32": 1039518865,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/run_document_artifact_upload_native_20261008_v3.py",
+      "bytes": 13061,
+      "sha256": "7a6fdf1a65cba481efed18948ded77b72f59c169526f51a7315263fce750b991",
+      "compressedBytes": 4401,
+      "crc32": 2586257000,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/workflows_cleanup_supervisor_v1.py",
+      "bytes": 3585,
+      "sha256": "6fa7ade16fd4527e55eb50a4d4abedbb181042d6c17f3e565679d956cba5e53a",
+      "compressedBytes": 1114,
+      "crc32": 2656947512,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/workflows_native_admission_v3.py",
+      "bytes": 9224,
+      "sha256": "8fbb3d63658726afd1c48a695565d50212fa1e7c1b0e80bb42fde4aae7857d52",
+      "compressedBytes": 3272,
+      "crc32": 2094778957,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/workflows_owned_command_v1.py",
+      "bytes": 26697,
+      "sha256": "418d352e02c0d3095297d558f28f03e6d21c81b2a3ff95745afa6948c203000f",
+      "compressedBytes": 7164,
+      "crc32": 1753176446,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "outputs/workflows_snapshot_census_v3.py",
+      "bytes": 2745,
+      "sha256": "250d018cd18591b0374a023ce2911c154cc0d037d566adf7e62f0636adba95de",
+      "compressedBytes": 956,
+      "crc32": 3474855399,
+      "createSystem": 0,
+      "externalAttributes": 25165824,
+      "flags": 0,
+      "compression": 8,
+      "dateTime": [
+        2026,
+        10,
+        8,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "baseFiles": [
+    {
+      "path": ".dockerignore",
+      "gitBytes": 85,
+      "gitSha256": "5984866d3f136fd22a64d3147c942eac8423638bf2f5703232c2d11cc1ed0db5",
+      "gitBlob": "a57a86c6e090914913b753d06e6eb86d1d48d7bd",
+      "checkoutBytes": 85,
+      "checkoutSha256": "5984866d3f136fd22a64d3147c942eac8423638bf2f5703232c2d11cc1ed0db5",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".gitattributes",
+      "gitBytes": 39,
+      "gitSha256": "91c171a7f4e295966f6e40aba83b0a11a56b4c99b59b9c55fcf54f15df207bc0",
+      "gitBlob": "eb143e5370a2461f96f4610df1f6e30828c5639f",
+      "checkoutBytes": 39,
+      "checkoutSha256": "91c171a7f4e295966f6e40aba83b0a11a56b4c99b59b9c55fcf54f15df207bc0",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "gitBytes": 1258,
+      "gitSha256": "86d45d1f02468feedec12b39f04852142a288389cd57759e8c849e0557be5a38",
+      "gitBlob": "612b658385169bcecd479fa9948fab4922625dd9",
+      "checkoutBytes": 1258,
+      "checkoutSha256": "86d45d1f02468feedec12b39f04852142a288389cd57759e8c849e0557be5a38",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/_build-and-test.yml",
+      "gitBytes": 3737,
+      "gitSha256": "4fe8aeb21e937a350df6d23b631955bf3f8b69600f342d3cb5ceb6d805f79267",
+      "gitBlob": "407410240a301b9d2f71e583d55ac970defb3729",
+      "checkoutBytes": 3737,
+      "checkoutSha256": "4fe8aeb21e937a350df6d23b631955bf3f8b69600f342d3cb5ceb6d805f79267",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/canonical-service-projection.yml",
+      "gitBytes": 2703,
+      "gitSha256": "85f857139dc634cb8f4b4db2838fe1c8046f0b17380b1295a2b51bf0a446b24e",
+      "gitBlob": "d40c69c4917173171e73be763646bd72cd2050d5",
+      "checkoutBytes": 2703,
+      "checkoutSha256": "85f857139dc634cb8f4b4db2838fe1c8046f0b17380b1295a2b51bf0a446b24e",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/ci-develop.yml",
+      "gitBytes": 247,
+      "gitSha256": "55438892e1be3a3f5ff3e3e96aa69d74fc50884f1f465ce0ef1bc7e733ff825f",
+      "gitBlob": "c1bf874ecf39eab2864889fb4f2d8b38d1017bb0",
+      "checkoutBytes": 247,
+      "checkoutSha256": "55438892e1be3a3f5ff3e3e96aa69d74fc50884f1f465ce0ef1bc7e733ff825f",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/ci-main.yml",
+      "gitBytes": 241,
+      "gitSha256": "4a5aeebe5da345b1fd15ff1a81197914a8bcd2fdb4c478bf04166ceeca273892",
+      "gitBlob": "56aa263726fd6b3f767e4044c9037b0c7b54d7d5",
+      "checkoutBytes": 241,
+      "checkoutSha256": "4a5aeebe5da345b1fd15ff1a81197914a8bcd2fdb4c478bf04166ceeca273892",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/ci-staging.yml",
+      "gitBytes": 246,
+      "gitSha256": "5436292ba9523f34ca9f3801fdd674ed6e7d18b4e4d6e0b72bdb9c2d2fa1c1cd",
+      "gitBlob": "a069e91ab4fbd614302a6a1f73e1182a181ebb2c",
+      "checkoutBytes": 246,
+      "checkoutSha256": "5436292ba9523f34ca9f3801fdd674ed6e7d18b4e4d6e0b72bdb9c2d2fa1c1cd",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/pr-validation.yml",
+      "gitBytes": 293,
+      "gitSha256": "8645e3bae51218b468c15c026360f8b2befd29813236e10d30def30bcee68cff",
+      "gitBlob": "49b784875dd9275866012396c3ff51a0b1f9dee2",
+      "checkoutBytes": 293,
+      "checkoutSha256": "8645e3bae51218b468c15c026360f8b2befd29813236e10d30def30bcee68cff",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/publish-image.yml",
+      "gitBytes": 1250,
+      "gitSha256": "0fb8ed0def000eb7efeddf1935e6c49f4db1e7ac5ada8b29c70389681db35029",
+      "gitBlob": "1839e8c8b4482f344a27fb9bfd3c732d12f34145",
+      "checkoutBytes": 1250,
+      "checkoutSha256": "0fb8ed0def000eb7efeddf1935e6c49f4db1e7ac5ada8b29c70389681db35029",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".github/workflows/receipt-amount-evidence.yml",
+      "gitBytes": 6976,
+      "gitSha256": "48f1bdd669b52b773541a43f09a80f1280067cd7b250a7aa2e494268c4f481b1",
+      "gitBlob": "a7fb98a104df86900848049bbac151983276d0f5",
+      "checkoutBytes": 6976,
+      "checkoutSha256": "48f1bdd669b52b773541a43f09a80f1280067cd7b250a7aa2e494268c4f481b1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": ".gitignore",
+      "gitBytes": 86,
+      "gitSha256": "363bbccb4453446e08e3f918755199c089110fd6e784f542a12f2ec0c646330a",
+      "gitBlob": "968e06b6f0ed18358d0427d0e9b5232c15f58e1a",
+      "checkoutBytes": 86,
+      "checkoutSha256": "363bbccb4453446e08e3f918755199c089110fd6e784f542a12f2ec0c646330a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "AGENTS.md",
+      "gitBytes": 2089,
+      "gitSha256": "4e9d38c0a042ec920c427d9939d16b68a3306dc5ceb97d774873afb5c602675a",
+      "gitBlob": "24baac39ae8dd6b734826ab5dad8334bb4092c75",
+      "checkoutBytes": 2089,
+      "checkoutSha256": "4e9d38c0a042ec920c427d9939d16b68a3306dc5ceb97d774873afb5c602675a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Directory.Build.props",
+      "gitBytes": 275,
+      "gitSha256": "c10bdc142ea93708604db54c4870c1057e764b2f9644a12ac1dfed07fa474a8f",
+      "gitBlob": "5e514ea0a0e4e8db3184020c136fe05145a46c9e",
+      "checkoutBytes": 275,
+      "checkoutSha256": "c10bdc142ea93708604db54c4870c1057e764b2f9644a12ac1dfed07fa474a8f",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "LICENSE",
+      "gitBytes": 1073,
+      "gitSha256": "4b6fbec34db68d8c50ccaae1c2afba4e542f2c6a0853dcdc4df2d6d5534f9b80",
+      "gitBlob": "c5cb10e9b5a8bbadd6aad8db9627a8f3484516ea",
+      "checkoutBytes": 1073,
+      "checkoutSha256": "4b6fbec34db68d8c50ccaae1c2afba4e542f2c6a0853dcdc4df2d6d5534f9b80",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Authorization/DocumentPermissions.cs",
+      "gitBytes": 342,
+      "gitSha256": "52bf4a6ce29fedbff3a0f7a7b63d6d5f44a9d9aad4544db9497f6a0813896a23",
+      "gitBlob": "bc2f15e846674c705c3b00ffd2e916c0536c6419",
+      "checkoutBytes": 342,
+      "checkoutSha256": "52bf4a6ce29fedbff3a0f7a7b63d6d5f44a9d9aad4544db9497f6a0813896a23",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Controllers/PdfsController.cs",
+      "gitBytes": 6116,
+      "gitSha256": "64d5cacd99114c4b5bc76a8325d3a741b35170e669ec368fd307ee35a6b5a079",
+      "gitBlob": "f6a4bc4a3c6b6634f00f507cb92d1ac939e6befc",
+      "checkoutBytes": 6116,
+      "checkoutSha256": "64d5cacd99114c4b5bc76a8325d3a741b35170e669ec368fd307ee35a6b5a079",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Dockerfile",
+      "gitBytes": 1323,
+      "gitSha256": "dfad6be976ff9806b5f936887fedd5ac2b9771fab5ba48a6be593bcbc014bcdd",
+      "gitBlob": "54f0705520865c69746dfeadc4cbdc48135db237",
+      "checkoutBytes": 1323,
+      "checkoutSha256": "dfad6be976ff9806b5f936887fedd5ac2b9771fab5ba48a6be593bcbc014bcdd",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Http/DocumentHostTransportPolicy.cs",
+      "gitBytes": 5047,
+      "gitSha256": "ee790b7ad937fc7203d273baf62cfa3462164a3e46b2d90aae65d0f6287703a8",
+      "gitBlob": "bc424401eabe7aedba1986752e8005793506550a",
+      "checkoutBytes": 5047,
+      "checkoutSha256": "ee790b7ad937fc7203d273baf62cfa3462164a3e46b2d90aae65d0f6287703a8",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Legacy.Maliev.DocumentService.Api.csproj",
+      "gitBytes": 1501,
+      "gitSha256": "7cd7b04b7e2a1f1a0163399c6d1e208c3e66d5a594630950f6497ceaefcf128a",
+      "gitBlob": "b916b9ae5920aa35e637d7e990fc390d06839d7f",
+      "checkoutBytes": 1501,
+      "checkoutSha256": "7cd7b04b7e2a1f1a0163399c6d1e208c3e66d5a594630950f6497ceaefcf128a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/Program.cs",
+      "gitBytes": 3184,
+      "gitSha256": "f263384e95aded56802c4512d6089897b0c31c0a7fe117be5e1aef0ed3ee8b81",
+      "gitBlob": "20b530e98f32985deb49569ffe05b9dc6e86c0df",
+      "checkoutBytes": 3184,
+      "checkoutSha256": "f263384e95aded56802c4512d6089897b0c31c0a7fe117be5e1aef0ed3ee8b81",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/appsettings.Development.json",
+      "gitBytes": 119,
+      "gitSha256": "817db0bf2ecca78364c41dbaf7949bf2504cf47a1c3d0d54f3be8178fefc030b",
+      "gitBlob": "0c208ae9181e5e5717e47ec1bd59368aebc6066e",
+      "checkoutBytes": 119,
+      "checkoutSha256": "817db0bf2ecca78364c41dbaf7949bf2504cf47a1c3d0d54f3be8178fefc030b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Api/appsettings.json",
+      "gitBytes": 407,
+      "gitSha256": "d8254ef8331aad89adc71609ab4385a3c6f7b1df78479906a63fe2279b12d852",
+      "gitBlob": "5ae86e41983e5f7dc2903b8c6cf1d629b30dbd06",
+      "checkoutBytes": 407,
+      "checkoutSha256": "d8254ef8331aad89adc71609ab4385a3c6f7b1df78479906a63fe2279b12d852",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Application/IDocumentRenderer.cs",
+      "gitBytes": 613,
+      "gitSha256": "1405f50026f21694314101df0e3c34a710ad09d29e173b1b6e66f37837c8996f",
+      "gitBlob": "6d41a70b190d04e4575f5337442e68b7e6bacc07",
+      "checkoutBytes": 613,
+      "checkoutSha256": "1405f50026f21694314101df0e3c34a710ad09d29e173b1b6e66f37837c8996f",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Application/Legacy.Maliev.DocumentService.Application.csproj",
+      "gitBytes": 193,
+      "gitSha256": "63cc9bad95d614c8672f25b5f54c768458ea47d0f15e67df0b7f7ea2933578ea",
+      "gitBlob": "967baf9dd258cd39476a4629251ffa664e6c343d",
+      "checkoutBytes": 193,
+      "checkoutSha256": "63cc9bad95d614c8672f25b5f54c768458ea47d0f15e67df0b7f7ea2933578ea",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Invoice/Invoice.cs",
+      "gitBytes": 8894,
+      "gitSha256": "ba09c16afa11cbcb4f7fa5932891da480db058ddc3f236d4fda913bc48127b2c",
+      "gitBlob": "ffe43696994ad34f5862799209c4c983f38fa2b9",
+      "checkoutBytes": 8894,
+      "checkoutSha256": "ba09c16afa11cbcb4f7fa5932891da480db058ddc3f236d4fda913bc48127b2c",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Invoice/OrderItem.cs",
+      "gitBytes": 1100,
+      "gitSha256": "aa5238bab840f92816f0b4cfb17b668f4fcf7caef05d2098c2216fa7b25e97f7",
+      "gitBlob": "6f4b56b7e7dd1422238260102fc549a646a704d7",
+      "checkoutBytes": 1100,
+      "checkoutSha256": "aa5238bab840f92816f0b4cfb17b668f4fcf7caef05d2098c2216fa7b25e97f7",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Legacy.Maliev.DocumentService.Domain.csproj",
+      "gitBytes": 259,
+      "gitSha256": "30f6349545ce6c1120eb9250d55671737d86e057729e3386181a673f20b4f16e",
+      "gitBlob": "93197b37f266401672f5016c5d2b4734ae615aef",
+      "checkoutBytes": 259,
+      "checkoutSha256": "30f6349545ce6c1120eb9250d55671737d86e057729e3386181a673f20b4f16e",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/OrderLabel/OrderLabel.cs",
+      "gitBytes": 2451,
+      "gitSha256": "7c2698a8db687af264d72670dceb5ee975bde8b439478e62782f89f29795514b",
+      "gitBlob": "33dc728c355aff78ce6b7884c03499e519322f63",
+      "checkoutBytes": 2451,
+      "checkoutSha256": "7c2698a8db687af264d72670dceb5ee975bde8b439478e62782f89f29795514b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/PurchaseOrder/Address.cs",
+      "gitBytes": 1690,
+      "gitSha256": "77d3597a9f70d3f8abebd5cc30f751b7e42d394fc33809d33728fc29e38e1803",
+      "gitBlob": "789a7a1fde3e598d6c84f9c529238a171262a3d7",
+      "checkoutBytes": 1690,
+      "checkoutSha256": "77d3597a9f70d3f8abebd5cc30f751b7e42d394fc33809d33728fc29e38e1803",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/PurchaseOrder/CompanyInformation.cs",
+      "gitBytes": 1554,
+      "gitSha256": "5b77589bcf1c19acf815d3451c29317664c8f290e68179e04314857e184e62fd",
+      "gitBlob": "1dbc47240759d30fa05be24fc67a632a7608ada5",
+      "checkoutBytes": 1554,
+      "checkoutSha256": "5b77589bcf1c19acf815d3451c29317664c8f290e68179e04314857e184e62fd",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/PurchaseOrder/OrderItem.cs",
+      "gitBytes": 1508,
+      "gitSha256": "74112a2095bf3bc7dbe6ffd2ab499fd505c9128e06b3e57fd1a6be2f71bcbdfc",
+      "gitBlob": "47b389bbed4e631b36188068d3288c471af60888",
+      "checkoutBytes": 1508,
+      "checkoutSha256": "74112a2095bf3bc7dbe6ffd2ab499fd505c9128e06b3e57fd1a6be2f71bcbdfc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/PurchaseOrder/PurchaseOrder.cs",
+      "gitBytes": 2582,
+      "gitSha256": "ccbf038cb71a6d29a7f4d03dd8faa922048ca84a3f70f103a01bbbe55715f527",
+      "gitBlob": "f0bb6c2390cd4a778ebc9b05f503b3366005c199",
+      "checkoutBytes": 2582,
+      "checkoutSha256": "ccbf038cb71a6d29a7f4d03dd8faa922048ca84a3f70f103a01bbbe55715f527",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Quotations/Customer.cs",
+      "gitBytes": 3738,
+      "gitSha256": "02b49371b128454112c4e90e84732f2c25dadd4ad06a4117757a1e47b953e373",
+      "gitBlob": "b81af45c02b963f52f6eda993faf7631cb2c0f62",
+      "checkoutBytes": 3738,
+      "checkoutSha256": "02b49371b128454112c4e90e84732f2c25dadd4ad06a4117757a1e47b953e373",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Quotations/Employee.cs",
+      "gitBytes": 1259,
+      "gitSha256": "62c027aca5288a7ec648e024dfea7e5f5476ac643fe0485c35f85ddc1b553a72",
+      "gitBlob": "143f3ac25c1d37bac5e6a201b1cd1642e43fab0d",
+      "checkoutBytes": 1259,
+      "checkoutSha256": "62c027aca5288a7ec648e024dfea7e5f5476ac643fe0485c35f85ddc1b553a72",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Quotations/Order.cs",
+      "gitBytes": 2463,
+      "gitSha256": "634bca79958703ad0cb4126eabdc84aa1e877b7781fb0970deb9abf4883fa1dd",
+      "gitBlob": "f8e6c60b8e5d5d6bfdd920358e2b85b9edc56368",
+      "checkoutBytes": 2463,
+      "checkoutSha256": "634bca79958703ad0cb4126eabdc84aa1e877b7781fb0970deb9abf4883fa1dd",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Quotations/Quotation.cs",
+      "gitBytes": 4001,
+      "gitSha256": "428176a13a4f0b5fc9a2da043f377015e04d0a0a66440a21107517c248019b94",
+      "gitBlob": "19fee00e0a52a7f84652192e6f12f6735e14e5b3",
+      "checkoutBytes": 4001,
+      "checkoutSha256": "428176a13a4f0b5fc9a2da043f377015e04d0a0a66440a21107517c248019b94",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Receipt/OrderItem.cs",
+      "gitBytes": 1100,
+      "gitSha256": "95e4bfafbed06c4e2211cb19ab99a46f59bd135d6ac0eb6135ee89ecdab303d1",
+      "gitBlob": "f6b5d43ab58799524d7b30e1af73bf810ff3d322",
+      "checkoutBytes": 1100,
+      "checkoutSha256": "95e4bfafbed06c4e2211cb19ab99a46f59bd135d6ac0eb6135ee89ecdab303d1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Domain/Receipt/Receipt.cs",
+      "gitBytes": 6122,
+      "gitSha256": "48bd900aa6a1965584d78e849d83eeba1ced37563db90bb4ab8f40dde5ba7ff1",
+      "gitBlob": "c91d674107d20dc791e45cb7cb1ebaf7314c4e44",
+      "checkoutBytes": 6122,
+      "checkoutSha256": "48bd900aa6a1965584d78e849d83eeba1ced37563db90bb4ab8f40dde5ba7ff1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/A4Page.cs",
+      "gitBytes": 2017,
+      "gitSha256": "db263e8b84734bfb1d2d73dbc8dadb65f4f5c8d6ad707e42a58585942d0ea5a9",
+      "gitBlob": "ed61fd5443ebeca83d5f22b7cf447385da595f6f",
+      "checkoutBytes": 2017,
+      "checkoutSha256": "db263e8b84734bfb1d2d73dbc8dadb65f4f5c8d6ad707e42a58585942d0ea5a9",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/BilingualText.cs",
+      "gitBytes": 2471,
+      "gitSha256": "e7b1361cb214c26ed4f072d75f2ebe64b20de9b471bf77e707004d18aedc0172",
+      "gitBlob": "8be9c658316867d65e09d6459824100ee76df401",
+      "checkoutBytes": 2471,
+      "checkoutSha256": "e7b1361cb214c26ed4f072d75f2ebe64b20de9b471bf77e707004d18aedc0172",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/DocumentHeader.cs",
+      "gitBytes": 1317,
+      "gitSha256": "be1ea40ca10c2c438374613de960c7cb626eee2e32e73613cf59d7bd96c0daec",
+      "gitBlob": "3baaaee1fe10fe8072beab1e43299b73543768e7",
+      "checkoutBytes": 1317,
+      "checkoutSha256": "be1ea40ca10c2c438374613de960c7cb626eee2e32e73613cf59d7bd96c0daec",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/MetadataTable.cs",
+      "gitBytes": 1425,
+      "gitSha256": "56840b5b2f84be1f5a6eb43066d2da15c6ce73164e470724a8bc1c65cbc9f123",
+      "gitBlob": "f9a7b7a29a3faff103018251675dafa47af6dc7c",
+      "checkoutBytes": 1425,
+      "checkoutSha256": "56840b5b2f84be1f5a6eb43066d2da15c6ce73164e470724a8bc1c65cbc9f123",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/PageNumber.cs",
+      "gitBytes": 407,
+      "gitSha256": "9ad7e88bc3d1963cc558c9eda9bff76e899f73a6dc254f2136cb7161d8ef6452",
+      "gitBlob": "b801a70e08bb0618ce0dc9d2aaba6ded0e47f880",
+      "checkoutBytes": 407,
+      "checkoutSha256": "9ad7e88bc3d1963cc558c9eda9bff76e899f73a6dc254f2136cb7161d8ef6452",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/ReceiptAmountBrandPattern.cs",
+      "gitBytes": 2485,
+      "gitSha256": "002378e8b269da93ea5ce2dfb31e7317bba1bd42416ab1a82e6a10404b8a0430",
+      "gitBlob": "58329dcfa049abae9360d1c7b943e60751e3fa38",
+      "checkoutBytes": 2485,
+      "checkoutSha256": "002378e8b269da93ea5ce2dfb31e7317bba1bd42416ab1a82e6a10404b8a0430",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Components/TotalsBlock.cs",
+      "gitBytes": 1694,
+      "gitSha256": "f7d7179dfc471e3b758f3fe8d36540d782884ebbbf4f169a5b63d904ca4f1671",
+      "gitBlob": "2351a3d567c69b4301def13494dac6f3e58cac5b",
+      "checkoutBytes": 1694,
+      "checkoutSha256": "f7d7179dfc471e3b758f3fe8d36540d782884ebbbf4f169a5b63d904ca4f1671",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/DocumentFormat.cs",
+      "gitBytes": 1124,
+      "gitSha256": "7b2e5f11fbdb3c6e88295609d57b36a52212c015efbf74b271240cd844b0e7e6",
+      "gitBlob": "3c4e29a4cea902afdcd1ddae8702a7108dce377f",
+      "checkoutBytes": 1124,
+      "checkoutSha256": "7b2e5f11fbdb3c6e88295609d57b36a52212c015efbf74b271240cd844b0e7e6",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/DocumentStyle.cs",
+      "gitBytes": 375,
+      "gitSha256": "00d1364785da3979b0f3f8ab63100d1125e46769c55c5660a01be0b34b196097",
+      "gitBlob": "7bbf4a311582abb77ae3a12aa6422dc1ab66ff63",
+      "checkoutBytes": 375,
+      "checkoutSha256": "00d1364785da3979b0f3f8ab63100d1125e46769c55c5660a01be0b34b196097",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Documents/InvoiceDocumentComposer.cs",
+      "gitBytes": 936,
+      "gitSha256": "7e0959d0471a3ea98c70ad1708e078718e40f6940a2b3e332f831064ce35cc7b",
+      "gitBlob": "414ea8c61c8b11e2350e54c030b8f03683a57e61",
+      "checkoutBytes": 936,
+      "checkoutSha256": "7e0959d0471a3ea98c70ad1708e078718e40f6940a2b3e332f831064ce35cc7b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Documents/OrderLabelDocumentComposer.cs",
+      "gitBytes": 3031,
+      "gitSha256": "4b0696884cd17bbea0d89e3a9916520ccbffc024b9387c3b23a30cf457214e26",
+      "gitBlob": "734afdb0b6a06a616eaf600fc38730bed981739b",
+      "checkoutBytes": 3031,
+      "checkoutSha256": "4b0696884cd17bbea0d89e3a9916520ccbffc024b9387c3b23a30cf457214e26",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Documents/PurchaseOrderDocumentComposer.cs",
+      "gitBytes": 1004,
+      "gitSha256": "8f4fff42fbdc380efdae0d2035f861237da1db4ee70d7ee4c2f7c179b83a8747",
+      "gitBlob": "b5dc86454f3098c3466bd2b843e08e4a913d5eee",
+      "checkoutBytes": 1004,
+      "checkoutSha256": "8f4fff42fbdc380efdae0d2035f861237da1db4ee70d7ee4c2f7c179b83a8747",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Documents/QuotationDocumentComposer.cs",
+      "gitBytes": 1100,
+      "gitSha256": "89d3f8ff503538512086d11456aea1987fe527ca1eae8d37d0021588ee8fdbcc",
+      "gitBlob": "28db306ad8498c0c47f8ee8a3aae015a0e904c83",
+      "checkoutBytes": 1100,
+      "checkoutSha256": "89d3f8ff503538512086d11456aea1987fe527ca1eae8d37d0021588ee8fdbcc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Documents/ReceiptDocumentComposer.cs",
+      "gitBytes": 594,
+      "gitSha256": "799f5f2aa37b9772b27fce8aca0035dab619212a1ffaced314605130b440beea",
+      "gitBlob": "fbb056c70d207888d630c003631d191943d658aa",
+      "checkoutBytes": 594,
+      "checkoutSha256": "799f5f2aa37b9772b27fce8aca0035dab619212a1ffaced314605130b440beea",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Legacy.Maliev.DocumentService.Rendering.csproj",
+      "gitBytes": 859,
+      "gitSha256": "3bb23c8f83f27798cc00c8f3c73f4be3e31e89d564e597900243aed9fef9a30f",
+      "gitBlob": "8aa695e322eecaccdb703d4566d2e4271eeac580",
+      "checkoutBytes": 859,
+      "checkoutSha256": "3bb23c8f83f27798cc00c8f3c73f4be3e31e89d564e597900243aed9fef9a30f",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Properties/AssemblyInfo.cs",
+      "gitBytes": 110,
+      "gitSha256": "7d6480d8bd281daebbd91cd16fe596eacfda641f42fe8cc9057601a3deb41e55",
+      "gitBlob": "c45e56237f27ce114bcb538437438ae6ce96971d",
+      "checkoutBytes": 110,
+      "checkoutSha256": "7d6480d8bd281daebbd91cd16fe596eacfda641f42fe8cc9057601a3deb41e55",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/QuestDocumentRenderer.cs",
+      "gitBytes": 41755,
+      "gitSha256": "0d64fa1d217d580d3a1074bcc6042491ca90ed429503dd7f182dda48b64c3998",
+      "gitBlob": "411fdfc78231784039f17a275aa15d4530b7371c",
+      "checkoutBytes": 41755,
+      "checkoutSha256": "0d64fa1d217d580d3a1074bcc6042491ca90ed429503dd7f182dda48b64c3998",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/NotoSans-Bold.ttf",
+      "gitBytes": 575740,
+      "gitSha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a",
+      "gitBlob": "27131f8f479947ef1b6c1d0bc9ad5ab3d30bd831",
+      "checkoutBytes": 575740,
+      "checkoutSha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/NotoSans-Regular.ttf",
+      "gitBytes": 569208,
+      "gitSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "gitBlob": "d55220958aa51eeeb85048d746eabe43d2cd9f14",
+      "checkoutBytes": 569208,
+      "checkoutSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/NotoSansThai-Bold.ttf",
+      "gitBytes": 37796,
+      "gitSha256": "2b67cfb22337a868c6c85709e648ea30c79e0a7c530a5fc169a73d3f461d7c52",
+      "gitBlob": "f401192158bebf336fead2b1872685dc7a8787f2",
+      "checkoutBytes": 37796,
+      "checkoutSha256": "2b67cfb22337a868c6c85709e648ea30c79e0a7c530a5fc169a73d3f461d7c52",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/NotoSansThai-Regular.ttf",
+      "gitBytes": 37752,
+      "gitSha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "gitBlob": "47c3fa8d536c10c2fd170e0cfe215fbbf0815e08",
+      "checkoutBytes": 37752,
+      "checkoutSha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/OFL-NotoSans.txt",
+      "gitBytes": 4396,
+      "gitSha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+      "gitBlob": "6843f31878c9945e1e71e1baa275546b4eefead8",
+      "checkoutBytes": 4396,
+      "checkoutSha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/OFL-NotoSansThai.txt",
+      "gitBytes": 4380,
+      "gitSha256": "2e98fd23a52d253db8612cd5942c8f2ff4111b21d2367050fdca91d8ccc374a0",
+      "gitBlob": "7fa8dcb08ce4d2667b683ac4a8e79166e44e5277",
+      "checkoutBytes": 4380,
+      "checkoutSha256": "2e98fd23a52d253db8612cd5942c8f2ff4111b21d2367050fdca91d8ccc374a0",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/Fonts/OFL.txt",
+      "gitBytes": 4253,
+      "gitSha256": "11bf69fcf9b413a6044ce6ea89978f7e62c79115b6bba8642d533689c35e23b1",
+      "gitBlob": "7275c49c52d20129e179f34320d32c2f43169813",
+      "checkoutBytes": 4253,
+      "checkoutSha256": "11bf69fcf9b413a6044ce6ea89978f7e62c79115b6bba8642d533689c35e23b1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/ReceiptAmountBrandWord.svg",
+      "gitBytes": 1405,
+      "gitSha256": "48404825efa73ba25ddea0d6e1bd9ddf5b599546ede9f0cf445dfa1fa7276f6c",
+      "gitBlob": "7381588d8fcf6016f2081f7e4ea3db554c17dea3",
+      "checkoutBytes": 1405,
+      "checkoutSha256": "48404825efa73ba25ddea0d6e1bd9ddf5b599546ede9f0cf445dfa1fa7276f6c",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/Resources/logo.png",
+      "gitBytes": 33547,
+      "gitSha256": "1d072c5485e271082b6f3ce55c460fa387b6fb58783ffe8d8a097ba05a91b20b",
+      "gitBlob": "11c8dca4a4854948384cf9a4009c4060b8b80f6b",
+      "checkoutBytes": 33547,
+      "checkoutSha256": "1d072c5485e271082b6f3ce55c460fa387b6fb58783ffe8d8a097ba05a91b20b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Rendering/ThaiBahtAmountWords.cs",
+      "gitBytes": 2726,
+      "gitSha256": "0af91ba1e12e9bee3b09c53a6c4386012cecb21e415112db3c220f2bd919b6b1",
+      "gitBlob": "8c098b0cd6d285049323dc82fe7be8546f5d0926",
+      "checkoutBytes": 2726,
+      "checkoutSha256": "0af91ba1e12e9bee3b09c53a6c4386012cecb21e415112db3c220f2bd919b6b1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/AnnotatedInvoiceLayoutTests.cs",
+      "gitBytes": 11003,
+      "gitSha256": "9a064271b83702f59cdaaa07782c9209e67b13cbd3529878fc5294aca28a7c2c",
+      "gitBlob": "8f72569e75c9c3b1b840fa1dfaac71c7febc457c",
+      "checkoutBytes": 11003,
+      "checkoutSha256": "9a064271b83702f59cdaaa07782c9209e67b13cbd3529878fc5294aca28a7c2c",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Api/RequestFailureTracingTests.cs",
+      "gitBytes": 5304,
+      "gitSha256": "19e3ae0ca03484aae378125256ff650942aecb1a266541e3127ac0bbc87b7cb4",
+      "gitBlob": "6bfb850c05477ef0b0cb0f252487ecda92ef3988",
+      "checkoutBytes": 5304,
+      "checkoutSha256": "19e3ae0ca03484aae378125256ff650942aecb1a266541e3127ac0bbc87b7cb4",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ApiContractTests.cs",
+      "gitBytes": 6036,
+      "gitSha256": "b7f1e71378ba8db40c1708120c34b0f2a37f1d966eb5112fc528d1e13bd51128",
+      "gitBlob": "d47b284077fab0cd14ee1f8f5d09c2f4a06ff9bd",
+      "checkoutBytes": 6036,
+      "checkoutSha256": "b7f1e71378ba8db40c1708120c34b0f2a37f1d966eb5112fc528d1e13bd51128",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/AssemblyInfo.cs",
+      "gitBytes": 80,
+      "gitSha256": "3f7edd72eac91614fcf49f709dd4e560c74ebef8da68a53a02947e5611cd1869",
+      "gitBlob": "217120083bfa1b5b5a6400bb585b33f3651510f9",
+      "checkoutBytes": 80,
+      "checkoutSha256": "3f7edd72eac91614fcf49f709dd4e560c74ebef8da68a53a02947e5611cd1869",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice-empty-unittest.pdf",
+      "gitBytes": 77816,
+      "gitSha256": "d1394faa486948132dfbb6e30a624affbe5021378e959cca63b301a71ae31bdf",
+      "gitBlob": "e92765741adc235849ff60b36d8549783a3e5f9b",
+      "checkoutBytes": 77816,
+      "checkoutSha256": "d1394faa486948132dfbb6e30a624affbe5021378e959cca63b301a71ae31bdf",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice-no-telephone-unittest.pdf",
+      "gitBytes": 80045,
+      "gitSha256": "b788b7894658d8cc333ec479742f157e709ccf3985b52606eed9d387c76cdc04",
+      "gitBlob": "6156455f2871d971a2c8a7f8d77db21008c9f3d9",
+      "checkoutBytes": 80045,
+      "checkoutSha256": "b788b7894658d8cc333ec479742f157e709ccf3985b52606eed9d387c76cdc04",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice-thai-unittest.pdf",
+      "gitBytes": 80069,
+      "gitSha256": "7a097a5a889ed48b3c824f286435fa9e2c8ce9d06a39348a8d391163501335ad",
+      "gitBlob": "edb835c94d7c69f4c83c68c98fffb853f08140f3",
+      "checkoutBytes": 80069,
+      "checkoutSha256": "7a097a5a889ed48b3c824f286435fa9e2c8ce9d06a39348a8d391163501335ad",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice-unittest.pdf",
+      "gitBytes": 143576,
+      "gitSha256": "ac871c263c88799f19bd5880c3e4724f5998aa7444acb28f2a05725bdccc0f0b",
+      "gitBlob": "f3172cf988919043a0ca5e15167d1eb0ca94500e",
+      "checkoutBytes": 143576,
+      "checkoutSha256": "ac871c263c88799f19bd5880c3e4724f5998aa7444acb28f2a05725bdccc0f0b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice-without-withholding-tax-unittest.pdf",
+      "gitBytes": 78542,
+      "gitSha256": "ec8d7ec41c0bdf3bb6a00a8835506102d3e4b01318e8ff438bf21cbdf65f7525",
+      "gitBlob": "0ffbbc35500814f3144c718ab44dbd36e44a9e1c",
+      "checkoutBytes": 78542,
+      "checkoutSha256": "ec8d7ec41c0bdf3bb6a00a8835506102d3e4b01318e8ff438bf21cbdf65f7525",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/invoice_081019-23194-19534.pdf",
+      "gitBytes": 79553,
+      "gitSha256": "65697d2df19b909af0428c7738c8ca285266731d48564834329dfee9f85f36c1",
+      "gitBlob": "8fa3ec5ca361f29e5017b44a4225d3d6a35c8346",
+      "checkoutBytes": 79553,
+      "checkoutSha256": "65697d2df19b909af0428c7738c8ca285266731d48564834329dfee9f85f36c1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/orderlabel-thai-unittest.pdf",
+      "gitBytes": 65710,
+      "gitSha256": "ddd544f98c80c8e38f04b629791167ce97f551b7a5da401c15dcf72cb67043f7",
+      "gitBlob": "5b9f2c8f2a61c32b86d79e6eea86e3cee2cbfe2d",
+      "checkoutBytes": 65710,
+      "checkoutSha256": "ddd544f98c80c8e38f04b629791167ce97f551b7a5da401c15dcf72cb67043f7",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/purchase-order-empty-unittest.pdf",
+      "gitBytes": 65614,
+      "gitSha256": "ad5b3f691c26a4d22794ea91aaf98dc6f9edd9753d72c98e2bdd7b8d989840fc",
+      "gitBlob": "f73d78881b9850e8a6d6e51e1735b7e1618443ff",
+      "checkoutBytes": 65614,
+      "checkoutSha256": "ad5b3f691c26a4d22794ea91aaf98dc6f9edd9753d72c98e2bdd7b8d989840fc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/purchase-order-thai-unittest.pdf",
+      "gitBytes": 68515,
+      "gitSha256": "fd2cd3c9a0958af2bf63f49bcd29e9807ccd27ac2cca19c25972a4cbbf467c83",
+      "gitBlob": "f8ca5b873f49d2efc758d866293e56ba395fde6e",
+      "checkoutBytes": 68515,
+      "checkoutSha256": "fd2cd3c9a0958af2bf63f49bcd29e9807ccd27ac2cca19c25972a4cbbf467c83",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/purchase-order-unittest.pdf",
+      "gitBytes": 120524,
+      "gitSha256": "6917c10963879ead83ce352d5294ebfbedab6d39d6c3a77bbd7561913520ef73",
+      "gitBlob": "474ff5e738ab639bd2434efc0ddab12837408133",
+      "checkoutBytes": 120524,
+      "checkoutSha256": "6917c10963879ead83ce352d5294ebfbedab6d39d6c3a77bbd7561913520ef73",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-empty-unittest.pdf",
+      "gitBytes": 67531,
+      "gitSha256": "0a8a771ff67d30a355b25b9fb8c9f94906476383969a3dfab5604c24892492dc",
+      "gitBlob": "a80f5cd01e399e383c4b4ecfad1d61979d0c2183",
+      "checkoutBytes": 67531,
+      "checkoutSha256": "0a8a771ff67d30a355b25b9fb8c9f94906476383969a3dfab5604c24892492dc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-mixed-orders-unittest.pdf",
+      "gitBytes": 68418,
+      "gitSha256": "660d83267e8a8c5e1fdcaa923c2f2ff2d5a8c60c38f41f8837b1ae24b3d86304",
+      "gitBlob": "2ce6a15fde358b0dd85b47eb13ede1a3c478b3ec",
+      "checkoutBytes": 68418,
+      "checkoutSha256": "660d83267e8a8c5e1fdcaa923c2f2ff2d5a8c60c38f41f8837b1ae24b3d86304",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-no-withholding-tax-unittest.pdf",
+      "gitBytes": 68318,
+      "gitSha256": "520289e2508e90b30f8ae5123781dd2c4c14d42f30dd3aace052feb051121962",
+      "gitBlob": "2cbebd074f41a5b966d87c7f13a4bc6f1a67e41a",
+      "checkoutBytes": 68318,
+      "checkoutSha256": "520289e2508e90b30f8ae5123781dd2c4c14d42f30dd3aace052feb051121962",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-only-description-unittest.pdf",
+      "gitBytes": 68335,
+      "gitSha256": "5e7ab2c08ece2a2fdfccac572895b7ae7698410cbfe617bf21a2d48460339a23",
+      "gitBlob": "69d3238dd42772a1d0bfd4e8397585e535f07b05",
+      "checkoutBytes": 68335,
+      "checkoutSha256": "5e7ab2c08ece2a2fdfccac572895b7ae7698410cbfe617bf21a2d48460339a23",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-thai-noaddress-unittest.pdf",
+      "gitBytes": 68935,
+      "gitSha256": "5b518f99a4b92d54295eec9978c69591cbad7641e9d94d2c6db4a9a474f3aa52",
+      "gitBlob": "574b68fc7365734b1d026641101dd51c3ea5316c",
+      "checkoutBytes": 68935,
+      "checkoutSha256": "5b518f99a4b92d54295eec9978c69591cbad7641e9d94d2c6db4a9a474f3aa52",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-thai-unittest.pdf",
+      "gitBytes": 69097,
+      "gitSha256": "6b2d1399fc8da17b7b788dfdffea658655f754c8b3e6aa19796c4a11b02a6f0e",
+      "gitBlob": "bd3ea3a330b9d62ba2accbaf1c38b8581f901a5c",
+      "checkoutBytes": 69097,
+      "checkoutSha256": "6b2d1399fc8da17b7b788dfdffea658655f754c8b3e6aa19796c4a11b02a6f0e",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/quotation-unittest.pdf",
+      "gitBytes": 122008,
+      "gitSha256": "6cee015b0e5cec77b506192da216cf7d42a6dbd5c17a976324444806b83a75d3",
+      "gitBlob": "8d2c236b7549f839abc2308d47e8b5c33372cb11",
+      "checkoutBytes": 122008,
+      "checkoutSha256": "6cee015b0e5cec77b506192da216cf7d42a6dbd5c17a976324444806b83a75d3",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/receipt-empty-unittest.pdf",
+      "gitBytes": 152742,
+      "gitSha256": "01aa4b471d4e6b95f825e63e633fe679f516adf4bc723dfa5f548311f28163d3",
+      "gitBlob": "9896436a48421e9cc2bfc34dd071dffa9291a19b",
+      "checkoutBytes": 152742,
+      "checkoutSha256": "01aa4b471d4e6b95f825e63e633fe679f516adf4bc723dfa5f548311f28163d3",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/receipt-thai-unittest.pdf",
+      "gitBytes": 155504,
+      "gitSha256": "5ada96a87a99e1d9b441eb5c187ba1b25482ca7159444f5a875f4618b52f3a0b",
+      "gitBlob": "0940e8ac0c66b1a3fdbeee17a666a6fa4a0dc1fe",
+      "checkoutBytes": 155504,
+      "checkoutSha256": "5ada96a87a99e1d9b441eb5c187ba1b25482ca7159444f5a875f4618b52f3a0b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/receipt-unittest.pdf",
+      "gitBytes": 294070,
+      "gitSha256": "1a61ac6feb2d6f6f7b7a5caed65340332cbbd66b8034f44718e3ba54fb9436fb",
+      "gitBlob": "f74a22731ceedc7326dbb2f4c7d2b1ac4b3d5ad1",
+      "checkoutBytes": 294070,
+      "checkoutSha256": "1a61ac6feb2d6f6f7b7a5caed65340332cbbd66b8034f44718e3ba54fb9436fb",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/receipt-without-withholding-tax-unittest.pdf",
+      "gitBytes": 163942,
+      "gitSha256": "823b1c490a0b0eb045833cea7417613d5cceab7c820b5d80a53aeebea1328f19",
+      "gitBlob": "34bf01b15c231cf3b4e81e0a45ad075a1f78aec5",
+      "checkoutBytes": 163942,
+      "checkoutSha256": "823b1c490a0b0eb045833cea7417613d5cceab7c820b5d80a53aeebea1328f19",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/legacy-itext/receipt_6077.pdf",
+      "gitBytes": 290086,
+      "gitSha256": "1f4f3e77848b64797b7af332cec2b7d6eebfbc4c6c1b534ea0c927c54e244b77",
+      "gitBlob": "43876093776f07d9fd56f0c84261f19ae4b42047",
+      "checkoutBytes": 290086,
+      "checkoutSha256": "1f4f3e77848b64797b7af332cec2b7d6eebfbc4c6c1b534ea0c927c54e244b77",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Baselines/manifest.json",
+      "gitBytes": 90655,
+      "gitSha256": "2b2ffcb208b641cf257b9bc8125714074eadbd9fe9091029105ae6c05f3381ee",
+      "gitBlob": "2e008428e7b1196dcb40ae87d012118b4631cbad",
+      "checkoutBytes": 90655,
+      "checkoutSha256": "2b2ffcb208b641cf257b9bc8125714074eadbd9fe9091029105ae6c05f3381ee",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/BilingualLayoutTests.cs",
+      "gitBytes": 1632,
+      "gitSha256": "2d55918519a5d4040d24605e92b130acc89c45f09071d97736a4d2faf8970c1a",
+      "gitBlob": "1740ea72a97321a8bec1a3aba007c4ab5f424033",
+      "checkoutBytes": 1632,
+      "checkoutSha256": "2d55918519a5d4040d24605e92b130acc89c45f09071d97736a4d2faf8970c1a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ConcurrentQuestPdfAcceptanceTests.cs",
+      "gitBytes": 6008,
+      "gitSha256": "d8dfe246e1cf38bf41cac5f0ed84a6d8300503fe70bc5d42e3f44920bcf3a1a0",
+      "gitBlob": "14ffbf00354900d3938ed4ba2cb93b6e536532c2",
+      "checkoutBytes": 6008,
+      "checkoutSha256": "d8dfe246e1cf38bf41cac5f0ed84a6d8300503fe70bc5d42e3f44920bcf3a1a0",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentAssemblyEvidenceTests.cs",
+      "gitBytes": 7463,
+      "gitSha256": "37d88f9420d88ac2f87dfda63d40010a465ccfc6d790bc95981c5b20dc09e678",
+      "gitBlob": "1398b2611b2584f1ed6dfbd4227f8ba00fd1bb90",
+      "checkoutBytes": 7463,
+      "checkoutSha256": "37d88f9420d88ac2f87dfda63d40010a465ccfc6d790bc95981c5b20dc09e678",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentCompiledDomainXmlContractTests.cs",
+      "gitBytes": 3166,
+      "gitSha256": "9281a52e3d7d46a30bbc58ece2799551c81ee810f5cfd6136c0205f33de237da",
+      "gitBlob": "86739401774d3b95326deef5beed0c1e3df7fd77",
+      "checkoutBytes": 3166,
+      "checkoutSha256": "9281a52e3d7d46a30bbc58ece2799551c81ee810f5cfd6136c0205f33de237da",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentCurrentConsumerHttpAcceptanceTests.cs",
+      "gitBytes": 5998,
+      "gitSha256": "992dc0f841161b2732f28177c0140fb9a8b5c318421103aae5d5b2b4714cb6d5",
+      "gitBlob": "bbba113e47dc97390ab681516c28e5b1c7b61256",
+      "checkoutBytes": 5998,
+      "checkoutSha256": "992dc0f841161b2732f28177c0140fb9a8b5c318421103aae5d5b2b4714cb6d5",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentHostTransportHttpTests.cs",
+      "gitBytes": 13373,
+      "gitSha256": "95e6d704ea74baa21b6b2ae7b5e85948ef6611197a14a52b77539bed1683aa36",
+      "gitBlob": "098cc1b2949a055aa3fb5be4db2b6e2daf8456b3",
+      "checkoutBytes": 13373,
+      "checkoutSha256": "95e6d704ea74baa21b6b2ae7b5e85948ef6611197a14a52b77539bed1683aa36",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentHttpAcceptanceTests.cs",
+      "gitBytes": 11170,
+      "gitSha256": "87179e4ec65766642acc12280ef39fd5fdabbcb5edab312b555f025a1f28f368",
+      "gitBlob": "a2ed2f3d7845c5c5358903efeba6e83ab8c10a1e",
+      "checkoutBytes": 11170,
+      "checkoutSha256": "87179e4ec65766642acc12280ef39fd5fdabbcb5edab312b555f025a1f28f368",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentInvoiceWithholdingHttpTests.cs",
+      "gitBytes": 2244,
+      "gitSha256": "919dfc3aacd21b10540691ffd5e85d30bcf7b110bddc4c00287724619725d0fa",
+      "gitBlob": "0b87d272c5dcfc8d0bfee2188c3654d97137a458",
+      "checkoutBytes": 2244,
+      "checkoutSha256": "919dfc3aacd21b10540691ffd5e85d30bcf7b110bddc4c00287724619725d0fa",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentJwtExternalizationTests.cs",
+      "gitBytes": 6021,
+      "gitSha256": "9d6cf6cce9c2c5e5527b0cc3983ac6b4cf07f72842ff4cf2c92115f6aa5c21bc",
+      "gitBlob": "7a301951bfc120d2284c92103459eac983f8597f",
+      "checkoutBytes": 6021,
+      "checkoutSha256": "9d6cf6cce9c2c5e5527b0cc3983ac6b4cf07f72842ff4cf2c92115f6aa5c21bc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentOpenApiHttpAcceptanceTests.cs",
+      "gitBytes": 3125,
+      "gitSha256": "5a3ff4fc0183328b6e499e646c0ad74fb9f6db41cf471154abbc2a85fa979726",
+      "gitBlob": "8a30a485581f48b0e3c5d164e39157a7ec75cdac",
+      "checkoutBytes": 3125,
+      "checkoutSha256": "5a3ff4fc0183328b6e499e646c0ad74fb9f6db41cf471154abbc2a85fa979726",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentOpenApiResponseSecurityHttpContractTests.cs",
+      "gitBytes": 10240,
+      "gitSha256": "9b3518816848da32463091321a1f4bcdf660cb025eca168c91ef0e0d7e22c7c1",
+      "gitBlob": "d065f6ee9a001caeca8deefc2944143fc86fcc8f",
+      "checkoutBytes": 10240,
+      "checkoutSha256": "9b3518816848da32463091321a1f4bcdf660cb025eca168c91ef0e0d7e22c7c1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentQuotationPreparerHttpTests.cs",
+      "gitBytes": 3345,
+      "gitSha256": "e63ad4a30db3659a6a3a7eb22e5c8c11959ece2fa11a997c07640a952d017c9b",
+      "gitBlob": "e2028dff7be5fe7340f9e8d5d5e8623aa3cfb317",
+      "checkoutBytes": 3345,
+      "checkoutSha256": "e63ad4a30db3659a6a3a7eb22e5c8c11959ece2fa11a997c07640a952d017c9b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentRenderFailureHttpAcceptanceTests.cs",
+      "gitBytes": 5070,
+      "gitSha256": "06526c0ef28f497b7febf4a9a715146397fc02d4fadf587d651f05d43412922b",
+      "gitBlob": "d1867692ea2e9d7f3191364fb7dd6806b5b9290d",
+      "checkoutBytes": 5070,
+      "checkoutSha256": "06526c0ef28f497b7febf4a9a715146397fc02d4fadf587d651f05d43412922b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentRuntimeHttpTests.cs",
+      "gitBytes": 23373,
+      "gitSha256": "961c950e9599575a783fbece1d04024aef5e90261d1d8f2100a851a84849a4db",
+      "gitBlob": "3461a614cf41692f0ae734b1bc0bc766b83cd6d6",
+      "checkoutBytes": 23373,
+      "checkoutSha256": "961c950e9599575a783fbece1d04024aef5e90261d1d8f2100a851a84849a4db",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentStructuralProposalFixtureTests.cs",
+      "gitBytes": 22381,
+      "gitSha256": "73d333cbf6dde8123b22424b943664da0914a6ba0a6687a71461ce50f7a22c8a",
+      "gitBlob": "6323ed7b7fc7beb19c6e4fb1925c025763c6852f",
+      "checkoutBytes": 22381,
+      "checkoutSha256": "73d333cbf6dde8123b22424b943664da0914a6ba0a6687a71461ce50f7a22c8a",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentVariantSmokeTests.cs",
+      "gitBytes": 7700,
+      "gitSha256": "edc41285644363e54a9d8b7cbd7c20d411d5710896e54a01be7b7e364e9cd050",
+      "gitBlob": "55df3a3cbdebd8f2e98641ec3ccde17b1a05fd98",
+      "checkoutBytes": 7700,
+      "checkoutSha256": "edc41285644363e54a9d8b7cbd7c20d411d5710896e54a01be7b7e364e9cd050",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/DocumentZeroWithholdingHttpTests.cs",
+      "gitBytes": 3534,
+      "gitSha256": "70f9c85ccf487dd4b556d410d20bf3528778e695785d09a173fc9195aee9c90e",
+      "gitBlob": "638ba9fe286b47ca6900fc5cd30aee194b50c68e",
+      "checkoutBytes": 3534,
+      "checkoutSha256": "70f9c85ccf487dd4b556d410d20bf3528778e695785d09a173fc9195aee9c90e",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Evidence/Capture-DocumentCollectorProvenance.ps1",
+      "gitBytes": 29865,
+      "gitSha256": "9541c7485c6c927780c665246b4106f6d77943162912ed1e20244f08ae8f2e69",
+      "gitBlob": "6df3fdef9e193a64a767709d68f2179bad9a6c58",
+      "checkoutBytes": 30237,
+      "checkoutSha256": "7fbafccf717a4dcb6265af7ded04c57a5dabfd17dfc6427d26f23a909a65e671",
+      "projection": "Git cat-file --filters using baseline .gitattributes; exact raw Git blob recorded separately"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Evidence/Read-DocumentCollectorTrace.ps1",
+      "gitBytes": 16117,
+      "gitSha256": "d36011fdc594efa30434548a10013b4c431e9d809b4ed257b415af27fee9a57f",
+      "gitBlob": "3a4de1a9d9b2ce7be38488b479855addcfd614d1",
+      "checkoutBytes": 16258,
+      "checkoutSha256": "d703af0919cc1ad23be238b9219981f14851b82b3a6adb26960f764a2fef7aab",
+      "projection": "Git cat-file --filters using baseline .gitattributes; exact raw Git blob recorded separately"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Evidence/Test-DocumentTraceBounds.ps1",
+      "gitBytes": 2793,
+      "gitSha256": "42baa525b9658e6953df9a741ffa449ea6f25ba6b02c37aad0b16237193d22a5",
+      "gitBlob": "6ea1544d9905d01a8a3b615f78e1bd9c50e61157",
+      "checkoutBytes": 2820,
+      "checkoutSha256": "c688e94febc2da740351c2efbb843aad8bde15473e17f9dcbf94438fa7f74634",
+      "projection": "Git cat-file --filters using baseline .gitattributes; exact raw Git blob recorded separately"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Evidence/Watch-DocumentTraceProducer.ps1",
+      "gitBytes": 30912,
+      "gitSha256": "19b2cebb9d693b70fc11e4ad61ef82f367107d0eaebc9a32439301f64c894c34",
+      "gitBlob": "26f2ea7b05ada48f4f18bb18a04b57d6f9baac4b",
+      "checkoutBytes": 31290,
+      "checkoutSha256": "22a359aea038b01ae6af3e4dab46f6dfa7a96e346b3adafea18469aa2d03fbd1",
+      "projection": "Git cat-file --filters using baseline .gitattributes; exact raw Git blob recorded separately"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/FoldingMarkParityTests.cs",
+      "gitBytes": 1800,
+      "gitSha256": "3e4555872cfec8af123e29ab1a849e1774402bc26829c22c79e686257bc4dd98",
+      "gitBlob": "8b1ab33a7080cf021dd6d2ca8264eadc12b1d1bb",
+      "checkoutBytes": 1800,
+      "checkoutSha256": "3e4555872cfec8af123e29ab1a849e1774402bc26829c22c79e686257bc4dd98",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj",
+      "gitBytes": 3577,
+      "gitSha256": "c4ecc81fc035a57603ae2d017d901b17f8ceb81229a853edb7ffca186985510d",
+      "gitBlob": "379bac8d3a9659ee4a51f4f47a90f3e0387543b4",
+      "checkoutBytes": 3577,
+      "checkoutSha256": "c4ecc81fc035a57603ae2d017d901b17f8ceb81229a853edb7ffca186985510d",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/LegacyBaselineTests.cs",
+      "gitBytes": 4155,
+      "gitSha256": "21939434391d318ee3a9b588a0b8666720896cb1a2014918f24280f22c60588d",
+      "gitBlob": "02f9da05bd4b8f5980001a2443b5012d970a7c73",
+      "checkoutBytes": 4155,
+      "checkoutSha256": "21939434391d318ee3a9b588a0b8666720896cb1a2014918f24280f22c60588d",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/MonochromePrintContractTests.cs",
+      "gitBytes": 3414,
+      "gitSha256": "e6769104d838b31b153e84b2bfd09f40a463b88ee07ba303b07ed539aa2715eb",
+      "gitBlob": "71caca87691823ab97a4189d07d6b0b0aaae4251",
+      "checkoutBytes": 3414,
+      "checkoutSha256": "e6769104d838b31b153e84b2bfd09f40a463b88ee07ba303b07ed539aa2715eb",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/PublishWorkflowPermissionContractTests.cs",
+      "gitBytes": 2298,
+      "gitSha256": "ac5c3f196fe894b2485161881c32ca026141ab7517c0812192cd95d67f1f04f3",
+      "gitBlob": "54b9e38692587b1001efe05db620f53e5e3aac29",
+      "checkoutBytes": 2298,
+      "checkoutSha256": "ac5c3f196fe894b2485161881c32ca026141ab7517c0812192cd95d67f1f04f3",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/QuestRendererContractTests.cs",
+      "gitBytes": 16946,
+      "gitSha256": "c833b671b2bd814583ae8643c8941e727f2d99395dd210f7d36406d7d4b431d3",
+      "gitBlob": "5cc2be4bcda921a997594f43aabf7ed6b5350dde",
+      "checkoutBytes": 16946,
+      "checkoutSha256": "c833b671b2bd814583ae8643c8941e727f2d99395dd210f7d36406d7d4b431d3",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/RasterVisualParityTests.cs",
+      "gitBytes": 31435,
+      "gitSha256": "94bf6621944dfc57e510f28551961999c0c0481d4ba8c61006d89b18982e2ffd",
+      "gitBlob": "18cb7cfb3ef47558d866d269021f25f6f0095ddb",
+      "checkoutBytes": 31435,
+      "checkoutSha256": "94bf6621944dfc57e510f28551961999c0c0481d4ba8c61006d89b18982e2ffd",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ReceiptAmountBrandPatternTests.cs",
+      "gitBytes": 12517,
+      "gitSha256": "f8f8564e24646167d7f34436585840668f97901bd5c9970125ecf795b706c2c2",
+      "gitBlob": "609f116680b91c2a82e55379ec9f72c488da9d6a",
+      "checkoutBytes": 12517,
+      "checkoutSha256": "f8f8564e24646167d7f34436585840668f97901bd5c9970125ecf795b706c2c2",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ReceiptSignatureParityTests.cs",
+      "gitBytes": 1013,
+      "gitSha256": "7f44d70953dfd69ebd832c1a5519666ea3f4ac2dac35bbfd02e722c8fd658b81",
+      "gitBlob": "84ef635f400c47c4c21667c1f7ad9347f7603d04",
+      "checkoutBytes": 1013,
+      "checkoutSha256": "7f44d70953dfd69ebd832c1a5519666ea3f4ac2dac35bbfd02e722c8fd658b81",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ReceiptThaiAmountContentTests.cs",
+      "gitBytes": 9837,
+      "gitSha256": "005ba6274017d58d7213481cf5bae21036ecff170b28d7ba24374669d1c48651",
+      "gitBlob": "bf70abb69b99e2f7131d9cc4ad4a92180cf0e2c6",
+      "checkoutBytes": 9837,
+      "checkoutSha256": "005ba6274017d58d7213481cf5bae21036ecff170b28d7ba24374669d1c48651",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/SharedBusinessDocumentLayoutTests.cs",
+      "gitBytes": 7365,
+      "gitSha256": "3b815b3a705c008936a27eeebf86c69d6753c0becd069c8b9c2a2ae6d7b00b27",
+      "gitBlob": "dfa54e496d33aa52908a94757cb12e35ca4aa59e",
+      "checkoutBytes": 7365,
+      "checkoutSha256": "3b815b3a705c008936a27eeebf86c69d6753c0becd069c8b9c2a2ae6d7b00b27",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/SharedComponentContractTests.cs",
+      "gitBytes": 1905,
+      "gitSha256": "81dc97235e206f5222e0c5df43386e2bc50c7218e3ee20fb0491c28ac4235988",
+      "gitBlob": "f7471e66c5afd28f136c91c1bd35536698437970",
+      "checkoutBytes": 1905,
+      "checkoutSha256": "81dc97235e206f5222e0c5df43386e2bc50c7218e3ee20fb0491c28ac4235988",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/ThaiBahtAmountWordsTests.cs",
+      "gitBytes": 8476,
+      "gitSha256": "33c4014c5135a9028292a68fd728e74c5a12a4d5dd89c50db78cba1d9e0fcf29",
+      "gitBlob": "1586d006f1a1b57e2b8e08514919365d9ce0681a",
+      "checkoutBytes": 8476,
+      "checkoutSha256": "33c4014c5135a9028292a68fd728e74c5a12a4d5dd89c50db78cba1d9e0fcf29",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/VisualAssetParityTests.cs",
+      "gitBytes": 2497,
+      "gitSha256": "8a70faaf430f06024c3f3a7de88ea6aaa09ca688f4146a0a474acea9fd1a2a2b",
+      "gitBlob": "96d55729636846bcfb8158597274134418cd4b85",
+      "checkoutBytes": 2497,
+      "checkoutSha256": "8a70faaf430f06024c3f3a7de88ea6aaa09ca688f4146a0a474acea9fd1a2a2b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/VisualLayoutParityTests.cs",
+      "gitBytes": 3392,
+      "gitSha256": "5fa3e90fb54fd986f17d0d77178b20b32716543fb01f115505c6cd8666086b4e",
+      "gitBlob": "395bffb75fa73a3d30093f0eb48e9955b3d5b5b2",
+      "checkoutBytes": 3392,
+      "checkoutSha256": "5fa3e90fb54fd986f17d0d77178b20b32716543fb01f115505c6cd8666086b4e",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.Tests/Workflows/WorkflowContractTests.cs",
+      "gitBytes": 27635,
+      "gitSha256": "30cdd6856501f3ad050ad7898e16075fe988bd7754b0e2f619d8494056fc9d62",
+      "gitBlob": "6e735e28ca80472d47ec6afe74b3345cc92b540f",
+      "checkoutBytes": 27635,
+      "checkoutSha256": "30cdd6856501f3ad050ad7898e16075fe988bd7754b0e2f619d8494056fc9d62",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "Legacy.Maliev.DocumentService.slnx",
+      "gitBytes": 541,
+      "gitSha256": "9b42326e119a6b87829f615f2ea60a65722a78e913584bb3692a619982a159dc",
+      "gitBlob": "35347517cfa80d9cf1c24d2388af2dba8509ead9",
+      "checkoutBytes": 541,
+      "checkoutSha256": "9b42326e119a6b87829f615f2ea60a65722a78e913584bb3692a619982a159dc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "README.md",
+      "gitBytes": 3224,
+      "gitSha256": "ef00399e5fcb8b06c19c4c1bbe05153a5e440d6ec821203d469d676fd25f5d89",
+      "gitBlob": "4f2ba5b511b808879c43f9e189761d2b876c68e6",
+      "checkoutBytes": 3224,
+      "checkoutSha256": "ef00399e5fcb8b06c19c4c1bbe05153a5e440d6ec821203d469d676fd25f5d89",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.md",
+      "gitBytes": 786,
+      "gitSha256": "5b283b88bd94ac966fc1b6cd6e8ee2752e754c28c47308a6bcf60beeb0eb7b48",
+      "gitBlob": "a73a146a1a8988ea569bafb06711b329ea4e5b33",
+      "checkoutBytes": 786,
+      "checkoutSha256": "5b283b88bd94ac966fc1b6cd6e8ee2752e754c28c47308a6bcf60beeb0eb7b48",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/canonical-service-projection.md",
+      "gitBytes": 2755,
+      "gitSha256": "3808b6cec9b3c78ac8c057c3d08de77a5293bf8808c5cf91892b097f98795bce",
+      "gitBlob": "c776f1bc7ea785266d189dd551530965bda21483",
+      "checkoutBytes": 2755,
+      "checkoutSha256": "3808b6cec9b3c78ac8c057c3d08de77a5293bf8808c5cf91892b097f98795bce",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-contract-applicability-policy.json",
+      "gitBytes": 712,
+      "gitSha256": "b424bd9f4fad6bf29bf5990eebbe30a9e3dbe3cee8356bb5deccd286bba4ac77",
+      "gitBlob": "f2f153b57bf9f3823a073c8ba88da3909bf88ef7",
+      "checkoutBytes": 712,
+      "checkoutSha256": "b424bd9f4fad6bf29bf5990eebbe30a9e3dbe3cee8356bb5deccd286bba4ac77",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-contract-applicability-proposal.md",
+      "gitBytes": 3810,
+      "gitSha256": "c46adfb0e52131735e8631ce140a7e79410fd655a374639a4a3a1f91a6edbf6f",
+      "gitBlob": "f1998b4c381865803e6346609ef3232dcc64d2ce",
+      "checkoutBytes": 3810,
+      "checkoutSha256": "c46adfb0e52131735e8631ce140a7e79410fd655a374639a4a3a1f91a6edbf6f",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-full-test-inventory.json",
+      "gitBytes": 24110,
+      "gitSha256": "7bb5102fc6d62be9102a8258885432939f40d188b7383ea9a3059ec836389d2b",
+      "gitBlob": "782cfb929583e105f500f32bbab7c9d709ea8456",
+      "checkoutBytes": 24110,
+      "checkoutSha256": "7bb5102fc6d62be9102a8258885432939f40d188b7383ea9a3059ec836389d2b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-host-transport-policy.md",
+      "gitBytes": 1896,
+      "gitSha256": "a2bbdf70bcbed3fee4fd3ce2752ebd41668c135dd280e5c1e8395055503a97a2",
+      "gitBlob": "99b7d5fcaa07900ad2121029e70345bd8c7f082b",
+      "checkoutBytes": 1896,
+      "checkoutSha256": "a2bbdf70bcbed3fee4fd3ce2752ebd41668c135dd280e5c1e8395055503a97a2",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-main-integration-20261006.md",
+      "gitBytes": 2068,
+      "gitSha256": "b1509747a1c67111da70fcbb164a2f26198d202dbd7730ee3ef629b173e1bbf2",
+      "gitBlob": "7d9a8a5ad3b9feafe735519001456fef72a86ba0",
+      "checkoutBytes": 2068,
+      "checkoutSha256": "b1509747a1c67111da70fcbb164a2f26198d202dbd7730ee3ef629b173e1bbf2",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/document-trace-line-bounds.md",
+      "gitBytes": 1275,
+      "gitSha256": "ff0ff60bcd265e0fbdbb42d840362ec1bc8f18ca5fec411eda724783b4455867",
+      "gitBlob": "f9f2d13665bfeca6ecabfc260c26f2f486271149",
+      "checkoutBytes": 1275,
+      "checkoutSha256": "ff0ff60bcd265e0fbdbb42d840362ec1bc8f18ca5fec411eda724783b4455867",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/embedded-font-resource-ownership.md",
+      "gitBytes": 1962,
+      "gitSha256": "19080241abe902a72f94a1e48d62ed3c756e47c95f8e27ebfd25c240d3c12708",
+      "gitBlob": "663802c01c6649c26755f74228a26e2f07c01f2e",
+      "checkoutBytes": 1962,
+      "checkoutSha256": "19080241abe902a72f94a1e48d62ed3c756e47c95f8e27ebfd25c240d3c12708",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/invoice-withholding-sign.md",
+      "gitBytes": 1818,
+      "gitSha256": "aecc7e2ac29f0b39fc65ac36cd64667c4bfbd77457e1e5688ca1b1dbcd8c3909",
+      "gitBlob": "c48958b71c3cded23b2acdfbf1d959320cb03e21",
+      "checkoutBytes": 1818,
+      "checkoutSha256": "aecc7e2ac29f0b39fc65ac36cd64667c4bfbd77457e1e5688ca1b1dbcd8c3909",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/openapi-owned-xml-adaptation.md",
+      "gitBytes": 4313,
+      "gitSha256": "f13476f68fab9ec20bfbe3a382e32c7b392e3bdb14c8683be8f8fd37a7a5d2df",
+      "gitBlob": "507ea01600a0c16548374eaf5dec642646e83893",
+      "checkoutBytes": 4313,
+      "checkoutSha256": "f13476f68fab9ec20bfbe3a382e32c7b392e3bdb14c8683be8f8fd37a7a5d2df",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/openapi-runnable-document-examples.md",
+      "gitBytes": 3536,
+      "gitSha256": "bcd1c843b45eabd9d881569c610d49cd9592fc005392b57c3fd909653fb54064",
+      "gitBlob": "8567393cbf03147554380451a3613a867138a568",
+      "checkoutBytes": 3536,
+      "checkoutSha256": "bcd1c843b45eabd9d881569c610d49cd9592fc005392b57c3fd909653fb54064",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/questpdf-2026-9-1-acceptance-20261001.md",
+      "gitBytes": 9293,
+      "gitSha256": "66ee87669d21f9025884341912dea2287a435771079b07f7df20ba21d2f975bc",
+      "gitBlob": "6c22204e9c26b310344545c383d02b3e75eb46d6",
+      "checkoutBytes": 9293,
+      "checkoutSha256": "66ee87669d21f9025884341912dea2287a435771079b07f7df20ba21d2f975bc",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/quotation-discount-sign.md",
+      "gitBytes": 1208,
+      "gitSha256": "843d750e989ae38f6dd0d17ca90041ccae0711915275346388434aa6bc0dae54",
+      "gitBlob": "583d0f2b2431b630fb2c8e86173f31a02aa51f59",
+      "checkoutBytes": 1208,
+      "checkoutSha256": "843d750e989ae38f6dd0d17ca90041ccae0711915275346388434aa6bc0dae54",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/quotation-preparer-contact-compatibility.md",
+      "gitBytes": 941,
+      "gitSha256": "c58573b7fea4e7a76932f637a901e9ed556673ee8b78f53aed83f398e6770c76",
+      "gitBlob": "00f460d545c7f713a3bc309a7d69dfd8ddab5de1",
+      "checkoutBytes": 941,
+      "checkoutSha256": "c58573b7fea4e7a76932f637a901e9ed556673ee8b78f53aed83f398e6770c76",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/receipt-amount-brand-pattern.md",
+      "gitBytes": 4890,
+      "gitSha256": "1e89ad115edc6e085221039a7bda81dc01dbffa1b7af686c8302dfbcd1e35e96",
+      "gitBlob": "c14e250d96afe7319cb458cc0825f09ff8870563",
+      "checkoutBytes": 4890,
+      "checkoutSha256": "1e89ad115edc6e085221039a7bda81dc01dbffa1b7af686c8302dfbcd1e35e96",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "docs/retained-document-test-obligations.md",
+      "gitBytes": 1767,
+      "gitSha256": "c30549d31bf897ed3624eb97f300ea6444587d2a7651f6a6e53e64c24ea1d9af",
+      "gitBlob": "52dfbeb5f1c2e8c4ebb563479a1cc8a4cfba58c7",
+      "checkoutBytes": 1767,
+      "checkoutSha256": "c30549d31bf897ed3624eb97f300ea6444587d2a7651f6a6e53e64c24ea1d9af",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "nuget.config",
+      "gitBytes": 197,
+      "gitSha256": "aec93b5637ab6d62470979a008990a4a336a287ab83a3f2541849ae735674055",
+      "gitBlob": "765346e5343d46ac83654843869dc06b65b2bdc4",
+      "checkoutBytes": 197,
+      "checkoutSha256": "aec93b5637ab6d62470979a008990a4a336a287ab83a3f2541849ae735674055",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/Read-DocumentContractAssembly.ps1",
+      "gitBytes": 8920,
+      "gitSha256": "2406222d7dc518128a2efa706c6929e46798e30fd2444d3a8c68a81a21a5942a",
+      "gitBlob": "eeb804296bce8777214802236267cff684cb01ab",
+      "checkoutBytes": 9052,
+      "checkoutSha256": "23bed28f536396ddcf42f2d0bfa3a7abac473fad718559c98adfa11aeec182f6",
+      "projection": "Git cat-file --filters using baseline .gitattributes; exact raw Git blob recorded separately"
+    },
+    {
+      "path": "scripts/capture-document-contract-proof.py",
+      "gitBytes": 2630,
+      "gitSha256": "d2f11b0d336d00fd8167bc415b8a657b008007d5c3a825d68537af2193d69a50",
+      "gitBlob": "54f22c286acfaf9a7ce1e781ef6a96e17dc6ae11",
+      "checkoutBytes": 2630,
+      "checkoutSha256": "d2f11b0d336d00fd8167bc415b8a657b008007d5c3a825d68537af2193d69a50",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/capture_document_contract_support.py",
+      "gitBytes": 452,
+      "gitSha256": "49a273f5c854da29707b100b2d851dd9a582a994dbfc5f8a0ee020e4ba8971b0",
+      "gitBlob": "9eef4970867ab8c004f7048f04b58eebe21bf8b4",
+      "checkoutBytes": 452,
+      "checkoutSha256": "49a273f5c854da29707b100b2d851dd9a582a994dbfc5f8a0ee020e4ba8971b0",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/fixtures/contract-surface/ContractSurface.Tests.csproj",
+      "gitBytes": 703,
+      "gitSha256": "c44dc35fed50f670a08a1e1657b43a2b93e69601cf961a318d1cf4966e123436",
+      "gitBlob": "7d7142e64f582772577abcce22051f5756116778",
+      "checkoutBytes": 703,
+      "checkoutSha256": "c44dc35fed50f670a08a1e1657b43a2b93e69601cf961a318d1cf4966e123436",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/fixtures/contract-surface/Surface.cs",
+      "gitBytes": 1274,
+      "gitSha256": "62b17de07907dc733369c2d5da04ed856cb96fcc8b49aefa06976de6332664ab",
+      "gitBlob": "44b6da08aff7187055c543a24bcd16daf2e21e1a",
+      "checkoutBytes": 1274,
+      "checkoutSha256": "62b17de07907dc733369c2d5da04ed856cb96fcc8b49aefa06976de6332664ab",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/fixtures/contract-surface/marker.txt",
+      "gitBytes": 38,
+      "gitSha256": "f2b5b1adb363e6a25aa26a88cbe19edf13b0091a9169c987056dae1f0584bcb0",
+      "gitBlob": "6a8a3c451ca6f0710cc0ac2073dce7d223ec109b",
+      "checkoutBytes": 38,
+      "checkoutSha256": "f2b5b1adb363e6a25aa26a88cbe19edf13b0091a9169c987056dae1f0584bcb0",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/read-document-contract-applicability.py",
+      "gitBytes": 7916,
+      "gitSha256": "00971e346fc5edaae3635c7b40553416afdbcd899f86a93584f868579a2920f5",
+      "gitBlob": "398f93a7e80aefb4ae5c556bff3869fa1bfb8f10",
+      "checkoutBytes": 7916,
+      "checkoutSha256": "00971e346fc5edaae3635c7b40553416afdbcd899f86a93584f868579a2920f5",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/read-receipt-evidence.py",
+      "gitBytes": 10852,
+      "gitSha256": "f3217e5ae2697dcc2a1cfa813d6e7f9e2555835471f120a2a61dcb6a01b0839b",
+      "gitBlob": "51ce0ef8691d4f0395b04c7cef49192a28325185",
+      "checkoutBytes": 10852,
+      "checkoutSha256": "f3217e5ae2697dcc2a1cfa813d6e7f9e2555835471f120a2a61dcb6a01b0839b",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/test-document-contract-controls.py",
+      "gitBytes": 6096,
+      "gitSha256": "e16fe329a97ee004acf564403e1e0b935374698676276d9f15004331829fe7b1",
+      "gitBlob": "1abd83b73fb7fb0cc3537d6be2b9702309b5d09d",
+      "checkoutBytes": 6096,
+      "checkoutSha256": "e16fe329a97ee004acf564403e1e0b935374698676276d9f15004331829fe7b1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/test_canonical_service_projection.py",
+      "gitBytes": 7093,
+      "gitSha256": "bca9aa5bc31021cf49587a09d568f6f8b8fb5485473019e255caa5304efbf2da",
+      "gitBlob": "de51e55308881870e948e58a751f115651f4daa7",
+      "checkoutBytes": 7093,
+      "checkoutSha256": "bca9aa5bc31021cf49587a09d568f6f8b8fb5485473019e255caa5304efbf2da",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/test_document_application_proof.py",
+      "gitBytes": 3185,
+      "gitSha256": "9e129268deef98288d05b794901ae3dd11f1c5d72414cc06f39c2fa04f53a6c1",
+      "gitBlob": "42a0a62d083256cc7600d8fb7bd94d807ee301c7",
+      "checkoutBytes": 3185,
+      "checkoutSha256": "9e129268deef98288d05b794901ae3dd11f1c5d72414cc06f39c2fa04f53a6c1",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/test_receipt_evidence.py",
+      "gitBytes": 16035,
+      "gitSha256": "15d100a1b17e4e1f920523f112fa605500f80da56dd67a090a6a033e0c354e11",
+      "gitBlob": "4faed81abb2c384711f571bb34d8efda14ec19c4",
+      "checkoutBytes": 16035,
+      "checkoutSha256": "15d100a1b17e4e1f920523f112fa605500f80da56dd67a090a6a033e0c354e11",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/verify-canonical-service-projection.py",
+      "gitBytes": 6856,
+      "gitSha256": "27e67ac88d8dc15a5bdada16f57895170c5e7851bc185884848c4f4d923540ab",
+      "gitBlob": "db769c7fde45b4d8c504c2e9a782b97cc50603f1",
+      "checkoutBytes": 6856,
+      "checkoutSha256": "27e67ac88d8dc15a5bdada16f57895170c5e7851bc185884848c4f4d923540ab",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/verify-document-application-proof.py",
+      "gitBytes": 3031,
+      "gitSha256": "383804ffd9166f39806b878489708ffae3a02bda40d71a537500ce2f076e1f98",
+      "gitBlob": "28557748bc18c38ccced108ffc54b66274709140",
+      "checkoutBytes": 3031,
+      "checkoutSha256": "383804ffd9166f39806b878489708ffae3a02bda40d71a537500ce2f076e1f98",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    },
+    {
+      "path": "scripts/verify-runner-coverage.py",
+      "gitBytes": 2709,
+      "gitSha256": "33f31ea6272d2896021ab360c9d3bc34487f907ec944fe54e6e30d32b8d29b59",
+      "gitBlob": "52e04ad52617b95f514c54650257ae20b7826204",
+      "checkoutBytes": 2709,
+      "checkoutSha256": "33f31ea6272d2896021ab360c9d3bc34487f907ec944fe54e6e30d32b8d29b59",
+      "projection": "LF with explicit PowerShell CRLF; binary bytes retained"
+    }
+  ],
+  "selectedCandidatePaths": [
+    ".github/workflows/_build-and-test.yml",
+    ".github/workflows/receipt-amount-evidence.yml",
+    "Legacy.Maliev.DocumentService.Tests/Workflows/WorkflowContractTests.cs"
+  ],
+  "helperPaths": [
+    "run_document_artifact_upload_native_20261008_v3.py",
+    "workflows_native_admission_v3.py",
+    "workflows_snapshot_census_v3.py",
+    "artifact_pin_native_result_validation_v2.py",
+    "workflows_owned_command_v1.py",
+    "workflows_cleanup_supervisor_v1.py"
+  ]
+}
