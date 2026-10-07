@@ -6,6 +6,8 @@ on:
       - .github/workflows/document-artifact-native-qualification.yml
       - scripts/qualify_document_artifact_native_v1.py
       - scripts/tests/test_document_artifact_native_v1.py
+      - scripts/stage_document_artifact_evidence_v1.py
+      - scripts/tests/test_document_artifact_evidence_v1.py
       - docs/document-artifact-native-qualification.md
   workflow_dispatch:
     inputs:
@@ -119,14 +121,18 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B scripts/qualify_document_artifact_native_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --root-permit-bundle root-permits.json --consumer-head $env:DOC_CONSUMER_HEAD --evidence evidence/native-stage
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Stage only reviewed owner evidence inside the upload workspace
+        if: always()
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          python -B scripts/stage_document_artifact_evidence_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Retain exact native and cleanup evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: document-native-qualification-${{ github.run_id }}
-          path: |
-            evidence/
-            D:/codex-temp/2026-10-03/legacy-code-workflows-20261003/outputs/document-artifact-upload-native-v3-*/
-            D:/codex-temp/2026-10-03/legacy-code-workflows-20261003/outputs/snapshot-census-v3-*/
+          path: evidence-custody/
           if-no-files-found: warn
           retention-days: 14
