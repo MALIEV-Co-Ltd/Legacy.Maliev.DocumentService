@@ -23,6 +23,15 @@ def policy(shared_sha='1'*64):
 
 
 class Controls(unittest.TestCase):
+    def test_detached_metadata_head_and_empty_refs_profile_accepted(self):
+        adapter.validate_git_metadata({'.git/HEAD':(adapter.BASE+'\n').encode(),'.git/config':b'', '.git/objects/pack/fixture.pack':b'raw'})
+    def test_wrong_metadata_head_refused(self):
+        with self.assertRaisesRegex(ValueError,'HEAD'):
+            adapter.validate_git_metadata({'.git/HEAD':b'0'*40})
+    def test_metadata_alias_foreign_directory_and_escape_refused(self):
+        for extra in [{'.git/config':b'', '.git/CONFIG':b''},{'.git/foreign/payload':b''},{'../foreign':b''},{'.git/refs':b'file'},{'.git/Refs':b'alias-file'},{'.git/objects/ab':b'file'}]:
+            with self.subTest(extra=extra),self.assertRaises(ValueError):
+                adapter.validate_git_metadata({'.git/HEAD':(adapter.BASE+'\n').encode(),**extra})
     def test_final_seals_required_before_any_file_access(self):
         with self.assertRaisesRegex(ValueError,'seals pending'):
             adapter.bind_shared('does-not-exist','does-not-exist',policy_sha=None,shared_sha=None)

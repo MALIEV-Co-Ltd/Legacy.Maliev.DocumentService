@@ -8,6 +8,10 @@ on:
       - scripts/tests/test_document_artifact_native_v1.py
       - scripts/stage_document_artifact_evidence_v1.py
       - scripts/tests/test_document_artifact_evidence_v1.py
+      - scripts/materialize_document_artifact_candidate_v2.py
+      - scripts/probe_document_artifact_git_v1.py
+      - scripts/tests/test_document_artifact_intake_v2.py
+      - scripts/tests/test_document_artifact_git_v1.py
       - docs/document-artifact-native-qualification.md
   workflow_dispatch:
     inputs:
@@ -104,21 +108,34 @@ jobs:
         run: |
           python -B scripts/smoke_document_artifact_windows_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --evidence evidence/windows-smoke
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Require fresh Root permits and execute build-first native phases
+      - name: Require actual plain Git HEAD and scope without a grant
+        shell: pwsh
+        run: |
+          python -B scripts/probe_document_artifact_git_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --evidence evidence/git-identity
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Receive and mask fresh permits without a bundle environment variable
         if: inputs.qualification-mode == 'native'
-        env:
-          DOC_ROOT_PERMIT_BUNDLE: ${{ inputs.root-permit-bundle }}
-          DOC_CONSUMER_HEAD: ${{ github.sha }}
         shell: pwsh
         run: |
           @'
-          import os,pathlib
-          raw=os.environ['DOC_ROOT_PERMIT_BUNDLE'].encode()
+          import json,os,pathlib
+          with pathlib.Path(os.environ['GITHUB_EVENT_PATH']).open('rb') as stream:
+              event=stream.read(128*1024+1)
+          assert len(event)<=128*1024
+          body=json.loads(event)['inputs']['root-permit-bundle']
+          raw=body.encode()
           assert 0<len(raw)<=4096
+          print('::add-mask::'+body.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
           with pathlib.Path('root-permits.json').open('xb') as stream:
               stream.write(raw)
           '@ | python -B -
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require fresh Root permits and execute build-first native phases
+        if: inputs.qualification-mode == 'native'
+        env:
+          DOC_CONSUMER_HEAD: ${{ github.sha }}
+        shell: pwsh
+        run: |
           python -B scripts/qualify_document_artifact_native_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --root-permit-bundle root-permits.json --consumer-head $env:DOC_CONSUMER_HEAD --evidence evidence/native-stage
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Stage only reviewed owner evidence inside the upload workspace

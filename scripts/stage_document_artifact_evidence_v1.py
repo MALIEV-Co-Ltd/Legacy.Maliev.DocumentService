@@ -57,6 +57,13 @@ def collect(workspace, native_outputs, shared):
             if path.name not in KERNEL:raise ValueError('Unreviewed kernel evidence refused')
             retain(path,'windows-smoke/'+path.name,KERNEL[path.name])
     stage=workspace/'evidence/native-stage';shared.reject_links(stage)
+    git_probe=workspace/'evidence/git-identity';shared.reject_links(git_probe)
+    if git_probe.exists():
+        limits={'head.log':4096,'scope.log':4096,'receipt.json':256*1024,
+            'resource-ledger.json':256*1024,'cleanup-checkpoint.json':64*1024}
+        for path in children(git_probe):
+            if path.name not in limits:raise ValueError('Unreviewed Git probe evidence refused')
+            retain(path,'git-identity/'+path.name,limits[path.name])
     if stage.exists():
         for path in children(stage):
             shared.reject_links(path)
