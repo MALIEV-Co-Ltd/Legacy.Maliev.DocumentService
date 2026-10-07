@@ -151,10 +151,32 @@ def validate_payload(files, policy, shared):
     return candidate
 
 
+def validate_git_metadata(metadata):
+    if metadata.get('.git/HEAD',b'').decode('ascii').strip()!=BASE:
+        raise ValueError('Exact detached metadata HEAD required')
+    directories={'.git','.git/branches','.git/hooks','.git/info','.git/logs',
+        '.git/logs/refs','.git/logs/refs/heads','.git/logs/refs/remotes','.git/logs/refs/remotes/origin',
+        '.git/objects','.git/objects/info','.git/objects/pack','.git/refs','.git/refs/heads',
+        '.git/refs/tags','.git/refs/remotes','.git/refs/remotes/origin'}
+    aliases=set()
+    for relative in metadata:
+        parts=relative.split('/')
+        if len(parts)<2 or parts[0]!='.git' or any(part in {'','..','.'} or '\\' in part or ':' in part for part in parts):
+            raise ValueError('Foreign Git metadata path refused')
+        if relative.casefold() in aliases:raise ValueError('Git metadata alias refused')
+        aliases.add(relative.casefold())
+        parent='/'.join(parts[:-1])
+        if parent not in directories and not re.fullmatch(r'\.git/objects/[0-9a-f]{2}',parent):
+            raise ValueError('Foreign Git metadata directory refused')
+        if relative.casefold() in {directory.casefold() for directory in directories} or re.fullmatch(r'\.git/objects/[0-9a-f]{2}',relative):
+            raise ValueError('Git directory cannot be a file')
+
+
 def materialize(root, base_source, metadata, files, policy, shared):
     root=Path(root);shared.reject_links(root)
     if root.exists() or str(root).replace('\\','/') != ROOT:raise ValueError('Fresh fixed Document qualification root required')
     candidate=validate_payload(files,policy,shared)
+    validate_git_metadata(metadata)
     candidate_root=root/'work/documentservice-artifact-upload-contract-20261008'
     # All input graphs have already been bounded/sealed; writes use the one shared
     # extractor's no-overwrite/link refusal, not an adapter-specific ZIP decoder.
@@ -166,6 +188,8 @@ def materialize(root, base_source, metadata, files, policy, shared):
         target=candidate_root/path;shared.reject_links(target);target.parent.mkdir(parents=True,exist_ok=True)
         with target.open('xb') as stream:stream.write(raw)
         if shared.digest(target.read_bytes()) != shared.digest(raw):raise ValueError('Document Git metadata copy differs')
+    # Git requires refs even when a detached checkout contains no reference files.
+    refs=candidate_root/'.git/refs';shared.reject_links(refs);refs.mkdir(exist_ok=True)
     for row in candidate['files']:shared.write_new(candidate_root,row['path'],files['candidate/raw/'+row['path']])
     for path,raw in files.items():
         if path.startswith('outputs/'):shared.write_new(root,path,raw)
