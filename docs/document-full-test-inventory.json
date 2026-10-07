@@ -180,6 +180,11 @@
     "executions": 5
   },
   {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentInvoiceWithholdingHttpTests",
+    "method": "InvoiceWithholding_RendersNumericDeductionAndPreservesSuppliedOutstanding",
+    "executions": 4
+  },
+  {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentJwtExternalizationTests",
     "method": "DocumentApi_UsesExternalPublicKeyWithoutAStoredSymmetricKey",
     "executions": 1

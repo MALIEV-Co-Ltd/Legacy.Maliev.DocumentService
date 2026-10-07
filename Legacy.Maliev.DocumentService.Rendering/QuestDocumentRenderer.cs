@@ -263,7 +263,7 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
                 });
                 row.ConstantItem(190).Element(box => LegacyTotals(box, invoice.Currency,
                     ("Subtotal", invoice.Subtotal), ("VAT 7%", invoice.Vat), ("Grand Total", invoice.Total),
-                    ("Withholding Tax", invoice.WithholdingTax), ("Outstanding", invoice.Outstanding)));
+                    ("Withholding Tax", invoice.WithholdingTax is > 0 ? -invoice.WithholdingTax : invoice.WithholdingTax), ("Outstanding", invoice.Outstanding)));
             });
             column.Item().PaddingTop(16).Text("Remark / หมายเหตุ:").FontFamily(LatinFont, ThaiFont).Bold();
             column.Item().Text(Safe(invoice.Remark));
