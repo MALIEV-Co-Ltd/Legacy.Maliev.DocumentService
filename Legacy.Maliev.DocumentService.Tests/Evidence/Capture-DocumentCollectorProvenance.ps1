@@ -264,6 +264,8 @@ if ($Phase -eq 'PreTest') {
     try {
         Stop-DocumentProducerObserver $privateDirectory
         . (Join-Path $PSScriptRoot 'Read-DocumentCollectorTrace.ps1')
+        . (Join-Path $PSScriptRoot 'Test-DocumentTraceBounds.ps1')
+        Test-DocumentTraceBounds
         $assetsFile = Get-BoundedFile $AssetsPath
         Assert-Child $assetsFile.FullName $repository
         $assets = Get-Content -LiteralPath $assetsFile.FullName -Raw | ConvertFrom-Json

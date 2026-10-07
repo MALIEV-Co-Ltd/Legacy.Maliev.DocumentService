@@ -20,9 +20,12 @@ function Read-DocumentCollectorTrace {
     }
     if($Lines.Count -gt 131072){throw 'Trace line budget exceeded.'}
     foreach($line in $Lines){
-        if($line.Length -gt 32768){
-            # Retain the existing fail-closed limit. Report only fixed structural facts,
-            # never the diagnostic payload, paths, test display parameters or private data.
+        # Bound every diagnostic line to 64 KiB, while collector-relevant lines retain
+        # the original 32 KiB bound. Larger unrelated VSTest records carry no evidence.
+        # Cumulative file/byte/line budgets and all typed grammars remain unchanged.
+        $relevant=$line -match 'CoverletCoverageDataCollector|Instrumented module:|AssemblyResolver\.OnResolve: Resolved assembly: (coverlet\.(collector|core)|Mono\.Cecil),'
+        if($line.Length -gt 65536 -or ($relevant -and $line.Length -gt 32768)){
+            # Report only fixed structural facts, never diagnostic payloads or paths.
             $collectorRelevant=$line.Contains('CoverletCoverageDataCollector',[StringComparison]::Ordinal) -or $line.Contains('Instrumented module:',[StringComparison]::Ordinal) -or $line.Contains('AssemblyResolver.OnResolve: Resolved assembly: coverlet.',[StringComparison]::Ordinal) -or $line.Contains('AssemblyResolver.OnResolve: Resolved assembly: Mono.Cecil,',[StringComparison]::Ordinal)
             $completedBatch=$line.Contains('TestExecution.Completed',[StringComparison]::Ordinal)
             $testBatch=$line.Contains('TestExecution.RunSelectedWithDefaultHost',[StringComparison]::Ordinal)
