@@ -276,6 +276,11 @@
   },
   {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
+    "method": "QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus",
+    "executions": 4
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentRuntimeHttpTests",
     "method": "QuotationRows_RenderDescriptionWithoutAddingDistinctName",
     "executions": 2
   },

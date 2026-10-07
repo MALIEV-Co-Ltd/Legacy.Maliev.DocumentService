@@ -24,6 +24,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("ReceiptThaiAmountContentTests", "LongReceipt_Preserves44ItemsAndOneAmountRowAtEndOfEachCopy", 1),
             ("ReceiptThaiAmountContentTests", "LegacyThbOracle_AndExplicitNewFixtureRetainFiveBahtNinetyNineSatang", 1),
             ("DocumentRuntimeHttpTests", "QuotationRows_RenderDescriptionWithoutAddingDistinctName", 2),
+            ("DocumentRuntimeHttpTests", "QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus", 4),
             ("DocumentRuntimeHttpTests", "ActualRoutes_BindPascalCaseJsonAndReturnRealPdfBytes", 5),
             ("DocumentRuntimeHttpTests", "InvalidBodies_AreRejectedByActualAdmissionWithoutPdf", 15),
             ("DocumentRuntimeHttpTests", "ActualJwtAndPermissionAdmission_PreventsReceiptRendering", 6),
@@ -140,7 +141,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 361 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 369 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -150,11 +151,23 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.assertEqual(1, code)
                 self.assertIn("focus TRX counters do not reconcile with passed cases", result["errors"])
 
+    def test_same_count_substituted_runtime_method_fails_closed(self):
+        substituted = list(self.names)
+        index = next(index for index, item in enumerate(substituted)
+                     if item[1] == "QuotationDiscount_RendersSignedPriceAdjustmentWithoutDuplicatingMinus")
+        class_name, _, count = substituted[index]
+        substituted[index] = (class_name, "UnreviewedReplacement", count)
+        self.assertEqual(len(self.names), len(substituted))
+        self.trx("focus", "receipt-focus.trx", substituted)
+        code, result = self.read()
+        self.assertEqual(1, code)
+        self.assertIn("Focused inventory differs from the exact 160 allowlisted class/method cases", result["errors"])
+
     def test_missing_brand_pattern_case_fails_closed(self):
         self.trx("focus", "receipt-focus.trx", self.names[:-1])
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Focused inventory differs from the exact 156 allowlisted class/method cases", result["errors"])
+        self.assertIn("Focused inventory differs from the exact 160 allowlisted class/method cases", result["errors"])
 
     def test_missing_execution_counter_fails_closed(self):
         self.mutate_focus(lambda tree: tree.find(".//{*}Counters").attrib.pop("failed"))
