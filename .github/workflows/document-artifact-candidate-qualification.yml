@@ -1,0 +1,102 @@
+name: Document sealed-source Windows qualification
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/document-artifact-candidate-qualification.yml
+      - scripts/materialize_document_artifact_candidate_v2.py
+      - scripts/smoke_document_artifact_windows_v2.py
+      - scripts/document-upload53-policy.json
+      - scripts/tests/test_document_artifact_*.py
+      - docs/document-artifact-candidate-qualification.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: document-sealed-source-qualification-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  transport-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out exact consumer source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out reviewed shared extractor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.FileService
+          # File PR78 protected main; exact extractor bytes are checked before use.
+          ref: 53899c56ea3165e53ebbbcd60bff69a090037d9b
+          path: shared-intake
+          persist-credentials: false
+      - name: Build Python source in temporary output
+        run: |
+          python3 -B - <<'PY'
+          import pathlib, py_compile, tempfile
+          with tempfile.TemporaryDirectory(prefix='document-transport-build-') as owned:
+              for source in [pathlib.Path('scripts/materialize_document_artifact_candidate_v2.py'), pathlib.Path('scripts/smoke_document_artifact_windows_v2.py'), *pathlib.Path('scripts/tests').glob('test_document_artifact_*.py')]:
+                  py_compile.compile(str(source), cfile=str(pathlib.Path(owned)/(source.name+'.pyc')), doraise=True)
+          PY
+      - name: Verify exact policy and actual capsule graph
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DOC_SHARED_MODULE: shared-intake/scripts/sealed_source_capsule.py
+        run: python3 -B -W error -m unittest discover -s scripts/tests -p 'test_document_artifact_*.py'
+
+  windows-intake-smoke:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: transport-controls
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact protected consumer source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Check out reviewed shared extractor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.FileService
+          # File PR78 protected main; exact extractor bytes are checked before use.
+          ref: 53899c56ea3165e53ebbbcd60bff69a090037d9b
+          path: shared-intake
+          persist-credentials: false
+      - name: Check out immutable Document baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: b37c45ac92b1cdfd159a1f3fdb973f3588b45e91
+          path: native-base
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up pinned Python runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Reconstruct exact Document source without an SDK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          python -B scripts/materialize_document_artifact_candidate_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --base-checkout native-base --capsule-blob 47a29480a775cf0949c5de30108605bc4d4ea3f3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Qualify actual owned Windows Python lifecycle
+        shell: pwsh
+        run: |
+          python -B scripts/smoke_document_artifact_windows_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --evidence evidence/windows-smoke
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain actual lifecycle evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: document-windows-source-smoke-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: warn
+          retention-days: 14
