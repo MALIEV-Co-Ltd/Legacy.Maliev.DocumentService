@@ -56,7 +56,11 @@ function ConvertFrom-DocumentProducerDiagnosticLines([byte[]]$Bytes) {
     if($text.StartsWith([string][char]0xfeff,[StringComparison]::Ordinal)){$text=$text.Substring(1)}
     $lines=@($text.Split([char]10)|ForEach-Object {$_.TrimEnd([char]13)})
     if($lines.Count -gt 131072){throw 'Producer diagnostic line budget exceeded.'}
-    foreach($line in $lines){if($line.Length -gt 32768){throw 'Producer diagnostic line bound exceeded.'}}
+    foreach($line in $lines){
+        # Keep claimed collector envelopes at 32 KiB; other complete diagnostic records
+        # have a fixed 64 KiB cap. Nothing is skipped or exported by this admission check.
+        if($line.Length -gt 65536 -or ($line.Length -gt 32768 -and $line.Contains('datacollector.dll',[StringComparison]::OrdinalIgnoreCase))){throw 'Producer diagnostic line bound exceeded.'}
+    }
     return $lines
 }
 function Get-DocumentProducerDiagnosticProcessIds([byte[]]$Bytes) {
