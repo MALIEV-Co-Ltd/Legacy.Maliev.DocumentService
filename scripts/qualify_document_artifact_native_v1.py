@@ -132,7 +132,7 @@ def main():
         raw = stream.read(MAX_BUNDLE_BYTES+1)
     permits = validate_bundle(raw, args.consumer_head, shared, admission)
     entries = {row['path']: row for row in policy['entries']}
-    for name in ['artifact_pin_native_result_validation_v2.py', 'run_document_artifact_upload_native_20261008_v3.py']:
+    for name in ['artifact_pin_native_result_validation_v3.py', 'run_document_artifact_upload_native_20261008_v4.py']:
         path = Path(ROOT)/'outputs'/name;shared.reject_links(path)
         with path.open('rb') as stream:
             body = stream.read(256*1024+1)
@@ -142,7 +142,7 @@ def main():
         sys.modules[key] = module
         exec(compile(body, str(path), 'exec'), module.__dict__)
         modules[key] = module
-    runner = modules['run_document_artifact_upload_native_20261008_v3']
+    runner = modules['run_document_artifact_upload_native_20261008_v4']
     evidence = Path(args.evidence);shared.reject_links(evidence);evidence.mkdir(parents=True, exist_ok=False)
     native_out = Path(ROOT)/'outputs'
     if list(native_out.glob('document-artifact-upload-native-v3-*')):

@@ -12,8 +12,8 @@ BASE = 'b37c45ac92b1cdfd159a1f3fdb973f3588b45e91'
 ROOT = 'D:/codex-temp/2026-10-03/legacy-code-workflows-20261003'
 CANDIDATE_SEAL = 'bbaccc97550d923fb3148672de5eb4235b8ded02909b9294215b97cee76d5ef7'
 DEPENDENCY_SEAL = 'edd136d82f33ae7b0450ba0bed80d8e4825d079522c51c69f46a75dfdf51834f'
-CAPSULE_BLOB = '47a29480a775cf0949c5de30108605bc4d4ea3f3'
-POLICY_SHA256 = 'febeaba7ca13a26cab3ecfd75faa291e9e73de45868da1b098a54b81b45586e7'
+CAPSULE_BLOB = 'a5af173dec91af1efa169f65ef55d7450ff10f86'
+POLICY_SHA256 = 'a17b7a53fbe7b881dd6493980e753414a394a43a7b45622665fe8db05a9e7841'
 SHARED_SHA256 = '44a8a5accac9da11422d606be02fe28487642215df511b5f1c4284296a453ee2'
 MAX_POLICY_BYTES = 512 * 1024
 MAX_SHARED_BYTES = 64 * 1024
@@ -71,8 +71,8 @@ def validate_profile(policy, shared_sha):
         raise ValueError('Document capsule digest missing')
     if type(policy['entries']) is not list or not 0 < len(policy['entries']) <= 256:
         raise ValueError('Document capsule inventory bound differs')
-    helpers=['run_document_artifact_upload_native_20261008_v3.py','workflows_native_admission_v3.py',
-        'workflows_snapshot_census_v3.py','artifact_pin_native_result_validation_v2.py',
+    helpers=['run_document_artifact_upload_native_20261008_v4.py','workflows_native_admission_v3.py',
+        'workflows_snapshot_census_v3.py','artifact_pin_native_result_validation_v3.py',
         'workflows_owned_command_v1.py','workflows_cleanup_supervisor_v1.py']
     if policy['helperPaths'] != helpers:
         raise ValueError('Exact reviewed Windows helper graph differs')

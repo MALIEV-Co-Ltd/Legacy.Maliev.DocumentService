@@ -8,8 +8,8 @@
   "dependencyManifestSha256": "edd136d82f33ae7b0450ba0bed80d8e4825d079522c51c69f46a75dfdf51834f",
   "sharedModuleSha256": "44a8a5accac9da11422d606be02fe28487642215df511b5f1c4284296a453ee2",
   "executionMode": "source-intake-only",
-  "bundleSha256": "c09a490c37a7a70374a76923a29853f256006456fcc98d32de04e9f4c73fb068",
-  "bundleBytes": 229292,
+  "bundleSha256": "56274ef81673240cf653ea637ab07c4177edfa3749f3e930cec608abaf8d243b",
+  "bundleBytes": 229691,
   "entries": [
     {
       "path": "candidate/raw/.github/workflows/_build-and-test.yml",
@@ -2520,11 +2520,11 @@
       ]
     },
     {
-      "path": "outputs/artifact_pin_native_result_validation_v2.py",
-      "bytes": 7608,
-      "sha256": "d3fa01beaef13a5e75a312fab8296197b4bfeb96492d1032ad07c5c4abe9dbf3",
-      "compressedBytes": 2283,
-      "crc32": 1963551085,
+      "path": "outputs/artifact_pin_native_result_validation_v3.py",
+      "bytes": 8943,
+      "sha256": "82bd62a3bb998d773dfdbae8297905415136ade4fd2c20e338b089c96aa524a4",
+      "compressedBytes": 2683,
+      "crc32": 2847218578,
       "createSystem": 0,
       "externalAttributes": 25165824,
       "flags": 0,
@@ -2577,11 +2577,11 @@
       ]
     },
     {
-      "path": "outputs/run_document_artifact_upload_native_20261008_v3.py",
+      "path": "outputs/run_document_artifact_upload_native_20261008_v4.py",
       "bytes": 13061,
-      "sha256": "7a6fdf1a65cba481efed18948ded77b72f59c169526f51a7315263fce750b991",
-      "compressedBytes": 4401,
-      "crc32": 2586257000,
+      "sha256": "8828473151ca3cdfaefdea8336c69bb6cba7beb8060e7ac91f5524a0c5f80e7e",
+      "compressedBytes": 4400,
+      "crc32": 3632549512,
       "createSystem": 0,
       "externalAttributes": 25165824,
       "flags": 0,
@@ -4165,10 +4165,10 @@
     "Legacy.Maliev.DocumentService.Tests/Workflows/WorkflowContractTests.cs"
   ],
   "helperPaths": [
-    "run_document_artifact_upload_native_20261008_v3.py",
+    "run_document_artifact_upload_native_20261008_v4.py",
     "workflows_native_admission_v3.py",
     "workflows_snapshot_census_v3.py",
-    "artifact_pin_native_result_validation_v2.py",
+    "artifact_pin_native_result_validation_v3.py",
     "workflows_owned_command_v1.py",
     "workflows_cleanup_supervisor_v1.py"
   ]

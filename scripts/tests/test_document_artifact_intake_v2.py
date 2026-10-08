@@ -17,12 +17,30 @@ def policy(shared_sha='1'*64):
         sharedModuleSha256=shared_sha,executionMode='source-intake-only',bundleSha256='2'*64,bundleBytes=1,
         entries=[{}],baseFiles=[{}]*165,selectedCandidatePaths=['.github/workflows/_build-and-test.yml',
         '.github/workflows/receipt-amount-evidence.yml','Legacy.Maliev.DocumentService.Tests/Workflows/WorkflowContractTests.cs'],
-        helperPaths=['run_document_artifact_upload_native_20261008_v3.py','workflows_native_admission_v3.py',
-        'workflows_snapshot_census_v3.py','artifact_pin_native_result_validation_v2.py','workflows_owned_command_v1.py',
+        helperPaths=['run_document_artifact_upload_native_20261008_v4.py','workflows_native_admission_v3.py',
+        'workflows_snapshot_census_v3.py','artifact_pin_native_result_validation_v3.py','workflows_owned_command_v1.py',
         'workflows_cleanup_supervisor_v1.py'])
 
 
 class Controls(unittest.TestCase):
+    def test_actual_candidate_workflow_capsule_argument_reaches_exact_cli_gate(self):
+        import re
+        from unittest.mock import patch
+        workflow = (Path(__file__).resolve().parents[2]/'.github/workflows/document-artifact-candidate-qualification.yml').read_text()
+        arguments = re.findall(r'--capsule-blob ([0-9a-f]{40})', workflow)
+        self.assertEqual([adapter.CAPSULE_BLOB], arguments)
+        argv = ['adapter', '--policy', 'unused', '--shared-module', 'unused', '--base-checkout', 'unused', '--capsule-blob', arguments[0]]
+        with patch.object(sys, 'argv', argv), patch.object(adapter, 'bind_shared', return_value=(None, {})), patch.object(adapter, 'read_base', side_effect=RuntimeError('exact capsule gate reached')) as read:
+            with self.assertRaisesRegex(RuntimeError, 'exact capsule gate reached'): adapter.main()
+            read.assert_called_once()
+
+    def test_previous_capsule_cli_argument_refused_before_any_base_or_network_read(self):
+        from unittest.mock import patch
+        argv = ['adapter', '--policy', 'unused', '--shared-module', 'unused', '--base-checkout', 'unused', '--capsule-blob', '47a29480a775cf0949c5de30108605bc4d4ea3f3']
+        with patch.object(sys, 'argv', argv), patch.object(adapter, 'bind_shared', return_value=(None, {})), patch.object(adapter, 'read_base') as read:
+            with self.assertRaisesRegex(ValueError, 'exact Document capsule'): adapter.main()
+            read.assert_not_called()
+
     def test_detached_metadata_head_and_empty_refs_profile_accepted(self):
         adapter.validate_git_metadata({'.git/HEAD':(adapter.BASE+'\n').encode(),'.git/config':b'', '.git/objects/pack/fixture.pack':b'raw'})
     def test_wrong_metadata_head_refused(self):
