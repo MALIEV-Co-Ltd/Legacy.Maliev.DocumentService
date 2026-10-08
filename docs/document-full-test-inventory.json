@@ -576,6 +576,11 @@
   },
   {
     "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+    "method": "BuildAndTest_RejectsPreviousUploadArtifactPin",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
     "method": "BuildAndTest_RejectsPrivateCleanupAgainstAnotherRepository",
     "executions": 1
   },

@@ -108,6 +108,28 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.assertEqual(0, code)
         self.assertTrue(result["four_assembly_acceptance"])
 
+    def test_reviewed_previous_upload_pin_identity_is_required_exactly_once(self):
+        identity = ("Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
+                    "BuildAndTest_RejectsPreviousUploadArtifactPin", "0")
+        self.assertEqual(1, self.full_names.count(identity))
+        self.assertEqual(374, len(self.full_names))
+        code, result = self.read()
+        self.assertEqual(0, code)
+        self.assertEqual([], result["errors"])
+        for mutation in ("missing", "substituted", "duplicated"):
+            with self.subTest(mutation=mutation):
+                names = list(self.full_names)
+                names.remove(identity)
+                if mutation == "substituted":
+                    names.append((identity[0], "UnreviewedUploadPinReplacement", "0"))
+                elif mutation == "duplicated":
+                    names.extend([identity, (identity[0], identity[1], "1")])
+                self.trx("full", "full-suite.trx", names)
+                code, result = self.read()
+                self.assertEqual(1, code)
+                self.assertIn("Full suite differs from the exact 374 merged HTTP, raster, receipt and evidence cases",
+                              result["errors"])
+
     def test_missing_raw_report_fails_closed(self):
         (self.root / "full" / "coverage.cobertura.xml").unlink()
         code, result = self.read()
@@ -141,7 +163,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 373 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 374 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
