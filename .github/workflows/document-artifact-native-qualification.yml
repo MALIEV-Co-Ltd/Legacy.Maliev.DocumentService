@@ -1,0 +1,155 @@
+name: Document sealed-candidate native qualification
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/document-artifact-native-qualification.yml
+      - scripts/qualify_document_artifact_native_v1.py
+      - scripts/tests/test_document_artifact_native_v1.py
+      - scripts/stage_document_artifact_evidence_v1.py
+      - scripts/tests/test_document_artifact_evidence_v1.py
+      - scripts/materialize_document_artifact_candidate_v2.py
+      - scripts/probe_document_artifact_git_v1.py
+      - scripts/tests/test_document_artifact_intake_v2.py
+      - scripts/tests/test_document_artifact_git_v1.py
+      - docs/document-artifact-native-qualification.md
+  workflow_dispatch:
+    inputs:
+      qualification-mode:
+        description: Kernel controls only, or guarded native phases after kernel controls
+        required: true
+        default: kernel-only
+        type: choice
+        options:
+          - kernel-only
+          - native
+      root-permit-bundle:
+        description: Fresh Root-issued JSON with five ordered phase permits and exact consumerHeadSha
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: document-sealed-candidate-native-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  native-stage-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out exact stage source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out reviewed shared extractor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.FileService
+          ref: 53899c56ea3165e53ebbbcd60bff69a090037d9b
+          path: shared-intake
+          persist-credentials: false
+      - name: Build Python stage before source controls
+        run: |
+          python3 -B - <<'PY'
+          import pathlib, py_compile, tempfile
+          with tempfile.TemporaryDirectory(prefix='document-native-source-build-') as owned:
+              for source in [*pathlib.Path('scripts').glob('*document_artifact*.py'), *pathlib.Path('scripts/tests').glob('test_document_artifact_*.py')]:
+                  py_compile.compile(str(source), cfile=str(pathlib.Path(owned)/(source.name+'.pyc')), doraise=True)
+          PY
+      - name: Verify source graph and build-first phase barriers without an SDK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DOC_SHARED_MODULE: shared-intake/scripts/sealed_source_capsule.py
+        run: python3 -B -W error -m unittest discover -s scripts/tests -p 'test_document_artifact_*.py'
+
+  native-qualification:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: native-stage-controls
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact protected stage source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Check out reviewed shared extractor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.FileService
+          ref: 53899c56ea3165e53ebbbcd60bff69a090037d9b
+          path: shared-intake
+          persist-credentials: false
+      - name: Check out immutable native baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: b37c45ac92b1cdfd159a1f3fdb973f3588b45e91
+          path: native-base
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up pinned Python runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Reconstruct only reviewed candidate source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          python -B scripts/materialize_document_artifact_candidate_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --base-checkout native-base --capsule-blob a5af173dec91af1efa169f65ef55d7450ff10f86
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require actual owned Windows kernel controls before any native phase
+        shell: pwsh
+        run: |
+          python -B scripts/smoke_document_artifact_windows_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --evidence evidence/windows-smoke
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require actual plain Git HEAD and scope without a grant
+        shell: pwsh
+        run: |
+          python -B scripts/probe_document_artifact_git_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --evidence evidence/git-identity
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Receive and mask fresh permits without a bundle environment variable
+        if: inputs.qualification-mode == 'native'
+        shell: pwsh
+        run: |
+          @'
+          import json,os,pathlib
+          with pathlib.Path(os.environ['GITHUB_EVENT_PATH']).open('rb') as stream:
+              event=stream.read(128*1024+1)
+          assert len(event)<=128*1024
+          body=json.loads(event)['inputs']['root-permit-bundle']
+          raw=body.encode()
+          assert 0<len(raw)<=4096
+          print('::add-mask::'+body.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+          with pathlib.Path('root-permits.json').open('xb') as stream:
+              stream.write(raw)
+          '@ | python -B -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Require fresh Root permits and execute build-first native phases
+        if: inputs.qualification-mode == 'native'
+        env:
+          DOC_CONSUMER_HEAD: ${{ github.sha }}
+        shell: pwsh
+        run: |
+          python -B scripts/qualify_document_artifact_native_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --root-permit-bundle root-permits.json --consumer-head $env:DOC_CONSUMER_HEAD --evidence evidence/native-stage
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Stage only reviewed owner evidence inside the upload workspace
+        if: always()
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          python -B scripts/stage_document_artifact_evidence_v1.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain exact native and cleanup evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: document-native-qualification-${{ github.run_id }}
+          path: evidence-custody/
+          if-no-files-found: warn
+          retention-days: 14
