@@ -34,6 +34,17 @@ class Controls(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'exact capsule gate reached'): adapter.main()
             read.assert_called_once()
 
+    def test_actual_native_workflow_capsule_argument_reaches_exact_cli_gate(self):
+        import re
+        from unittest.mock import patch
+        workflow = (Path(__file__).resolve().parents[2]/'.github/workflows/document-artifact-native-qualification.yml').read_text()
+        arguments = re.findall(r'--capsule-blob ([0-9a-f]{40})', workflow)
+        self.assertEqual([adapter.CAPSULE_BLOB], arguments)
+        argv = ['adapter', '--policy', 'unused', '--shared-module', 'unused', '--base-checkout', 'unused', '--capsule-blob', arguments[0]]
+        with patch.object(sys, 'argv', argv), patch.object(adapter, 'bind_shared', return_value=(None, {})), patch.object(adapter, 'read_base', side_effect=RuntimeError('exact native capsule gate reached')) as read:
+            with self.assertRaisesRegex(RuntimeError, 'exact native capsule gate reached'): adapter.main()
+            read.assert_called_once()
+
     def test_previous_capsule_cli_argument_refused_before_any_base_or_network_read(self):
         from unittest.mock import patch
         argv = ['adapter', '--policy', 'unused', '--shared-module', 'unused', '--base-checkout', 'unused', '--capsule-blob', '47a29480a775cf0949c5de30108605bc4d4ea3f3']
