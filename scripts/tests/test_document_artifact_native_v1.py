@@ -1,7 +1,7 @@
 import copy
 from datetime import datetime, timezone
 import json
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import sys
 import tempfile
 import unittest
@@ -104,13 +104,85 @@ class NativeStageControls(unittest.TestCase):
         for i, executable in enumerate(['git.exe','git.exe','dotnet.exe']):
             rows.append(dict(**dict.fromkeys(keys,True),pid=i+1,actual_start_filetime=i+100,remaining_job_processes=0,
                 retained_unverified_handles=False,stop_reason=None,output_truncated=False,executable_identity=executable,
-                job_memory_limit_bytes=3*1024**3,job_cpu_rate=5000,job_active_process_limit=64))
+                job_memory_limit_bytes=3*1024**3,job_cpu_rate=5000,job_active_process_limit=64,
+                job_lease=f'00000000-0000-0000-0000-{i+1:012d}',
+                log_path=str(PureWindowsPath(stage.ROOT)/'outputs'/f'document-artifact-upload-native-v3-{phase}-00000000-0000-0000-0000-000000000001'/['head.log','scope.log','phase.log'][i])))
         return dict(phase=phase,baseSha=stage.BASE,candidateSha=stage.CANDIDATE_SEAL,runId='00000000-0000-0000-0000-000000000001',
             failure=None,returncode=0,cleanupErrors=[],quarantineCount=0,claimReleased=True,resources=rows,
             cleanupSupervision=dict(slotReleased=True,journalClosed=True,cleanupOnly=True,cleanupVerified=True,ownedLeases=[]))
 
     def test_complete_native_release_receipt_accepted(self):
         stage.verify_phase('build',self.receipt(),Path('unused'))
+
+    def produced_receipt(self):
+        return json.loads((Path(__file__).parent/'fixtures/document-native-build-receipt-37705890541.json').read_bytes())
+
+    def test_actual_hosted_build_receipt_precreation_snapshots_join_three_closed_resources(self):
+        produced=self.produced_receipt()
+        legacy={(row['pid'],row['actual_start_filetime']) for row in produced['resources'] if 'pid' in row}
+        self.assertEqual(4,len(legacy))
+        self.assertEqual(3,len([key for key in legacy if key!=(None,None)]))
+        stage.verify_phase('build',produced,Path('unused'))
+
+    def test_orphan_and_duplicate_precreation_lease_refused(self):
+        for mode in ['orphan','duplicate']:
+            produced=self.produced_receipt()
+            if mode=='orphan':produced['resources'][0]['job_lease']='00000000-0000-0000-0000-000000000001'
+            else:produced['resources'].append(copy.deepcopy(produced['resources'][0]))
+            with self.subTest(mode=mode),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_precreation_cannot_claim_identity_or_terminal_success(self):
+        for key,value in [('actual_start_filetime',1),('executable_identity','dotnet.exe'),('cleanup_verified',True),('exit_code',0),('terminal_state_verified',True),('purpose','foreign')]:
+            produced=self.produced_receipt();produced['resources'][0][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_precreation_job_caps_or_log_cannot_join_foreign_terminal_resource(self):
+        for key,value in [('job_memory_limit_bytes',1),('job_cpu_rate',10000),('log_path','foreign.log')]:
+            produced=self.produced_receipt();produced['resources'][0][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_actual_identity_partial_boolean_or_changed_snapshot_refused(self):
+        for key,value in [('pid',True),('actual_start_filetime',None),('executable_identity','foreign.exe')]:
+            produced=self.produced_receipt();produced['resources'][1][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+        produced=self.produced_receipt();del produced['resources'][1]['pid']
+        with self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_actual_receipt_last_snapshot_and_exact_three_resource_gate_remain_strict(self):
+        for mode in ['unclosed','fourth']:
+            produced=self.produced_receipt();extra=copy.deepcopy(produced['resources'][-1])
+            if mode=='unclosed':extra['job_handle_closed']=False
+            else:extra['pid']+=100
+            produced['resources'].append(extra)
+            with self.subTest(mode=mode),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_foreign_or_partial_nonidentity_resource_record_refused(self):
+        for extra in [{'foreign':True},{'actual_start_filetime':None},{'freeMiB':True,'sdkJobs':[],'observedUtc':'now'}]:
+            produced=self.produced_receipt();produced['resources'].append(extra)
+            with self.subTest(extra=extra),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_actual_git_executables_cannot_be_replaced_by_foreign_roles(self):
+        for pid in [2028,2032]:
+            produced=self.produced_receipt()
+            for row in produced['resources']:
+                if row.get('pid')==pid:row['executable_identity']=r'C:\foreign\unrelated.exe'
+            with self.subTest(pid=pid),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_actual_role_logs_cannot_be_swapped_or_relocated_coherently(self):
+        for mode in ['swapped','foreign-directory']:
+            produced=self.produced_receipt()
+            for row in produced['resources']:
+                if 'log_path' not in row:continue
+                path=PureWindowsPath(row['log_path'])
+                if mode=='foreign-directory':path=PureWindowsPath(r'C:\foreign')/path.name
+                elif path.name in ['head.log','scope.log']:path=path.with_name({'head.log':'scope.log','scope.log':'head.log'}[path.name])
+                row['log_path']=str(path)
+            with self.subTest(mode=mode),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
+
+    def test_actual_command_leases_must_be_canonical_unique_nonzero(self):
+        for lease in [None,'not-a-uuid','00000000-0000-0000-0000-000000000000','00000000-0000-0000-0000-000000000001']:
+            produced=self.receipt();produced['resources'][1]['job_lease']=lease
+            with self.subTest(lease=lease),self.assertRaises(ValueError):stage.verify_phase('build',produced,Path('unused'))
 
     def test_wrong_source_failed_phase_or_boolean_returncode_refused(self):
         for field,value in [('phase','suite'),('baseSha','foreign'),('candidateSha','foreign'),('returncode',False),('returncode',1),('failure','failed'),('quarantineCount',1),('claimReleased',False)]:

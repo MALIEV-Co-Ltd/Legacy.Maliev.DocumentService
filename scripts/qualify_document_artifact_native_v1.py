@@ -3,7 +3,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import re
 import sys
 import types
@@ -51,18 +51,49 @@ def verify_phase(phase, receipt, directory):
     cleanup = receipt.get('cleanupSupervision', {})
     if any(cleanup.get(key) is not True for key in ['slotReleased', 'journalClosed', 'cleanupOnly', 'cleanupVerified']) or cleanup.get('ownedLeases') != []:
         raise ValueError('Native cleanup barrier is incomplete')
-    final = {}
+    final = {};precreation=[];pending_leases=set()
+    stable=['executable_identity','job_lease','log_path','job_memory_limit_bytes','job_cpu_rate','job_active_process_limit']
     for row in receipt.get('resources', []):
         if 'pid' in row:
-            final[(row['pid'], row['actual_start_filetime'])] = row
+            if row['pid'] is None:
+                if any(key not in row or row[key] is not None for key in ['pid','actual_start_filetime','actual_start_utc','executable_identity']) or row.get('cleanup_verified') is not False or row.get('exit_code') is not None or not (row.get('terminal_state_verified') is None or row.get('terminal_state_verified') is False) or row.get('purpose')!='finite owned command' or row.get('ownership')!='retained process handle and private job handle':
+                    raise ValueError('Inconsistent precreation ownership snapshot')
+                lease=row.get('job_lease')
+                if type(lease) is not str or str(uuid.UUID(lease))!=lease or uuid.UUID(lease).int==0 or lease in pending_leases:
+                    raise ValueError('Duplicate or invalid precreation lease')
+                pending_leases.add(lease)
+                precreation.append(row)
+            else:
+                if type(row['pid']) is not int or row['pid']<=0 or type(row.get('actual_start_filetime')) is not int or row['actual_start_filetime']<=0 or type(row.get('executable_identity')) is not str or not row['executable_identity']:
+                    raise ValueError('Actual native ownership identity incomplete')
+                identity=(row['pid'],row['actual_start_filetime'])
+                if identity in final and any(row.get(key)!=final[identity].get(key) for key in stable):
+                    raise ValueError('Native ownership snapshot identity changed')
+                final[identity] = row
+        elif set(row)!={'freeMiB','sdkJobs','observedUtc'} or type(row['freeMiB']) is not int or row['freeMiB']<4096 or row['sdkJobs']!=[] or type(row['observedUtc']) is not str:
+            raise ValueError('Partial or foreign native resource record')
     if len(final) != 3:
         raise ValueError('Exact HEAD, scope and native command ownership required')
+    roles=[('git.exe','head.log'),('git.exe','scope.log'),('dotnet.exe','phase.log')]
+    phase_root=PureWindowsPath(ROOT)/'outputs'/f'document-artifact-upload-native-v3-{phase}-{run_id}'
+    actual_leases=set()
+    for row,(executable,log_name) in zip(final.values(),roles,strict=True):
+        lease=row.get('job_lease')
+        if type(lease) is not str or str(uuid.UUID(lease))!=lease or uuid.UUID(lease).int==0 or lease in actual_leases:
+            raise ValueError('Actual command leases must be canonical and unique')
+        actual_leases.add(lease)
+        if PureWindowsPath(row['executable_identity']).name.casefold()!=executable or type(row.get('log_path')) is not str or PureWindowsPath(row['log_path'])!=phase_root/log_name:
+            raise ValueError('Ordered HEAD, scope and native executable/log roles differ')
+    for pending in precreation:
+        matching=[row for row in final.values() if row.get('job_lease')==pending.get('job_lease')]
+        if not pending.get('job_lease') or len(matching)!=1 or any(pending.get(key)!=matching[0].get(key) for key in ['log_path','job_memory_limit_bytes','job_cpu_rate','job_active_process_limit']):
+            raise ValueError('Unsettled precreation job ownership')
     for row in final.values():
         if any(row.get(key) is not True for key in ['cleanup_verified', 'terminal_state_verified', 'readers_settled', 'process_handle_closed', 'thread_handle_closed', 'job_handle_closed', 'pipe_handles_closed', 'attribute_list_disposed', 'job_caps_readback_verified', 'membership_verified_before_resume']):
             raise ValueError('Owned native resource release missing')
         if row.get('remaining_job_processes') != 0 or row.get('retained_unverified_handles') is not False or row.get('stop_reason') is not None or row.get('output_truncated') is not False:
             raise ValueError('Owned native command incomplete')
-    native = [row for row in final.values() if Path(row['executable_identity']).name.casefold() == 'dotnet.exe']
+    native = [row for row in final.values() if PureWindowsPath(row['executable_identity']).name.casefold() == 'dotnet.exe']
     if len(native) != 1 or native[0]['job_memory_limit_bytes'] != 3*1024**3 or native[0]['job_cpu_rate'] != 5000 or native[0]['job_active_process_limit'] != 64:
         raise ValueError('Exact native private job envelope required')
     if phase in ('focused', 'suite'):

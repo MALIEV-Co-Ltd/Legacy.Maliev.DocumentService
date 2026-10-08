@@ -1,2 +1,3 @@
 * text=auto eol=lf
 *.ps1 text eol=crlf
+scripts/tests/fixtures/document-native-build-receipt-37705890541.json -text whitespace=cr-at-eol
