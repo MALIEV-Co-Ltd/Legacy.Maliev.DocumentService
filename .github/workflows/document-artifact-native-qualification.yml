@@ -101,7 +101,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
-          python -B scripts/materialize_document_artifact_candidate_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --base-checkout native-base --capsule-blob 47a29480a775cf0949c5de30108605bc4d4ea3f3
+          python -B scripts/materialize_document_artifact_candidate_v2.py --policy scripts/document-upload53-policy.json --shared-module shared-intake/scripts/sealed_source_capsule.py --base-checkout native-base --capsule-blob a5af173dec91af1efa169f65ef55d7450ff10f86
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Require actual owned Windows kernel controls before any native phase
         shell: pwsh
