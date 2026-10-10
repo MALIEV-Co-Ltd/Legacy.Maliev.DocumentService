@@ -52,13 +52,13 @@ internal static class OrderLabelDocumentComposer
 
     private static (string Key, string Value)[] Rows(LabelDocument label) =>
     [
-        ("ORDER #", DocumentFormat.Safe(label.Id)),
-        ("NAME", DocumentFormat.Safe(label.Name)),
-        ("PROCESS", DocumentFormat.Safe(label.Process)),
-        ("MATERIAL", DocumentFormat.Safe(label.Material)),
+        ("ORDER #", label.Id ?? string.Empty),
+        ("NAME", label.Name ?? string.Empty),
+        ("PROCESS", label.Process ?? string.Empty),
+        ("MATERIAL", label.Material ?? string.Empty),
         ("QUANTITY", $"ORDERED: {label.OrderQuantity}, SHIPPED: {label.ManufactureQuantity}, REMAINING: {label.RemainingQuantity}"),
-        ("COLOR", DocumentFormat.Safe(label.Color)),
-        ("POST", DocumentFormat.Safe(label.SurfaceFinish)),
-        ("DESCRIPTION", DocumentFormat.Safe(label.Description)),
+        ("COLOR", label.Color ?? string.Empty),
+        ("POST", label.SurfaceFinish ?? string.Empty),
+        ("DESCRIPTION", label.Description ?? string.Empty),
     ];
 }
