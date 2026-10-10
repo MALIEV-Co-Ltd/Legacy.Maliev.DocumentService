@@ -108,6 +108,37 @@ jobs:
           --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
           --logger 'trx;LogFileName=full-suite.trx' --results-directory receipt-evidence/full
           --collect 'XPlat Code Coverage'
+      - name: Verify packing-label causal receipt controls
+        run: python3 -B -m unittest discover -s scripts -p test_label_causal_evidence.py
+      - name: Focused current packing-label candidate
+        timeout-minutes: 5
+        run: |-
+          set -euo pipefail
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentOrderLabelLiteralHttpTests --logger 'trx;LogFileName=candidate.trx' --results-directory receipt-evidence/label-causal/candidate
+          python3 -B scripts/verify_label_causal_evidence.py candidate --checkout "$PWD" --candidate "$PWD" --candidate-sha "$DOCUMENT_SOURCE_SHA" --trx receipt-evidence/label-causal/candidate/candidate.trx --test-exit 0 --receipt receipt-evidence/label-causal/candidate/receipt.json
+      - name: Check out accepted packing-label production baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 35f66f4945ad35c40879b2f98fbdec1102bedc8b
+          path: .label-causal-baseline
+          persist-credentials: false
+      - name: Build and prove exact packing-label causal baseline
+        timeout-minutes: 10
+        run: |-
+          set -euo pipefail
+          candidate_root="$PWD"
+          evidence="$candidate_root/receipt-evidence/label-causal/baseline"
+          mkdir -p "$evidence"
+          cp "$candidate_root/Legacy.Maliev.DocumentService.Tests/DocumentOrderLabelLiteralHttpTests.cs" "$candidate_root/.label-causal-baseline/Legacy.Maliev.DocumentService.Tests/DocumentOrderLabelLiteralHttpTests.cs"
+          cd "$candidate_root/.label-causal-baseline"
+          dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false 2>&1 | tee "$evidence/restore.log"
+          dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror 2>&1 | tee "$evidence/build.log"
+          set +e
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentOrderLabelLiteralHttpTests --logger 'trx;LogFileName=baseline.trx' --results-directory "$evidence" > "$evidence/test.log" 2>&1
+          test_exit=$?
+          set -e
+          cat "$evidence/test.log"
+          python3 -B "$candidate_root/scripts/verify_label_causal_evidence.py" baseline --checkout "$PWD" --candidate "$candidate_root" --candidate-sha "$DOCUMENT_SOURCE_SHA" --trx "$evidence/baseline.trx" --build-log "$evidence/build.log" --test-exit "$test_exit" --receipt "$evidence/receipt.json"
       - name: Record observed coverage and sanitized cases
         if: always()
         run: |-
