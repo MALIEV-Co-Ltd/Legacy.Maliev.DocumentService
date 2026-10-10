@@ -643,5 +643,10 @@
     "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
     "method": "GatedImagePublish_UsesTheValidatedImmutableDependencyCommits",
     "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentPurchaseOrderTotalsHttpTests",
+    "method": "PurchaseOrder_RecomputesMultipleLinesAndSevenPercentVatDespiteSuppliedSubtotals",
+    "executions": 1
   }
 ]

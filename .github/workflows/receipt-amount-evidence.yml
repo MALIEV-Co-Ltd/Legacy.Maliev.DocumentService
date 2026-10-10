@@ -75,6 +75,27 @@ jobs:
           done
       - name: Verify compiled contract surface and rejection controls
         run: python3 -B scripts/test-document-contract-controls.py receipt-evidence/application-provenance "$RUNNER_TEMP/contract-fixtures"
+      - name: Focused authenticated purchase-order arithmetic and currency regression
+        timeout-minutes: 5
+        run: |-
+          set -euo pipefail
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentPurchaseOrderTotalsHttpTests --logger 'trx;LogFileName=purchase-order.trx' --results-directory receipt-evidence/purchase-order-focus
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('receipt-evidence/purchase-order-focus/purchase-order.trx')
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          definitions = tree.findall('./t:TestDefinitions/t:UnitTest', ns)
+          results = tree.findall('./t:Results/t:UnitTestResult', ns)
+          if len(definitions) != 1 or len(results) != 1:
+              raise SystemExit('Expected exactly one purchase-order definition and result')
+          method = definitions[0].find('t:TestMethod', ns)
+          if (method is None or not definitions[0].get('id')
+                  or results[0].get('testId') != definitions[0].get('id')
+                  or method.get('className', '').split(',', 1)[0].strip() != 'Legacy.Maliev.DocumentService.Tests.DocumentPurchaseOrderTotalsHttpTests'
+                  or method.get('name') != 'PurchaseOrder_RecomputesMultipleLinesAndSevenPercentVatDespiteSuppliedSubtotals'
+                  or results[0].get('outcome') != 'Passed'):
+              raise SystemExit('Purchase-order evidence must prove the exact authenticated arithmetic regression')
+          PY
       - name: Focused actual helper and PDF tests
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj

@@ -112,7 +112,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         identity = ("Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
                     "BuildAndTest_RejectsPreviousUploadArtifactPin", "0")
         self.assertEqual(1, self.full_names.count(identity))
-        self.assertEqual(374, len(self.full_names))
+        self.assertEqual(375, len(self.full_names))
         code, result = self.read()
         self.assertEqual(0, code)
         self.assertEqual([], result["errors"])
@@ -127,7 +127,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.trx("full", "full-suite.trx", names)
                 code, result = self.read()
                 self.assertEqual(1, code)
-                self.assertIn("Full suite differs from the exact 374 merged HTTP, raster, receipt and evidence cases",
+                self.assertIn("Full suite differs from the exact 375 merged HTTP, raster, receipt and evidence cases",
                               result["errors"])
 
     def test_missing_raw_report_fails_closed(self):
@@ -163,7 +163,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 374 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 375 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
