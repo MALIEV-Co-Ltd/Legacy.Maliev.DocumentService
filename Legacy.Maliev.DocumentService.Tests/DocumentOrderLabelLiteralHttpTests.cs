@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 
 namespace Legacy.Maliev.DocumentService.Tests;
 
@@ -59,7 +60,7 @@ public sealed class DocumentOrderLabelLiteralHttpTests
         var page = pdf.GetPage(1);
         Assert.InRange(page.Width, 215.5, 216.5);
         Assert.InRange(page.Height, 287.5, 288.5);
-        var marker = Assert.Single(page.GetWords(), word => word.Text == "LITERAL-MARKER");
+        var marker = Assert.Single(NearestNeighbourWordExtractor.Instance.GetWords(page.Letters), word => word.Text == "LITERAL-MARKER");
         return (marker.Letters[0].StartBaseLine.X, marker.Letters[0].StartBaseLine.Y);
     }
 }
