@@ -170,8 +170,8 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_RejectsCommentedDependencySha()
     {
         AssertMutationRejected(
-            "ref: 8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3",
-            "ref: main # 8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3");
+            "ref: c40a7f82cea347b949444dcd7fb730f2b8dc3c0e",
+            "ref: main # c40a7f82cea347b949444dcd7fb730f2b8dc3c0e");
     }
 
     [Fact]
@@ -422,7 +422,7 @@ internal static partial class WorkflowContractValidator
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["repository"] = "MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults",
-                ["ref"] = "8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3",
+                ["ref"] = "c40a7f82cea347b949444dcd7fb730f2b8dc3c0e",
                 ["path"] = ".dependencies/Legacy.Maliev.ServiceDefaults",
                 ["persist-credentials"] = "false",
             });

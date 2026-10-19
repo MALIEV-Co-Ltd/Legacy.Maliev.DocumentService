@@ -163,7 +163,7 @@ $identity = Get-GitIdentity $repository
 if ($env:GITHUB_RUN_ID -notmatch '^\d+$' -or $env:GITHUB_RUN_ATTEMPT -notmatch '^\d+$') { throw 'Missing hosted run identity.' }
 $receipt = [ordered]@{ schemaVersion = 1; phase = $Phase; timestampUtc = [DateTime]::UtcNow.ToString('O'); candidate = $null; checkout = $identity; run = $env:GITHUB_RUN_ID; attempt = $env:GITHUB_RUN_ATTEMPT; testTarget = [IO.Path]::GetRelativePath($repository, $testDirectory); collectorRequest = $CollectorRequest; snapshots = $snapshots; application = $application; dependencyPins = @(); collectorFiles = @(); collectorLoadEvidence = @(); effectiveSettingsVerified = $false; transformationVerified = $false; evidenceComplete = $false; policyActive = $false; runtimeAccepted = $false; rawNumericalPassed = $false }
 $expectedDependencies = @{
-    'Legacy.Maliev.ServiceDefaults' = '8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3'
+    'Legacy.Maliev.ServiceDefaults' = 'c40a7f82cea347b949444dcd7fb730f2b8dc3c0e'
     'Legacy.Maliev.CompatibilityContracts' = '78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7'
 }
 foreach ($dependency in $expectedDependencies.Keys) {
