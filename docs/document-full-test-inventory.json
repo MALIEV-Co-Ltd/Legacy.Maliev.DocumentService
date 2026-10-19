@@ -380,6 +380,21 @@
     "executions": 1
   },
   {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionDiagnostic_RequiresDirectLoopbackSingleStrictNonceAndRetainsThrottle",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionHealth_UsesOneHostIdentityOnlyOnRegisteredGetEndpoints",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionOrdinaryFailures_PreserveAuthDenialAndSanitizedErrorResponses",
+    "executions": 1
+  },
+  {
     "className": "Legacy.Maliev.DocumentService.Tests.PublishWorkflowPermissionContractTests",
     "method": "PublishWorkflow_ScopesOidcToPublishJobs",
     "executions": 1

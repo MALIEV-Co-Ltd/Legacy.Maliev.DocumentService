@@ -112,7 +112,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         identity = ("Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
                     "BuildAndTest_RejectsPreviousUploadArtifactPin", "0")
         self.assertEqual(1, self.full_names.count(identity))
-        self.assertEqual(383, len(self.full_names))
+        self.assertEqual(386, len(self.full_names))
         code, result = self.read()
         self.assertEqual(0, code)
         self.assertEqual([], result["errors"])
@@ -127,8 +127,68 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.trx("full", "full-suite.trx", names)
                 code, result = self.read()
                 self.assertEqual(1, code)
-                self.assertIn("Full suite differs from the exact 383 merged HTTP, raster, receipt and evidence cases",
+                self.assertIn("Full suite differs from the exact 386 merged HTTP, raster, receipt and evidence cases",
                               result["errors"])
+
+    def test_private_request_observation_cases_are_additive_and_required_exactly_once(self):
+        identities = [
+            ("Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+             "ProductionDiagnostic_RequiresDirectLoopbackSingleStrictNonceAndRetainsThrottle", "0"),
+            ("Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+             "ProductionHealth_UsesOneHostIdentityOnlyOnRegisteredGetEndpoints", "0"),
+            ("Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+             "ProductionOrdinaryFailures_PreserveAuthDenialAndSanitizedErrorResponses", "0"),
+        ]
+        self.assertEqual(386, len(self.full_names))
+        self.assertEqual(383, len([name for name in self.full_names if name not in identities]))
+        for identity in identities:
+            self.assertEqual(1, self.full_names.count(identity))
+        code, result = self.read()
+        self.assertEqual(0, code)
+        self.assertEqual([], result["errors"])
+        for identity in identities:
+            for mutation in ("missing", "duplicated", "wrong_class", "wrong_method", "old_case_substitution"):
+                with self.subTest(identity=identity[1], mutation=mutation):
+                    names = list(self.full_names)
+                    names.remove(identity)
+                    if mutation == "duplicated":
+                        names.extend([identity, (identity[0], identity[1], "1")])
+                    elif mutation == "wrong_class":
+                        names.append(("Legacy.Maliev.DocumentService.Tests.ForeignObservationClass", identity[1], "0"))
+                    elif mutation == "wrong_method":
+                        names.append((identity[0], "UnreviewedObservationReplacement", "0"))
+                    elif mutation == "old_case_substitution":
+                        old_case = next(name for name in self.full_names if name not in identities)
+                        names.append((old_case[0], old_case[1], "unreviewed-extra"))
+                    self.trx("full", "full-suite.trx", names)
+                    code, result = self.read()
+                    self.assertEqual(1, code)
+                    self.assertIn("Full suite differs from the exact 386 merged HTTP, raster, receipt and evidence cases",
+                                  result["errors"])
+
+    def test_each_private_request_observation_case_must_pass(self):
+        methods = (
+            "ProductionDiagnostic_RequiresDirectLoopbackSingleStrictNonceAndRetainsThrottle",
+            "ProductionHealth_UsesOneHostIdentityOnlyOnRegisteredGetEndpoints",
+            "ProductionOrdinaryFailures_PreserveAuthDenialAndSanitizedErrorResponses",
+        )
+        class_name = "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests"
+        for method in methods:
+            with self.subTest(method=method):
+                self.trx("full", "full-suite.trx", self.full_names)
+                path = self.root / "full" / "full-suite.trx"
+                tree = ET.parse(path)
+                test_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, ".".join((class_name, method, "0"))))
+                selected = [row for row in tree.findall(".//{*}UnitTestResult") if row.get("testId") == test_id]
+                self.assertEqual(1, len(selected))
+                selected[0].set("outcome", "Failed")
+                counters = tree.find(".//{*}Counters")
+                counters.set("passed", "385")
+                counters.set("failed", "1")
+                tree.write(path, encoding="utf-8")
+                code, result = self.read()
+                self.assertEqual(1, code)
+                self.assertIn("full TRX has empty or unsuccessful results", result["errors"])
 
     def test_missing_raw_report_fails_closed(self):
         (self.root / "full" / "coverage.cobertura.xml").unlink()
@@ -163,7 +223,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 383 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 386 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
