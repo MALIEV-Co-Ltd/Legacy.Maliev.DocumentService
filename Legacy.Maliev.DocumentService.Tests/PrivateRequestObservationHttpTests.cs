@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -229,7 +228,7 @@ public sealed class PrivateRequestObservationHttpTests
         {
             builder.UseEnvironment("Production");
             builder.UseSetting("CORS:AllowedOrigins", "https://localhost");
-            builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(new Dictionary<string, string?>
+            var settings = new Dictionary<string, string?>
             {
                 ["Jwt:Issuer"] = "https://document-observation.invalid",
                 ["Jwt:Audience"] = "document-observation-fixture",
@@ -239,7 +238,8 @@ public sealed class PrivateRequestObservationHttpTests
                 ["Observability:TracingEnabled"] = "false",
                 ["Observability:RuntimeMetricsEnabled"] = "false",
                 ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "",
-            }));
+            };
+            foreach (var setting in settings) builder.UseSetting(setting.Key, setting.Value);
             builder.ConfigureLogging(logging => logging.AddProvider(Records));
             builder.ConfigureTestServices(services =>
             {
