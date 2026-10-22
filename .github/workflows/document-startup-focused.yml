@@ -1,0 +1,98 @@
+name: Document startup boundary
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  startup-focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      MalievWorkspaceRoot: ${{ github.workspace }}/.dependencies
+      VSTestTestCaseFilter: FullyQualifiedName~DocumentStartupBoundaryTests
+      VSTestLogger: trx
+      VSTestResultsDirectory: ${{ github.workspace }}/startup-results
+      DocumentProvenanceCapture: 'false'
+    steps:
+      - name: Check out DocumentService
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned ServiceDefaults
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults
+          ref: b3e2881d079c675bcaa7bb23511bcaaffc789cce
+          path: .dependencies/Legacy.Maliev.ServiceDefaults
+          persist-credentials: false
+      - name: Check out pinned CompatibilityContracts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts
+          ref: 78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7
+          path: .dependencies/Legacy.Maliev.CompatibilityContracts
+          persist-credentials: false
+      - name: Build then validate only startup regressions
+        uses: MALIEV-Co-Ltd/Legacy.Maliev.Workflows/actions/dotnet-validate@e3a6093324a24968876782153286f52db8b29fd8
+        with:
+          solution: Legacy.Maliev.DocumentService.slnx
+          use-local-maliev-dependencies: 'true'
+      - name: Require all fifteen actual startup cases
+        run: |
+          python3 - <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          files = list(Path('startup-results').glob('*.trx'))
+          if len(files) != 1:
+              raise SystemExit('Expected one startup TRX')
+          root = ET.parse(files[0]).getroot()
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          definitions = root.findall('./t:TestDefinitions/t:UnitTest', ns)
+          results = root.findall('./t:Results/t:UnitTestResult', ns)
+          entries = root.findall('./t:TestEntries/t:TestEntry', ns)
+          expected = {
+              'ActualApiEntryPoint_FailsOnceWithPrivateMetadataAndNoPlaintextFallback': 2,
+              'EmbeddedNormalProgram_PreservesOriginalInitializationFailureAndCallerExitCode': 1,
+              'StreamingReader_EnforcesBoundWithoutTruncatingAssertions': 2,
+              'PartialStartUncertainty_RetainsExactHandleDirectoryAndOriginalFailure': 1,
+              'UnsettledReaders_PreventDisposalAndRemovalUntilBothActuallyFinish': 1,
+              'DirectoryCleanupFailure_PreservesPrimaryAndEveryCleanupFailureForRecovery': 1,
+              'ExecutableObservation_PresentModuleRecordsObservedIdentity': 1,
+              'ExecutableObservation_AbsentModuleRequiresVerifiedExit': 1,
+              'ExecutableObservation_AbsentLiveModuleFailsWithoutLaunchFallback': 1,
+              'ExecutableObservation_ExitQueryFailurePreservesCause': 1,
+              'ExecutableObservation_ModuleQueryFailurePreservesCause': 1,
+              'ExecutableObservation_ExitBetweenObservationsPreventsTerminationDecision': 1,
+              'ExecutableObservation_PrimaryPrecedesCleanupObservationFailure': 1,
+          }
+          methods = [definition.find('t:TestMethod', ns) for definition in definitions]
+          if len(definitions) != 15 or len(results) != 15 or len(entries) != 15:
+              raise SystemExit('Expected fifteen definitions, results and entries')
+          if any(method is None or method.get('className') != 'Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests' for method in methods):
+              raise SystemExit('Unexpected startup class')
+          if Counter(method.get('name') for method in methods) != Counter(expected):
+              raise SystemExit('Startup method inventory differs')
+          if any(result.get('outcome') != 'Passed' for result in results):
+              raise SystemExit('Startup case did not pass')
+          actual = {(result.get('testId'), result.get('executionId')) for result in results}
+          defined = {(definition.get('id'), definition.find('t:Execution', ns).get('id')) for definition in definitions}
+          entered = {(entry.get('testId'), entry.get('executionId')) for entry in entries}
+          if len(actual) != 15 or len({row[0] for row in actual}) != 15 or len({row[1] for row in actual}) != 15 or actual != defined or actual != entered:
+              raise SystemExit('Startup identity and execution joins differ')
+          print('Verified fifteen passing startup cases with native TRX identity joins')
+          PY
+      - name: Retain focused startup TRX
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: document-startup-${{ github.event.pull_request.head.sha || github.sha }}
+          path: startup-results/
+          if-no-files-found: error
+          retention-days: 14

@@ -673,5 +673,70 @@
     "className": "Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
     "method": "GatedImagePublish_UsesTheValidatedImmutableDependencyCommits",
     "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ActualApiEntryPoint_FailsOnceWithPrivateMetadataAndNoPlaintextFallback",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "EmbeddedNormalProgram_PreservesOriginalInitializationFailureAndCallerExitCode",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "StreamingReader_EnforcesBoundWithoutTruncatingAssertions",
+    "executions": 2
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "PartialStartUncertainty_RetainsExactHandleDirectoryAndOriginalFailure",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "UnsettledReaders_PreventDisposalAndRemovalUntilBothActuallyFinish",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "DirectoryCleanupFailure_PreservesPrimaryAndEveryCleanupFailureForRecovery",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_PresentModuleRecordsObservedIdentity",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_AbsentModuleRequiresVerifiedExit",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_AbsentLiveModuleFailsWithoutLaunchFallback",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_ExitQueryFailurePreservesCause",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_ModuleQueryFailurePreservesCause",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_ExitBetweenObservationsPreventsTerminationDecision",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
+    "method": "ExecutableObservation_PrimaryPrecedesCleanupObservationFailure",
+    "executions": 1
   }
 ]
