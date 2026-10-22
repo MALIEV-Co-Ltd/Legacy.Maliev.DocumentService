@@ -738,5 +738,30 @@
     "className": "Legacy.Maliev.DocumentService.Tests.Startup.DocumentStartupBoundaryTests",
     "method": "ExecutableObservation_PrimaryPrecedesCleanupObservationFailure",
     "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests",
+    "method": "LegacyAndCurrentLiveness_StayAnonymousAndNeverEvaluateDependencies",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests",
+    "method": "LegacyReadiness_PreservesUnhealthyStatusAndHidesPrivateDetails",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests",
+    "method": "LegacyReadiness_EvaluatesUntaggedChecksUnderCurrentStrongerPolicy",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests",
+    "method": "TrustedHttpEdge_ExactLegacyProbesRemainReachableForEveryUnprovenScheme",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests",
+    "method": "TrustedHttpEdge_NearHealthAndBusinessPathsRemainHttpsGatedBeforeAuthentication",
+    "executions": 1
   }
 ]
