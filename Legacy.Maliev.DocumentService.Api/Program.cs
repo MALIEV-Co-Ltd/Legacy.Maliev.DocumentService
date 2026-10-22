@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
+builder.AddPrivateRequestObservation("documents");
 builder.AddDefaultApiVersioning();
 builder.AddStandardCors();
 builder.AddJwtAuthentication();

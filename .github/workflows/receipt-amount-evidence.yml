@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults
-          ref: 8f4f5f27b226ffe406c4c79b1903742e8c2e7dd3
+          ref: c40a7f82cea347b949444dcd7fb730f2b8dc3c0e
           path: .dependencies/Legacy.Maliev.ServiceDefaults
           persist-credentials: false
       - name: Check out pinned CompatibilityContracts
@@ -75,6 +75,27 @@ jobs:
           done
       - name: Verify compiled contract surface and rejection controls
         run: python3 -B scripts/test-document-contract-controls.py receipt-evidence/application-provenance "$RUNNER_TEMP/contract-fixtures"
+      - name: Focused authenticated purchase-order arithmetic and currency regression
+        timeout-minutes: 5
+        run: |-
+          set -euo pipefail
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentPurchaseOrderTotalsHttpTests --logger 'trx;LogFileName=purchase-order.trx' --results-directory receipt-evidence/purchase-order-focus
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('receipt-evidence/purchase-order-focus/purchase-order.trx')
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          definitions = tree.findall('./t:TestDefinitions/t:UnitTest', ns)
+          results = tree.findall('./t:Results/t:UnitTestResult', ns)
+          if len(definitions) != 1 or len(results) != 1:
+              raise SystemExit('Expected exactly one purchase-order definition and result')
+          method = definitions[0].find('t:TestMethod', ns)
+          if (method is None or not definitions[0].get('id')
+                  or results[0].get('testId') != definitions[0].get('id')
+                  or method.get('className', '').split(',', 1)[0].strip() != 'Legacy.Maliev.DocumentService.Tests.DocumentPurchaseOrderTotalsHttpTests'
+                  or method.get('name') != 'PurchaseOrder_RecomputesMultipleLinesAndSevenPercentVatDespiteSuppliedSubtotals'
+                  or results[0].get('outcome') != 'Passed'):
+              raise SystemExit('Purchase-order evidence must prove the exact authenticated arithmetic regression')
+          PY
       - name: Focused actual helper and PDF tests
         run: >-
           dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj
@@ -87,6 +108,37 @@ jobs:
           --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false
           --logger 'trx;LogFileName=full-suite.trx' --results-directory receipt-evidence/full
           --collect 'XPlat Code Coverage'
+      - name: Verify packing-label causal receipt controls
+        run: python3 -B -m unittest discover -s scripts -p test_label_causal_evidence.py
+      - name: Focused current packing-label candidate
+        timeout-minutes: 5
+        run: |-
+          set -euo pipefail
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentOrderLabelLiteralHttpTests --logger 'trx;LogFileName=candidate.trx' --results-directory receipt-evidence/label-causal/candidate
+          python3 -B scripts/verify_label_causal_evidence.py candidate --checkout "$PWD" --candidate "$PWD" --candidate-sha "$DOCUMENT_SOURCE_SHA" --trx receipt-evidence/label-causal/candidate/candidate.trx --test-exit 0 --receipt receipt-evidence/label-causal/candidate/receipt.json
+      - name: Check out accepted packing-label production baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 35f66f4945ad35c40879b2f98fbdec1102bedc8b
+          path: .label-causal-baseline
+          persist-credentials: false
+      - name: Build and prove exact packing-label causal baseline
+        timeout-minutes: 10
+        run: |-
+          set -euo pipefail
+          candidate_root="$PWD"
+          evidence="$candidate_root/receipt-evidence/label-causal/baseline"
+          mkdir -p "$evidence"
+          cp "$candidate_root/Legacy.Maliev.DocumentService.Tests/DocumentOrderLabelLiteralHttpTests.cs" "$candidate_root/.label-causal-baseline/Legacy.Maliev.DocumentService.Tests/DocumentOrderLabelLiteralHttpTests.cs"
+          cd "$candidate_root/.label-causal-baseline"
+          dotnet restore Legacy.Maliev.DocumentService.slnx -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false 2>&1 | tee "$evidence/restore.log"
+          dotnet build Legacy.Maliev.DocumentService.slnx --configuration Release --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -warnaserror 2>&1 | tee "$evidence/build.log"
+          set +e
+          dotnet test Legacy.Maliev.DocumentService.Tests/Legacy.Maliev.DocumentService.Tests.csproj --configuration Release --no-build --no-restore -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false --filter FullyQualifiedName~DocumentOrderLabelLiteralHttpTests --logger 'trx;LogFileName=baseline.trx' --results-directory "$evidence" > "$evidence/test.log" 2>&1
+          test_exit=$?
+          set -e
+          cat "$evidence/test.log"
+          python3 -B "$candidate_root/scripts/verify_label_causal_evidence.py" baseline --checkout "$PWD" --candidate "$candidate_root" --candidate-sha "$DOCUMENT_SOURCE_SHA" --trx "$evidence/baseline.trx" --build-log "$evidence/build.log" --test-exit "$test_exit" --receipt "$evidence/receipt.json"
       - name: Record observed coverage and sanitized cases
         if: always()
         run: |-
@@ -96,7 +148,7 @@ jobs:
           python3 -B scripts/read-document-contract-applicability.py receipt-evidence
       - name: Preserve actual receipt evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
           path: |-

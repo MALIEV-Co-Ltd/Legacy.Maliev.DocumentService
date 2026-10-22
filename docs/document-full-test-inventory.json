@@ -230,6 +230,21 @@
     "executions": 1
   },
   {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOrderLabelLiteralHttpTests",
+    "method": "CallerLeadingBlankLine_ReachesActualPdfLayoutWithoutTrimming",
+    "executions": 7
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentOrderLabelLiteralHttpTests",
+    "method": "NullTextFields_RetainExistingBlankCellRendering",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.DocumentPurchaseOrderTotalsHttpTests",
+    "method": "PurchaseOrder_RecomputesMultipleLinesAndSevenPercentVatDespiteSuppliedSubtotals",
+    "executions": 1
+  },
+  {
     "className": "Legacy.Maliev.DocumentService.Tests.DocumentQuotationPreparerHttpTests",
     "method": "QuotationPreparerContacts_RenderInTheirOwnColumnAndOmitUnknownFields",
     "executions": 1
@@ -362,6 +377,21 @@
   {
     "className": "Legacy.Maliev.DocumentService.Tests.MonochromePrintContractTests",
     "method": "RepresentativeOutputs_ArePrintableAndContainRequiredAssets",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionDiagnostic_RequiresDirectLoopbackSingleStrictNonceAndRetainsThrottle",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionHealth_UsesOneHostIdentityOnlyOnRegisteredGetEndpoints",
+    "executions": 1
+  },
+  {
+    "className": "Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
+    "method": "ProductionOrdinaryFailures_PreserveAuthDenialAndSanitizedErrorResponses",
     "executions": 1
   },
   {
