@@ -159,6 +159,7 @@ public sealed class LegacyPdfHealthHttpTests
                 ["Jwt:PublicKey"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(signingKey.ExportSubjectPublicKeyInfoPem())),
                 ["Jwt:Issuer"] = "https://document-health-fixture.invalid",
                 ["Jwt:Audience"] = "document-health-fixture",
+                ["CORS:AllowedOrigins:0"] = "https://document-health-fixture.invalid",
             };
             foreach (var setting in settings) builder.UseSetting(setting.Key, setting.Value);
             builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(settings));
