@@ -1,6 +1,7 @@
 """Synthetic reader fixtures verify rejection and arithmetic, not renderer execution."""
 from pathlib import Path
 import json
+import hashlib
 import os
 import subprocess
 import sys
@@ -45,6 +46,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         inventory = json.loads((Path(__file__).resolve().parent.parent / "docs/document-full-test-inventory.json").read_text())
         self.full_names = [(row["className"], row["method"], str(index))
                            for row in inventory for index in range(row["executions"])]
+        self.retained_full_names = [name for name in self.full_names if name[0] != "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests"]
         self.trx("full", "full-suite.trx", self.full_names)
         self.coverage(application_lines=0)
 
@@ -132,8 +134,8 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         identities = self.startup_names()
         self.assertEqual(15, len(identities))
         self.assertEqual(13, len({identity[1] for identity in identities}))
-        self.assertEqual(401, len(self.full_names))
-        self.assertEqual(386, len([name for name in self.full_names if name[0] != identities[0][0]]))
+        self.assertEqual(401, len(self.retained_full_names))
+        self.assertEqual(386, len([name for name in self.retained_full_names if name[0] != identities[0][0]]))
         self.assertEqual(sorted(identities), sorted(name for name in self.full_names if name[0] == identities[0][0]))
         for identity in identities:
             self.assertEqual(1, self.full_names.count(identity))
@@ -163,7 +165,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                     self.trx("full", "full-suite.trx", names)
                     code, result = self.read()
                     self.assertEqual(1, code)
-                    self.assertIn("Full suite differs from the exact 401 merged HTTP, raster, receipt and evidence cases",
+                    self.assertIn("Full suite differs from the exact 406 merged HTTP, raster, receipt and evidence cases",
                                   result["errors"])
 
     def test_each_startup_case_must_pass_with_reconciled_failure_counters(self):
@@ -177,7 +179,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.assertEqual(1, len(selected))
                 selected[0].set("outcome", "Failed")
                 counters = tree.find(".//{*}Counters")
-                counters.set("passed", "400")
+                counters.set("passed", "405")
                 counters.set("failed", "1")
                 tree.write(path, encoding="utf-8")
                 code, result = self.read()
@@ -188,7 +190,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         identity = ("Legacy.Maliev.DocumentService.Tests.Workflows.WorkflowContractTests",
                     "BuildAndTest_RejectsPreviousUploadArtifactPin", "0")
         self.assertEqual(1, self.full_names.count(identity))
-        self.assertEqual(401, len(self.full_names))
+        self.assertEqual(401, len(self.retained_full_names))
         code, result = self.read()
         self.assertEqual(0, code)
         self.assertEqual([], result["errors"])
@@ -203,7 +205,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.trx("full", "full-suite.trx", names)
                 code, result = self.read()
                 self.assertEqual(1, code)
-                self.assertIn("Full suite differs from the exact 401 merged HTTP, raster, receipt and evidence cases",
+                self.assertIn("Full suite differs from the exact 406 merged HTTP, raster, receipt and evidence cases",
                               result["errors"])
 
     def test_private_request_observation_cases_are_additive_and_required_exactly_once(self):
@@ -215,8 +217,8 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
             ("Legacy.Maliev.DocumentService.Tests.PrivateRequestObservationHttpTests",
              "ProductionOrdinaryFailures_PreserveAuthDenialAndSanitizedErrorResponses", "0"),
         ]
-        self.assertEqual(401, len(self.full_names))
-        self.assertEqual(398, len([name for name in self.full_names if name not in identities]))
+        self.assertEqual(401, len(self.retained_full_names))
+        self.assertEqual(398, len([name for name in self.retained_full_names if name not in identities]))
         for identity in identities:
             self.assertEqual(1, self.full_names.count(identity))
         code, result = self.read()
@@ -239,7 +241,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                     self.trx("full", "full-suite.trx", names)
                     code, result = self.read()
                     self.assertEqual(1, code)
-                    self.assertIn("Full suite differs from the exact 401 merged HTTP, raster, receipt and evidence cases",
+                    self.assertIn("Full suite differs from the exact 406 merged HTTP, raster, receipt and evidence cases",
                                   result["errors"])
 
     def test_each_private_request_observation_case_must_pass(self):
@@ -259,7 +261,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
                 self.assertEqual(1, len(selected))
                 selected[0].set("outcome", "Failed")
                 counters = tree.find(".//{*}Counters")
-                counters.set("passed", "400")
+                counters.set("passed", "405")
                 counters.set("failed", "1")
                 tree.write(path, encoding="utf-8")
                 code, result = self.read()
@@ -299,7 +301,7 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.names)
         code, result = self.read()
         self.assertEqual(1, code)
-        self.assertIn("Full suite differs from the exact 401 merged HTTP, raster, receipt and evidence cases", result["errors"])
+        self.assertIn("Full suite differs from the exact 406 merged HTTP, raster, receipt and evidence cases", result["errors"])
         self.trx("full", "full-suite.trx", self.full_names)
         for name in ("executed", "failed", "notExecuted", "warning"):
             with self.subTest(counter=name):
@@ -429,6 +431,70 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.assertEqual(0, code)
         self.assertEqual([], result["errors"])
 
+
+    def health_names(self):
+        methods = (
+            "LegacyAndCurrentLiveness_StayAnonymousAndNeverEvaluateDependencies",
+            "LegacyReadiness_PreservesUnhealthyStatusAndHidesPrivateDetails",
+            "LegacyReadiness_EvaluatesUntaggedChecksUnderCurrentStrongerPolicy",
+            "TrustedHttpEdge_ExactLegacyProbesRemainReachableForEveryUnprovenScheme",
+            "TrustedHttpEdge_NearHealthAndBusinessPathsRemainHttpsGatedBeforeAuthentication",
+        )
+        return [("Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests", method, "0") for method in methods]
+
+    def test_legacy_health_inventory_retains_all401_with_exact_five_new_cases(self):
+        rows = json.loads((Path(__file__).resolve().parent.parent / "docs/document-full-test-inventory.json").read_text())
+        baseline = [row for row in rows if row["className"] != "Legacy.Maliev.DocumentService.Tests.LegacyPdfHealthHttpTests"]
+        canonical = json.dumps(baseline, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        self.assertEqual("bd110dac0199e2a7292ad58ff5e5399e7a8931b1b931e91800be547707dbb02a", hashlib.sha256(canonical).hexdigest())
+        self.assertEqual(401, sum(row["executions"] for row in baseline))
+        self.assertEqual(401, len(self.retained_full_names))
+        self.assertEqual(406, len(self.full_names))
+        self.assertEqual(sorted(self.health_names()), sorted(name for name in self.full_names if name not in self.retained_full_names))
+        code, result = self.read()
+        self.assertEqual(0, code)
+        self.assertEqual([], result["errors"])
+
+    def test_each_legacy_health_identity_is_required_without_old_case_substitution(self):
+        for identity in self.health_names():
+            for mutation in ("missing", "extra", "duplicated", "wrong_class", "wrong_method", "old_case_substitution"):
+                with self.subTest(identity=identity[1], mutation=mutation):
+                    names = list(self.full_names)
+                    if mutation == "extra":
+                        names.append((identity[0], "UnreviewedHealthExtra", "0"))
+                    elif mutation == "duplicated":
+                        names.append(identity)
+                    else:
+                        names.remove(identity)
+                        if mutation == "wrong_class":
+                            names.append(("Legacy.Maliev.DocumentService.Tests.ForeignHealthClass", identity[1], "0"))
+                        elif mutation == "wrong_method":
+                            names.append((identity[0], "UnreviewedHealthReplacement", "0"))
+                        elif mutation == "old_case_substitution":
+                            previous = self.retained_full_names[0]
+                            names.append((previous[0], previous[1], "unreviewed-extra"))
+                    self.trx("full", "full-suite.trx", names)
+                    code, result = self.read()
+                    self.assertEqual(1, code)
+                    self.assertIn("Full suite differs from the exact 406 merged HTTP, raster, receipt and evidence cases", result["errors"])
+
+    def test_each_legacy_health_case_must_pass_with_reconciled_failure_counters(self):
+        for identity in self.health_names():
+            with self.subTest(method=identity[1]):
+                self.trx("full", "full-suite.trx", self.full_names)
+                path = self.root / "full" / "full-suite.trx"
+                tree = ET.parse(path)
+                test_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, ".".join(identity)))
+                selected = [row for row in tree.findall(".//{*}UnitTestResult") if row.get("testId") == test_id]
+                self.assertEqual(1, len(selected))
+                selected[0].set("outcome", "Failed")
+                counters = tree.find(".//{*}Counters")
+                counters.set("passed", "405")
+                counters.set("failed", "1")
+                tree.write(path, encoding="utf-8")
+                code, result = self.read()
+                self.assertEqual(1, code)
+                self.assertIn("full TRX has empty or unsuccessful results", result["errors"])
 
 if __name__ == "__main__":
     unittest.main()

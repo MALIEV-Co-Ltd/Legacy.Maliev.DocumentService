@@ -80,7 +80,9 @@ internal static class DocumentHostTransportPolicy
             context.Request.Headers.Remove(OriginalSchemeHeader);
             var probe = context.Request.Path.Equals("/documents/liveness", StringComparison.OrdinalIgnoreCase)
                 || context.Request.Path.Equals("/documents/readiness", StringComparison.OrdinalIgnoreCase)
-                || context.Request.Path.Equals("/documents/aspire-liveness", StringComparison.OrdinalIgnoreCase);
+                || context.Request.Path.Equals("/documents/aspire-liveness", StringComparison.OrdinalIgnoreCase)
+                || context.Request.Path.Equals("/pdfs/liveness", StringComparison.OrdinalIgnoreCase)
+                || context.Request.Path.Equals("/pdfs/readiness", StringComparison.OrdinalIgnoreCase);
             if (context.Items[TrustedEdgeKey] is true && !probe
                 && (context.Items[ValidEdgeSchemeKey] is not true || !accepted || !context.Request.IsHttps))
             {
