@@ -13,9 +13,13 @@ public sealed class WorkflowContractTests
 
     private static void BuildAndTest_RejectsPreviousDownloadArtifactPin()
     {
-        var previousPin = Workflow.Replace("actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093", StringComparison.Ordinal);
+        var previousPin = Workflow.Replace("actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333", "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093", StringComparison.Ordinal);
         Assert.NotEqual(Workflow, previousPin);
         Assert.Throws<InvalidOperationException>(() => WorkflowContractValidator.Validate(previousPin));
+
+        var priorReleasePin = Workflow.Replace("actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333", "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", StringComparison.Ordinal);
+        Assert.NotEqual(Workflow, priorReleasePin);
+        Assert.Throws<InvalidOperationException>(() => WorkflowContractValidator.Validate(priorReleasePin));
     }
 
     [Fact]
@@ -370,7 +374,7 @@ internal static partial class WorkflowContractValidator
 
         RequireScalarValue(environment, "DOCUMENT_SOURCE_SHA", "${{ github.event.pull_request.head.sha || github.sha }}");
         ValidateStep(steps.Children[4],
-            "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+            "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["name"] = "receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}",
