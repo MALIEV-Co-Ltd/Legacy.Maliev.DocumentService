@@ -50,7 +50,11 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.trx("full", "full-suite.trx", self.full_names)
         self.coverage(application_lines=0)
 
-    def trx(self, lane, filename, names, failed=False):
+    def trx(self, lane, filename, names, failed=False, include_runtime=True):
+        names = list(names)
+        if lane == "full" and include_runtime:
+            names.append(("Legacy.Maliev.DocumentService.Tests.Startup.RuntimeCompatibilityIdentityTests",
+                          "Loaded_shared_frameworks_match_the_qualification_lane", "0"))
         namespace = "{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}"
         document = ET.Element(namespace + "TestRun")
         results = ET.SubElement(document, namespace + "Results")
@@ -103,6 +107,16 @@ class ReceiptEvidenceReaderTests(unittest.TestCase):
         self.assertFalse(application["meets_80_percent"])
         self.assertFalse(result["four_assembly_acceptance"])
         self.assertEqual([], result["exclusions"])
+
+    def test_runtime_identity_must_be_present_exactly_once(self):
+        runtime = ("Legacy.Maliev.DocumentService.Tests.Startup.RuntimeCompatibilityIdentityTests",
+                   "Loaded_shared_frameworks_match_the_qualification_lane", "1")
+        for names, include in ((self.full_names, False), (self.full_names + [runtime], True)):
+            with self.subTest(include_runtime=include):
+                self.trx("full", "full-suite.trx", names, include_runtime=include)
+                code, result = self.read()
+                self.assertNotEqual(0, code)
+                self.assertIn("Full suite requires exactly one runtime compatibility identity case", result["errors"])
 
     def test_nonempty_four_assembly_coverage_is_reconciled(self):
         self.coverage(application_lines=10)

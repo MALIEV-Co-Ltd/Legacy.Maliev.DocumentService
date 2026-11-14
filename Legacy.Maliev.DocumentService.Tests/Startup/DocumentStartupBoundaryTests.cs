@@ -59,6 +59,19 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
             process.StartInfo.Environment.Clear();
             if (systemRoot is not null) process.StartInfo.Environment["SystemRoot"] = systemRoot;
             process.StartInfo.Environment["DOTNET_ROOT"] = Path.GetDirectoryName(host)!;
+            var requireRuntime11 = Environment.GetEnvironmentVariable("DOCUMENT_REQUIRED_RUNTIME_MAJOR") == "11";
+            var runtimeReceipt = Path.Combine(owned, "runtime-identity.json");
+            if (requireRuntime11)
+            {
+                process.StartInfo.Environment["DOTNET_ROLL_FORWARD"] = "LatestMajor";
+                process.StartInfo.Environment["DOTNET_STARTUP_HOOKS"] = testAssembly;
+                process.StartInfo.Environment["DOCUMENT_RUNTIME_RECEIPT"] = runtimeReceipt;
+                var run = Environment.GetEnvironmentVariable("GITHUB_RUN_ID");
+                var attempt = Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT");
+                Assert.Matches("^[1-9][0-9]*$", run ?? "");
+                Assert.Matches("^[1-9][0-9]*$", attempt ?? "");
+                process.StartInfo.Environment["DOCUMENT_RUNTIME_RUN"] = run + ":" + attempt;
+            }
             process.StartInfo.Environment["DOTNET_ENVIRONMENT"] = "Production";
             process.StartInfo.Environment["ASPNETCORE_ENVIRONMENT"] = "Production";
             foreach (var variable in new[] { "HOME", "USERPROFILE", "TEMP", "TMP", "TMPDIR" })
@@ -78,6 +91,32 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
             custody.Pid = process.Id;
             custody.Birth = process.StartTime.ToUniversalTime();
             ObserveOwnedExecutable(custody);
+            if (requireRuntime11)
+            {
+                await DocumentRuntimeProcessIdentity.AwaitReceiptAsync(
+                    () => File.Exists(runtimeReceipt), () => process.HasExited, custody.Readers.Token);
+                var parentStartTicks = DocumentRuntimeProcessIdentity.ParseStartTicks(
+                    await File.ReadAllTextAsync($"/proc/{process.Id}/stat", custody.Readers.Token));
+                using var runtimeIdentity = JsonDocument.Parse(await File.ReadAllTextAsync(runtimeReceipt, custody.Readers.Token));
+                var observed = runtimeIdentity.RootElement;
+                Assert.Equal(process.Id, observed.GetProperty("pid").GetInt32());
+                Assert.Equal(parentStartTicks, observed.GetProperty("startTicks").GetUInt64());
+                Assert.Equal(process.StartInfo.Environment["DOCUMENT_RUNTIME_RUN"], observed.GetProperty("run").GetString());
+                Assert.Equal(testAssembly, observed.GetProperty("hookPath").GetString());
+                Assert.Equal(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(await File.ReadAllBytesAsync(testAssembly, custody.Readers.Token))),
+                    observed.GetProperty("hookSha256").GetString());
+                Assert.Equal(11, observed.GetProperty("coreMajor").GetInt32());
+                Assert.Equal(11, observed.GetProperty("aspNetMajor").GetInt32());
+                Assert.Equal(typeof(Microsoft.AspNetCore.Builder.WebApplication).Assembly.Location,
+                    observed.GetProperty("aspNetPath").GetString());
+                Assert.Equal(typeof(object).Assembly.Location, observed.GetProperty("corePath").GetString());
+                Assert.False(process.HasExited, "Runtime identity child exited during inspection.");
+                var ackPending = runtimeReceipt + ".ack.pending";
+                await using (var ackFile = new FileStream(ackPending, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                await using (var writer = new StreamWriter(ackFile))
+                    await writer.WriteAsync($"{process.StartInfo.Environment["DOCUMENT_RUNTIME_RUN"]}|{process.Id}|{parentStartTicks}");
+                File.Move(ackPending, runtimeReceipt + ".ack");
+            }
             await process.WaitForExitAsync(custody.Readers.Token);
             var publicOutput = await custody.Stdout;
             var privateOutput = await custody.Stderr;
@@ -208,6 +247,18 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
         }
         Assert.True(custody.Released);
         Assert.False(RetainedStartupChildren.ContainsKey(custody.Id));
+
+        var cancelledCustody = ControlCustody();
+        try
+        {
+            using var cancelled = new CancellationTokenSource();
+            cancelled.Cancel();
+            await DocumentRuntimeProcessIdentity.AwaitReceiptAsync(() => false, () => false, cancelled.Token);
+        }
+        catch (OperationCanceledException exception) { cancelledCustody.Primary = exception; }
+        finally { await SettleStartupCustodyAsync(cancelledCustody); }
+        Assert.True(cancelledCustody.Released);
+        Assert.IsAssignableFrom<OperationCanceledException>(cancelledCustody.FailureForCaller());
     }
 
     [Fact]
