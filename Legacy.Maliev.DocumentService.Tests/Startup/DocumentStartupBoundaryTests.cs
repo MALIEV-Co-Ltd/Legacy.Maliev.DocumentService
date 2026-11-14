@@ -59,6 +59,19 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
             process.StartInfo.Environment.Clear();
             if (systemRoot is not null) process.StartInfo.Environment["SystemRoot"] = systemRoot;
             process.StartInfo.Environment["DOTNET_ROOT"] = Path.GetDirectoryName(host)!;
+            var requireRuntime11 = Environment.GetEnvironmentVariable("DOCUMENT_REQUIRED_RUNTIME_MAJOR") == "11";
+            var runtimeReceipt = Path.Combine(owned, "runtime-identity.json");
+            if (requireRuntime11)
+            {
+                process.StartInfo.Environment["DOTNET_ROLL_FORWARD"] = "Major";
+                process.StartInfo.Environment["DOTNET_STARTUP_HOOKS"] = testAssembly;
+                process.StartInfo.Environment["DOCUMENT_RUNTIME_RECEIPT"] = runtimeReceipt;
+                var run = Environment.GetEnvironmentVariable("GITHUB_RUN_ID");
+                var attempt = Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT");
+                Assert.Matches("^[1-9][0-9]*$", run ?? "");
+                Assert.Matches("^[1-9][0-9]*$", attempt ?? "");
+                process.StartInfo.Environment["DOCUMENT_RUNTIME_RUN"] = run + ":" + attempt;
+            }
             process.StartInfo.Environment["DOTNET_ENVIRONMENT"] = "Production";
             process.StartInfo.Environment["ASPNETCORE_ENVIRONMENT"] = "Production";
             foreach (var variable in new[] { "HOME", "USERPROFILE", "TEMP", "TMP", "TMPDIR" })
@@ -79,6 +92,22 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
             custody.Birth = process.StartTime.ToUniversalTime();
             ObserveOwnedExecutable(custody);
             await process.WaitForExitAsync(custody.Readers.Token);
+            if (requireRuntime11)
+            {
+                using var runtimeIdentity = JsonDocument.Parse(await File.ReadAllTextAsync(runtimeReceipt, custody.Readers.Token));
+                var observed = runtimeIdentity.RootElement;
+                Assert.Equal(process.Id, observed.GetProperty("pid").GetInt32());
+                Assert.Equal(custody.Birth!.Value.Ticks, observed.GetProperty("birthUtcTicks").GetInt64());
+                Assert.Equal(process.StartInfo.Environment["DOCUMENT_RUNTIME_RUN"], observed.GetProperty("run").GetString());
+                Assert.Equal(testAssembly, observed.GetProperty("hookPath").GetString());
+                Assert.Equal(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(await File.ReadAllBytesAsync(testAssembly, custody.Readers.Token))),
+                    observed.GetProperty("hookSha256").GetString());
+                Assert.Equal(11, observed.GetProperty("coreMajor").GetInt32());
+                Assert.Equal(11, observed.GetProperty("aspNetMajor").GetInt32());
+                Assert.Equal(typeof(Microsoft.AspNetCore.Builder.WebApplication).Assembly.Location,
+                    observed.GetProperty("aspNetPath").GetString());
+                Assert.Equal(typeof(object).Assembly.Location, observed.GetProperty("corePath").GetString());
+            }
             var publicOutput = await custody.Stdout;
             var privateOutput = await custody.Stderr;
             Assert.Equal(1, process.ExitCode);
