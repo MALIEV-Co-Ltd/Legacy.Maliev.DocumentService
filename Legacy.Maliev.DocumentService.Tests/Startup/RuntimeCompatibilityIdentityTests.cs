@@ -23,5 +23,34 @@ public sealed class RuntimeCompatibilityIdentityTests
 
     /// <summary>Exercises the identity check in the ordinary full test suite.</summary>
     [Fact]
-    public void Loaded_shared_frameworks_match_the_qualification_lane() => RequireQualifiedRuntimeWhenRequested();
+    public async Task Loaded_shared_frameworks_match_the_qualification_lane()
+    {
+        RequireQualifiedRuntimeWhenRequested();
+        var fields = string.Join(" ", Enumerable.Repeat("0", 18));
+        Assert.Equal(456UL, DocumentRuntimeProcessIdentity.ParseStartTicks($"123 (name with ) bracket) S {fields} 456"));
+        Assert.Throws<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.ParseStartTicks("malformed"));
+        Assert.Throws<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.ParseStartTicks($"123 (name) S {fields} nope"));
+        Assert.Throws<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.ParseStartTicks($"123 (name) S {fields} 0"));
+        DocumentRuntimeProcessIdentity.RequireAcknowledgement(() => "run|123|456", "run|123|456", TimeSpan.FromSeconds(1));
+        Assert.Throws<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.RequireAcknowledgement(
+            () => "wrong", "run|123|456", TimeSpan.FromSeconds(1)));
+        var readCalled = false;
+        Assert.Throws<TimeoutException>(() => DocumentRuntimeProcessIdentity.RequireAcknowledgement(
+            () => { readCalled = true; return "run|123|456"; }, "run|123|456", TimeSpan.Zero));
+        Assert.False(readCalled);
+        var times = new Queue<TimeSpan>([TimeSpan.Zero, TimeSpan.FromTicks(1)]);
+        Assert.Throws<TimeoutException>(() => DocumentRuntimeProcessIdentity.RequireAcknowledgement(
+            () => "run|123|456", "run|123|456", TimeSpan.FromTicks(1), () => times.Dequeue()));
+        Assert.Throws<TimeoutException>(() => DocumentRuntimeProcessIdentity.RequireAcknowledgement(
+            () => null, "run|123|456", TimeSpan.Zero));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.AwaitReceiptAsync(
+            () => false, () => true, CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => DocumentRuntimeProcessIdentity.AwaitReceiptAsync(
+            () => true, () => true, CancellationToken.None));
+        await DocumentRuntimeProcessIdentity.AwaitReceiptAsync(() => true, () => false, CancellationToken.None);
+        using var cancelled = new CancellationTokenSource();
+        cancelled.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => DocumentRuntimeProcessIdentity.AwaitReceiptAsync(
+            () => false, () => false, cancelled.Token));
+    }
 }

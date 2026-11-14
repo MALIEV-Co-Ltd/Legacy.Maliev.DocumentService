@@ -73,9 +73,20 @@ def main():
     print(f'Admitted {sys.argv[1]}: conservative remaining={remaining}s')
 
 
+def safe_failure(error):
+    allowed = {'metadata status', 'stale or skewed server clock', 'oversized metadata',
+               'unknown phase', 'invalid run identity', 'unexpected job identity',
+               'run attempt mismatch', 'incomplete job inventory',
+               'current job not uniquely identified', 'uncertain run/job timing',
+               'insufficient reserve', 'missing phase', 'unexpected repository'}
+    if type(error) is ValueError and str(error) in allowed:
+        return str(error)
+    return type(error).__name__
+
+
 if __name__ == '__main__':
     try:
         main()
     except Exception as error:
-        print(f'Document image time admission refused: {type(error).__name__}', file=sys.stderr)
+        print(f'Document image time admission refused: {safe_failure(error)}', file=sys.stderr)
         sys.exit(1)

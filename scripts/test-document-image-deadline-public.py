@@ -28,6 +28,12 @@ class Response:
     def read(self, size): return self.body[:size]
 
 class AdmissionTests(unittest.TestCase):
+    def test_failure_diagnostics_allow_only_known_static_reasons(self):
+        self.assertEqual('stale or skewed server clock', deadline.safe_failure(ValueError('stale or skewed server clock')))
+        self.assertEqual('current job not uniquely identified', deadline.safe_failure(ValueError('current job not uniquely identified')))
+        self.assertEqual('ValueError', deadline.safe_failure(ValueError('private runtime details')))
+        self.assertEqual('TimeoutError', deadline.safe_failure(TimeoutError('private runtime details')))
+
     def fetch(self, value):
         with patch.object(deadline.dt, 'datetime', FrozenDateTime), patch.object(deadline.urllib.request, 'urlopen', side_effect=value if isinstance(value, Exception) else None, return_value=None if isinstance(value, Exception) else value):
             return deadline.fetch('https://example.invalid')
