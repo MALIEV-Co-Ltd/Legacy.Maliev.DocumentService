@@ -17,18 +17,18 @@ public static class StartupHook
         var core = typeof(object).Assembly;
         var aspNet = typeof(Microsoft.AspNetCore.Builder.WebApplication).Assembly;
         using (var file = new FileStream(destination + ".pending", FileMode.CreateNew, FileAccess.Write, FileShare.None))
-        JsonSerializer.Serialize(file, new
-        {
-            pid = Environment.ProcessId,
-            startTicks,
-            run,
-            hookPath,
-            hookSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(hookPath))),
-            coreMajor = Environment.Version.Major,
-            aspNetMajor = aspNet.GetName().Version?.Major,
-            corePath = core.Location,
-            aspNetPath = aspNet.Location,
-        });
+            JsonSerializer.Serialize(file, new
+            {
+                pid = Environment.ProcessId,
+                startTicks,
+                run,
+                hookPath,
+                hookSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(hookPath))),
+                coreMajor = Environment.Version.Major,
+                aspNetMajor = aspNet.GetName().Version?.Major,
+                corePath = core.Location,
+                aspNetPath = aspNet.Location,
+            });
         File.Move(destination + ".pending", destination);
         var acknowledgement = destination + ".ack";
         var expected = $"{run}|{Environment.ProcessId}|{startTicks}";

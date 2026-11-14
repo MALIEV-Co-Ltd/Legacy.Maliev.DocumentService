@@ -138,7 +138,7 @@ jobs:
             --env ASPNETCORE_URLS=http://127.0.0.1:8080 \
             --env Cache__RedisEnabled=false --env OTEL_EXPORTER_OTLP_ENDPOINT= \
             --env Observability__TracingEnabled=false --env Observability__RuntimeMetricsEnabled=false \
-            --env HOME=/tmp \
+            --env HOME=/tmp --env CORS__AllowedOrigins__0=https://document-startup.example.test \
             --cidfile "$cidfile" "$iid" > "$RUNNER_TEMP/document-startup-create-output"
           cid="$(cat "$cidfile")"
           [[ "$cid" =~ ^[0-9a-f]{64}$ ]]
@@ -153,7 +153,7 @@ jobs:
           expected_env = {'DOTNET_ROLL_FORWARD': 'Major', 'ASPNETCORE_ENVIRONMENT': 'Testing', 'ASPNETCORE_URLS': 'http://127.0.0.1:8080',
                           'Cache__RedisEnabled': 'false', 'OTEL_EXPORTER_OTLP_ENDPOINT': '',
                           'Observability__TracingEnabled': 'false', 'Observability__RuntimeMetricsEnabled': 'false',
-                          'HOME': '/tmp'}
+                          'HOME': '/tmp', 'CORS__AllowedOrigins__0': 'https://document-startup.example.test'}
           ok = (c['Id'] == os.environ['CID'] and c['Image'] == os.environ['IID']
                 and c['Name'] == '/' + os.environ['OWNER'] and labels.get('io.maliev.owner') == os.environ['OWNER']
                 and h['NetworkMode'] == 'none' and h['ReadonlyRootfs'] is True

@@ -63,7 +63,7 @@ public sealed class DocumentStartupBoundaryTests(ITestOutputHelper output)
             var runtimeReceipt = Path.Combine(owned, "runtime-identity.json");
             if (requireRuntime11)
             {
-                process.StartInfo.Environment["DOTNET_ROLL_FORWARD"] = "Major";
+                process.StartInfo.Environment["DOTNET_ROLL_FORWARD"] = "LatestMajor";
                 process.StartInfo.Environment["DOTNET_STARTUP_HOOKS"] = testAssembly;
                 process.StartInfo.Environment["DOCUMENT_RUNTIME_RECEIPT"] = runtimeReceipt;
                 var run = Environment.GetEnvironmentVariable("GITHUB_RUN_ID");
