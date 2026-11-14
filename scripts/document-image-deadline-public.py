@@ -6,13 +6,15 @@ import os
 import re
 import sys
 import urllib.request
+import uuid
 
 ROOT = 'https://api.github.com/repos/MALIEV-Co-Ltd/Legacy.Maliev.DocumentService/actions/runs/'
 LIMIT = 262144
 
 
 def fetch(url):
-    request = urllib.request.Request(url, headers={'Cache-Control': 'no-cache',
+    separator = '&' if '?' in url else '?'
+    request = urllib.request.Request(f'{url}{separator}document_admission_nonce={uuid.uuid4().hex}', headers={'Cache-Control': 'no-cache',
         'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28',
         'User-Agent': 'document-image-admission'})
     with urllib.request.urlopen(request, timeout=10) as response:
@@ -21,6 +23,8 @@ def fetch(url):
         date = email.utils.parsedate_to_datetime(response.headers['Date']).astimezone(dt.timezone.utc)
         now = dt.datetime.now(dt.timezone.utc)
         if abs((now - date).total_seconds()) > 30:
+            delta = int((now - date).total_seconds())
+            print(f'Document server date offset seconds: {max(-86400, min(86400, delta))}', file=sys.stderr)
             raise ValueError('stale or skewed server clock')
         body = response.read(LIMIT + 1)
         if len(body) > LIMIT:

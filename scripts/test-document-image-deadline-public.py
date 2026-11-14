@@ -28,6 +28,26 @@ class Response:
     def read(self, size): return self.body[:size]
 
 class AdmissionTests(unittest.TestCase):
+    def test_cache_nonce_is_unique_and_preserves_query(self):
+        observed = []
+        def capture(request, timeout):
+            observed.append((request.full_url, timeout, dict(request.header_items())))
+            return Response()
+        with patch.object(deadline.dt, 'datetime', FrozenDateTime), patch.object(deadline.urllib.request, 'urlopen', side_effect=capture):
+            deadline.fetch('https://example.invalid/run')
+            deadline.fetch('https://example.invalid/jobs?per_page=100')
+        self.assertRegex(observed[0][0], r'^https://example[.]invalid/run\?document_admission_nonce=[0-9a-f]{32}$')
+        self.assertRegex(observed[1][0], r'^https://example[.]invalid/jobs\?per_page=100&document_admission_nonce=[0-9a-f]{32}$')
+        self.assertNotEqual(observed[0][0].split('=')[-1], observed[1][0].split('=')[-1])
+        self.assertTrue(all(timeout == 10 and 'Authorization' not in headers for _, timeout, headers in observed))
+
+    def test_stale_date_reports_only_bounded_offset_and_refuses(self):
+        from contextlib import redirect_stderr
+        output = io.StringIO()
+        with redirect_stderr(output), self.assertRaises(ValueError):
+            self.fetch(Response(NOW - dt.timedelta(days=2)))
+        self.assertEqual('Document server date offset seconds: 86400\n', output.getvalue())
+
     def test_failure_diagnostics_allow_only_known_static_reasons(self):
         self.assertEqual('stale or skewed server clock', deadline.safe_failure(ValueError('stale or skewed server clock')))
         self.assertEqual('current job not uniquely identified', deadline.safe_failure(ValueError('current job not uniquely identified')))
