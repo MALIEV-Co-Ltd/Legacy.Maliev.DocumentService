@@ -116,8 +116,14 @@ if focus_inventory - full_inventory:
     errors.append("Full suite does not retain every focused execution-definition identity")
 expected_full = Counter({(row["className"], row["method"]): row["executions"]
                          for row in json.loads((repository / "docs/document-full-test-inventory.json").read_text())})
-if Counter((case["class"], case["method"]) for case in cases.get("full", [])) != expected_full:
+runtime_identity = ("Legacy.Maliev.DocumentService.Tests.Startup.RuntimeCompatibilityIdentityTests",
+                    "Loaded_shared_frameworks_match_the_qualification_lane")
+actual_full = Counter((case["class"], case["method"]) for case in cases.get("full", []))
+runtime_count = actual_full.pop(runtime_identity, 0)
+if actual_full != expected_full:
     errors.append(f"Full suite differs from the exact {sum(expected_full.values())} merged HTTP, raster, receipt and evidence cases")
+if runtime_count != 1:
+    errors.append("Full suite requires exactly one runtime compatibility identity case")
 
 reports = list((root / "full").rglob("coverage.cobertura.xml"))
 digests = {hashlib.sha256(report.read_bytes()).hexdigest() for report in reports}
