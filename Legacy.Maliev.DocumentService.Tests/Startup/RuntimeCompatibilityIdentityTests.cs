@@ -9,7 +9,7 @@ public sealed class RuntimeCompatibilityIdentityTests
 {
     /// <summary>Rejects a misconfigured qualification host before filtered tests execute.</summary>
     [ModuleInitializer]
-    public static void RequireQualifiedRuntimeWhenRequested()
+    internal static void RequireQualifiedRuntimeWhenRequested()
     {
         var required = Environment.GetEnvironmentVariable("DOCUMENT_REQUIRED_RUNTIME_MAJOR");
         if (required is null) return;
