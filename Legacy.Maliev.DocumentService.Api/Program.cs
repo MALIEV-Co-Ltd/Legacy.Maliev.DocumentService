@@ -1,4 +1,5 @@
 using Legacy.Maliev.DocumentService.Api.Http;
+using Legacy.Maliev.DocumentService.Api.Serialization;
 using Legacy.Maliev.DocumentService.Application;
 using Legacy.Maliev.DocumentService.Rendering;
 using Maliev.Aspire.ServiceDefaults;
@@ -53,6 +54,7 @@ try
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
         options.JsonSerializerOptions.DictionaryKeyPolicy = null;
     });
+    builder.Services.ConfigureOptions<OrderLabelOriginalBodyMvcOptionsSetup>();
     // OpenAPI schema generation uses Http.Json options rather than MVC JsonOptions.
     // Keep its public field names and null policy aligned with the legacy wire contract.
     builder.Services.ConfigureHttpJsonOptions(options =>
