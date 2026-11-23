@@ -35,7 +35,7 @@ def capture(destination):
     destination.mkdir(parents=True)
     files = {}
     for name in (ASSEMBLY + '.dll', ASSEMBLY + '.pdb'):
-        source = project / 'bin/Release/net10.0' / name
+        source = project / 'bin/Release/net11.0' / name
         assert source.is_file() and source.stat().st_size > 0
         shutil.copyfile(source, destination / name)
         files[name] = sha(destination / name)

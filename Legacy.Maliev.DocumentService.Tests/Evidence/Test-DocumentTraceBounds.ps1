@@ -22,6 +22,17 @@ function Test-DocumentTraceBounds {
     & $reject {ConvertFrom-DocumentProducerDiagnosticLines ([Text.Encoding]::UTF8.GetBytes([string]::new('x',65537)+"`n"))} 'Producer diagnostic line bound exceeded';$passed++
     & $reject {ConvertFrom-DocumentProducerDiagnosticLines ([Text.Encoding]::UTF8.GetBytes($session+[string]::new('x',32769-$session.Length)+"`n"))} 'Producer diagnostic line bound exceeded';$passed++
     & $reject {ConvertFrom-DocumentProducerDiagnosticLines ([byte[]]::new(8MB+1))} 'Producer diagnostic input exceeds byte bound';$passed++
-    if($passed -ne 10){throw 'Trace bound control count mismatch.'}
-    Write-Host '[document-trace-bounds] 10 synthetic controls passed; no runtime acceptance inferred.'
+    $command={param([string[]]$Arguments) [Text.Encoding]::UTF8.GetBytes(($Arguments -join [char]0)+[char]0)}
+    $sdk='/synthetic/dotnet/sdk/11.0.100'
+    $valid=@('/synthetic/dotnet/dotnet','exec','--runtimeconfig',"$sdk/datacollector.runtimeconfig.json",'--depsfile',"$sdk/datacollector.deps.json","$sdk/datacollector.dll",'--port','1234')
+    $scope=ConvertFrom-DocumentProducerCommand (& $command $valid) '/synthetic/dotnet'
+    & $check ($scope.sdkVersion -ceq '11.0.100' -and $scope.entryPoint -ceq "$sdk/datacollector.dll" -and $scope.launcherOptions.runtimeConfig -and $scope.launcherOptions.depsFile);$passed++
+    $old=@('/synthetic/dotnet/dotnet','exec','/synthetic/dotnet/sdk/10.0.401/datacollector.dll')
+    & $reject {ConvertFrom-DocumentProducerCommand (& $command $old) '/synthetic/dotnet'} 'Unexpected producer SDK entry point';$passed++
+    $reversed=@('/synthetic/dotnet/dotnet','exec','--depsfile',"$sdk/datacollector.deps.json",'--runtimeconfig',"$sdk/datacollector.runtimeconfig.json","$sdk/datacollector.dll")
+    & $reject {ConvertFrom-DocumentProducerCommand (& $command $reversed) '/synthetic/dotnet'} 'Unexpected producer launcher options';$passed++
+    $outside=@('/synthetic/dotnet/dotnet','exec','--runtimeconfig','/tmp/datacollector.runtimeconfig.json',"$sdk/datacollector.dll")
+    & $reject {ConvertFrom-DocumentProducerCommand (& $command $outside) '/synthetic/dotnet'} 'Unexpected producer launcher options';$passed++
+    if($passed -ne 14){throw 'Trace bound control count mismatch.'}
+    Write-Host '[document-trace-bounds] 14 synthetic controls passed; no runtime acceptance inferred.'
 }

@@ -25,20 +25,22 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults
-          ref: b3e2881d079c675bcaa7bb23511bcaaffc789cce
+          ref: 173d63218d9142b34075bca87f5c6d933bcbdfb6
           path: .dependencies/Legacy.Maliev.ServiceDefaults
           persist-credentials: false
       - name: Check out pinned CompatibilityContracts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts
-          ref: 78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7
+          ref: fe17b8cea8ace3eef5434f8b29c9038f5c975613
           path: .dependencies/Legacy.Maliev.CompatibilityContracts
           persist-credentials: false
       - name: Set up .NET
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: |-
+            10.0.404
+            11.0.100
       - name: Verify candidate source identity
         run: test "$(git rev-parse HEAD)" = "$DOCUMENT_SOURCE_SHA"
       - name: Restore
@@ -49,9 +51,9 @@ jobs:
         run: |-
           mkdir -p receipt-evidence/openapi-compile
           dotnet msbuild Legacy.Maliev.DocumentService.Api/Legacy.Maliev.DocumentService.Api.csproj -target:ResolveReferences,GenerateAdditionalXmlFilesForOpenApi -p:Configuration=Release -p:UseLocalMalievDependencies=true -p:GITHUB_ACTIONS=false -getItem:AdditionalFiles,ReferencePath > receipt-evidence/openapi-compile/resolved-inputs.json
-          cp Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.xml receipt-evidence/openapi-compile/
-          cp Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.xml receipt-evidence/openapi-compile/
-          mapfile -t generated_sources < <(find Legacy.Maliev.DocumentService.Api/obj/Release/net10.0 -name OpenApiXmlCommentSupport.generated.cs)
+          cp Legacy.Maliev.DocumentService.Api/bin/Release/net11.0/Legacy.Maliev.DocumentService.Api.xml receipt-evidence/openapi-compile/
+          cp Legacy.Maliev.DocumentService.Domain/bin/Release/net11.0/Legacy.Maliev.DocumentService.Domain.xml receipt-evidence/openapi-compile/
+          mapfile -t generated_sources < <(find Legacy.Maliev.DocumentService.Api/obj/Release/net11.0 -name OpenApiXmlCommentSupport.generated.cs)
           test "${#generated_sources[@]}" = 1
           cp "${generated_sources[0]}" receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
           test -s receipt-evidence/openapi-compile/OpenApiXmlCommentSupport.generated.cs.source
@@ -62,7 +64,7 @@ jobs:
           for mutation in CONCRETE DEFAULT_METHOD STATIC_METHOD EXTRA_TYPE RESOURCE; do
             dotnet build scripts/fixtures/contract-surface/ContractSurface.Tests.csproj --configuration Release -warnaserror \
               -p:SurfaceMutation="$mutation" -p:SourceRevisionId="$DOCUMENT_SOURCE_SHA" \
-              -p:DomainAssemblyPath="$PWD/Legacy.Maliev.DocumentService.Domain/bin/Release/net10.0/Legacy.Maliev.DocumentService.Domain.dll" \
+              -p:DomainAssemblyPath="$PWD/Legacy.Maliev.DocumentService.Domain/bin/Release/net11.0/Legacy.Maliev.DocumentService.Domain.dll" \
               -p:BaseIntermediateOutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/obj/" \
               -p:OutputPath="$RUNNER_TEMP/contract-fixtures/$mutation/" -p:AppendTargetFrameworkToOutputPath=false
           done
@@ -153,8 +155,8 @@ jobs:
           name: receipt-amount-evidence-${{ env.DOCUMENT_SOURCE_SHA }}
           path: |-
             receipt-evidence
-            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-thai-amount-v1
-            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/questpdf/receipt-brand-pattern-v1
-            Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/TestResults/openapi-owned-xml
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net11.0/TestResults/questpdf/receipt-thai-amount-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net11.0/TestResults/questpdf/receipt-brand-pattern-v1
+            Legacy.Maliev.DocumentService.Tests/bin/Release/net11.0/TestResults/openapi-owned-xml
           if-no-files-found: error
           retention-days: 7

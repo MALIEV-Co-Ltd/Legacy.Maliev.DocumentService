@@ -141,7 +141,7 @@ $totalBytes = 0L
 $snapshots = @()
 foreach ($assembly in $assemblies) {
     foreach ($location in @('production','test-copy')) {
-        $directory = if ($location -eq 'production') { Join-Path $repository "$assembly/bin/Release/net10.0" } else { $testDirectory }
+        $directory = if ($location -eq 'production') { Join-Path $repository "$assembly/bin/Release/net11.0" } else { $testDirectory }
         foreach ($extension in @('dll','pdb')) {
             $path = Join-Path $directory "$assembly.$extension"
             Assert-Child $path $repository
@@ -163,8 +163,8 @@ $identity = Get-GitIdentity $repository
 if ($env:GITHUB_RUN_ID -notmatch '^\d+$' -or $env:GITHUB_RUN_ATTEMPT -notmatch '^\d+$') { throw 'Missing hosted run identity.' }
 $receipt = [ordered]@{ schemaVersion = 1; phase = $Phase; timestampUtc = [DateTime]::UtcNow.ToString('O'); candidate = $null; checkout = $identity; run = $env:GITHUB_RUN_ID; attempt = $env:GITHUB_RUN_ATTEMPT; testTarget = [IO.Path]::GetRelativePath($repository, $testDirectory); collectorRequest = $CollectorRequest; snapshots = $snapshots; application = $application; dependencyPins = @(); collectorFiles = @(); collectorLoadEvidence = @(); effectiveSettingsVerified = $false; transformationVerified = $false; evidenceComplete = $false; policyActive = $false; runtimeAccepted = $false; rawNumericalPassed = $false }
 $expectedDependencies = @{
-    'Legacy.Maliev.ServiceDefaults' = 'b3e2881d079c675bcaa7bb23511bcaaffc789cce'
-    'Legacy.Maliev.CompatibilityContracts' = '78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7'
+    'Legacy.Maliev.ServiceDefaults' = '173d63218d9142b34075bca87f5c6d933bcbdfb6'
+    'Legacy.Maliev.CompatibilityContracts' = 'fe17b8cea8ace3eef5434f8b29c9038f5c975613'
 }
 foreach ($dependency in $expectedDependencies.Keys) {
     $dependencyIdentity = Get-GitIdentity (Join-Path $repository ".dependencies/$dependency")
@@ -321,9 +321,9 @@ if ($Phase -eq 'PreTest') {
             $producer.refusalCategory = $capturedProducer.refusalCategory
             if ($capturedProducer.status -ceq 'mapped-snapshot') {
                 $process = $capturedProducer.process
-                if ($process.processId -cnotmatch '^[1-9][0-9]*$' -or $process.startTicks -cnotmatch '^[0-9]+$' -or $process.sdkVersion -cne '10.0.401' -or $process.processRole -cne 'datacollector.dll' -or $process.sdkScope -cne 'DOTNET_ROOT/sdk/10.0.401' -or $process.sameProcessEpochVerified -ne $true -or $process.sameUserIdVerified -ne $true -or $process.launcherExecutablePathVerified -ne $true -or $process.mappedInodeDeviceBindingVerified -ne $true) { throw 'Producer process receipt invalid.' }
+                if ($process.processId -cnotmatch '^[1-9][0-9]*$' -or $process.startTicks -cnotmatch '^[0-9]+$' -or $process.sdkVersion -cne '11.0.100' -or $process.processRole -cne 'datacollector.dll' -or $process.sdkScope -cne 'DOTNET_ROOT/sdk/11.0.100' -or $process.sameProcessEpochVerified -ne $true -or $process.sameUserIdVerified -ne $true -or $process.launcherExecutablePathVerified -ne $true -or $process.mappedInodeDeviceBindingVerified -ne $true) { throw 'Producer process receipt invalid.' }
                 if ($process.launcherOptions.exec -isnot [bool] -or $process.launcherOptions.exec -ne $true -or $process.launcherOptions.runtimeConfig -isnot [bool] -or $process.launcherOptions.depsFile -isnot [bool]) { throw 'Producer launcher option receipt invalid.' }
-                $producer.process = @{ processId = $process.processId; processRole = 'datacollector.dll'; startTicks = $process.startTicks; sdkVersion = '10.0.401'; sdkScope = 'DOTNET_ROOT/sdk/10.0.401'; launcherOptions = @{exec=$true;runtimeConfig=$process.launcherOptions.runtimeConfig;depsFile=$process.launcherOptions.depsFile}; sameProcessEpochVerified = $true; sameUserIdVerified = $true; launcherExecutablePathVerified = $true; mappedInodeDeviceBindingVerified = $true; executionAttributed = $false }
+                $producer.process = @{ processId = $process.processId; processRole = 'datacollector.dll'; startTicks = $process.startTicks; sdkVersion = '11.0.100'; sdkScope = 'DOTNET_ROOT/sdk/11.0.100'; launcherOptions = @{exec=$true;runtimeConfig=$process.launcherOptions.runtimeConfig;depsFile=$process.launcherOptions.depsFile}; sameProcessEpochVerified = $true; sameUserIdVerified = $true; launcherExecutablePathVerified = $true; mappedInodeDeviceBindingVerified = $true; executionAttributed = $false }
                 $seenProducerArtifacts = @{}
                 if (@($capturedProducer.snapshots).Count -lt 5 -or @($capturedProducer.snapshots).Count -gt 10) { throw 'Producer snapshot count invalid.' }
                 foreach ($snapshot in $capturedProducer.snapshots) {

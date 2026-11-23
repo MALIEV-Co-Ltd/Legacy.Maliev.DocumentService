@@ -149,12 +149,11 @@ function ConvertFrom-DocumentProducerCommand([byte[]]$Bytes,[string]$DotnetRoot)
     if($DotnetRoot -cnotmatch '^/(?:[^/\\]+/)*[^/\\]+/?$' -or @($DotnetRoot.Split('/')|Where-Object {$_ -cin @('.','..')}).Count){throw 'Invalid producer SDK root.'}
     $root=$DotnetRoot.TrimEnd('/')
     if($arguments.Count -lt 2 -or $arguments.Count -gt 64 -or $arguments[0] -cne "$root/dotnet"){throw 'Unexpected managed producer launcher.'}
-    # SDK 10.0.401 Version.Details pins CLI 18.7.0-release-26374-102 / VMR
-    # 981be135426277fabd550b94fa14cdaf7271b9c2. Its launcher permits these two
-    # optional, ordered dotnet-exec options; CLI packaging/layout puts all files at SDK root.
-    # This contract is intentionally frozen. A different SDK requires source review.
+    # SDK 11.0.100 VMR 297acf930fb0f5c07fd4e51d78e521b4ad2e5d1f launches
+    # its SDK-local collector with these ordered dotnet-exec options. A different
+    # SDK or launcher requires source review; mapped-file and epoch checks still apply.
     if($arguments[1] -cne 'exec'){throw 'Unexpected producer launcher options.'}
-    $sdk='10.0.401';$sdkDirectory="$root/sdk/$sdk";$index=2;$rank=0
+    $sdk='11.0.100';$sdkDirectory="$root/sdk/$sdk";$index=2;$rank=0
     $options=@{exec=$true;runtimeConfig=$false;depsFile=$false}
     while($index -lt $arguments.Count -and $arguments[$index].StartsWith('--',[StringComparison]::Ordinal)){
         $option=$arguments[$index]
@@ -360,7 +359,7 @@ try {
                 $afterMapped=@{}
                 foreach($line in $afterMaps.Split([char]10)){$map=ConvertFrom-DocumentProducerMap $line $scope.sdkDirectory;if($null -ne $map){Add-DocumentProducerMap $afterMapped $map}}
                 foreach($module in $documentProducerNames){if(-not $afterMapped.ContainsKey($module) -or $afterMapped[$module].inode -cne $mapped[$module].inode -or $afterMapped[$module].deviceMajor -ne $mapped[$module].deviceMajor -or $afterMapped[$module].deviceMinor -ne $mapped[$module].deviceMinor){throw 'Producer mapping changed during capture.'}}
-                $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/10.0.401';launcherOptions=$scope.launcherOptions;sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
+                $processIdentity=@{processId=$collectorProcessId;processRole='datacollector.dll';startTicks=$epoch;sdkVersion=$scope.sdkVersion;sdkScope='DOTNET_ROOT/sdk/11.0.100';launcherOptions=$scope.launcherOptions;sameProcessEpochVerified=$true;sameUserIdVerified=$true;launcherExecutablePathVerified=$true;mappedInodeDeviceBindingVerified=$true;executionAttributed=$false}
                 $status='mapped-snapshot';$stage='complete';$refusalCategory='none';break
             }
         }

@@ -186,8 +186,8 @@ public sealed class WorkflowContractTests
     public void BuildAndTest_RejectsCommentedDependencySha()
     {
         AssertMutationRejected(
-            "ref: b3e2881d079c675bcaa7bb23511bcaaffc789cce",
-            "ref: main # b3e2881d079c675bcaa7bb23511bcaaffc789cce");
+            "ref: 173d63218d9142b34075bca87f5c6d933bcbdfb6",
+            "ref: main # 173d63218d9142b34075bca87f5c6d933bcbdfb6");
     }
 
     [Fact]
@@ -415,12 +415,12 @@ internal static partial class WorkflowContractValidator
 
         RequireScalarValue(evidenceInputs, "name", "document-validation-${{ github.sha }}");
         RequireScalarValue(evidenceInputs, "path", "runner-results\n"
-            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll\n"
-            + "Legacy.Maliev.DocumentService.Api/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.pdb\n"
-            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
-            + "Legacy.Maliev.DocumentService.Application/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.pdb\n"
-            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Application.dll\n"
-            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net10.0/Legacy.Maliev.DocumentService.Api.dll");
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net11.0/Legacy.Maliev.DocumentService.Api.dll\n"
+            + "Legacy.Maliev.DocumentService.Api/bin/Release/net11.0/Legacy.Maliev.DocumentService.Api.pdb\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net11.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Application/bin/Release/net11.0/Legacy.Maliev.DocumentService.Application.pdb\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net11.0/Legacy.Maliev.DocumentService.Application.dll\n"
+            + "Legacy.Maliev.DocumentService.Tests/bin/Release/net11.0/Legacy.Maliev.DocumentService.Api.dll");
         RequireScalarValue(evidenceInputs, "if-no-files-found", "warn");
         RequireScalarValue(evidenceInputs, "retention-days", "7");
 
@@ -438,7 +438,7 @@ internal static partial class WorkflowContractValidator
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["repository"] = "MALIEV-Co-Ltd/Legacy.Maliev.ServiceDefaults",
-                ["ref"] = "b3e2881d079c675bcaa7bb23511bcaaffc789cce",
+                ["ref"] = "173d63218d9142b34075bca87f5c6d933bcbdfb6",
                 ["path"] = ".dependencies/Legacy.Maliev.ServiceDefaults",
                 ["persist-credentials"] = "false",
             });
@@ -448,7 +448,7 @@ internal static partial class WorkflowContractValidator
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["repository"] = "MALIEV-Co-Ltd/Legacy.Maliev.CompatibilityContracts",
-                ["ref"] = "78e48ffc4ee000df0510cba5e7c7a3c4c4d539d7",
+                ["ref"] = "fe17b8cea8ace3eef5434f8b29c9038f5c975613",
                 ["path"] = ".dependencies/Legacy.Maliev.CompatibilityContracts",
                 ["persist-credentials"] = "false",
             });
@@ -458,6 +458,7 @@ internal static partial class WorkflowContractValidator
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["solution"] = "Legacy.Maliev.DocumentService.slnx",
+                ["dotnet-version"] = "10.0.404\n11.0.100",
                 ["use-local-maliev-dependencies"] = "true",
             });
     }
