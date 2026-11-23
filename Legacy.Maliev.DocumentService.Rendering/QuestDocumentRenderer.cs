@@ -15,6 +15,7 @@ using ReceiptDocument = Legacy.Maliev.DocumentService.Domain.Receipt.Receipt;
 
 namespace Legacy.Maliev.DocumentService.Rendering;
 
+/// <summary>Renders the supported documents using the embedded fonts and assets.</summary>
 public sealed class QuestDocumentRenderer : IDocumentRenderer
 {
     private const string LatinFont = DocumentStyle.Latin;
@@ -40,23 +41,31 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
         Logo = memory.ToArray();
     }
 
+    /// <summary>Creates a renderer using the system clock.</summary>
     public QuestDocumentRenderer() : this(TimeProvider.System)
     {
     }
 
+    /// <summary>Creates a renderer using the supplied clock.</summary>
+    /// <param name="timeProvider">The clock used for time-dependent output.</param>
     public QuestDocumentRenderer(TimeProvider timeProvider)
     {
         this.timeProvider = timeProvider;
     }
 
+    /// <inheritdoc />
     public byte[] RenderInvoice(InvoiceDocument invoice) => InvoiceDocumentComposer.Render(invoice, Logo);
 
+    /// <inheritdoc />
     public byte[] RenderQuotation(QuotationDocument quotation) => QuotationDocumentComposer.Render(quotation, Logo);
 
+    /// <inheritdoc />
     public byte[] RenderReceipt(ReceiptDocument receipt) => ReceiptDocumentComposer.Render(receipt, Logo);
 
+    /// <inheritdoc />
     public byte[] RenderPurchaseOrder(PurchaseOrderDocument purchaseOrder) => PurchaseOrderDocumentComposer.Render(purchaseOrder, Logo);
 
+    /// <inheritdoc />
     public byte[] RenderOrderLabel(LabelDocument label) =>
         OrderLabelDocumentComposer.Render(label, Logo, timeProvider.GetUtcNow().UtcDateTime);
 
@@ -167,6 +176,10 @@ public sealed class QuestDocumentRenderer : IDocumentRenderer
             });
     }
 
+    /// <summary>Composes the receipt footer for the selected copy.</summary>
+    /// <param name="container">The footer layout container.</param>
+    /// <param name="receipt">The receipt supplying footer details.</param>
+    /// <param name="includeSignature">Whether this copy includes the signature area.</param>
     internal static void ReceiptFooter(IContainer container, ReceiptDocument receipt, bool includeSignature)
     {
         container

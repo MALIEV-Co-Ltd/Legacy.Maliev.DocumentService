@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Application\Legacy.Maliev.DocumentService.Application.csproj" />
     <ProjectReference Include="..\Legacy.Maliev.DocumentService.Domain\Legacy.Maliev.DocumentService.Domain.csproj" />
