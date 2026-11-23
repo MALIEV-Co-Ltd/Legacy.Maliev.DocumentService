@@ -17,7 +17,7 @@ try
     builder.AddDocumentHostTransportPolicy();
     builder.AddStandardOpenApi(
         title: "Legacy MALIEV Document Service API",
-        description: "Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.");
+        description: "Authenticated .NET 11 compatibility API for rendering legacy MALIEV documents with QuestPDF.");
     builder.Services.AddOpenApi("v1", options =>
     {
         options.AddDocumentTransformer((document, context, cancellationToken) =>

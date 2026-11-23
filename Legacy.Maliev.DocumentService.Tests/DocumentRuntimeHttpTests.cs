@@ -212,7 +212,7 @@ public sealed class DocumentRuntimeHttpTests
         using var document = JsonDocument.Parse(metadataJson);
         var info = document.RootElement.GetProperty("info");
         Assert.Equal("Legacy MALIEV Document Service API", info.GetProperty("title").GetString());
-        Assert.Equal("Authenticated .NET 10 compatibility API for rendering legacy MALIEV documents with QuestPDF.", info.GetProperty("description").GetString());
+        Assert.Equal("Authenticated .NET 11 compatibility API for rendering legacy MALIEV documents with QuestPDF.", info.GetProperty("description").GetString());
         Assert.Equal("1.0", info.GetProperty("version").GetString());
         var paths = document.RootElement.GetProperty("paths");
         var summaries = new Dictionary<string, string>
